@@ -1,0 +1,15 @@
+require('dotenv').config();
+const createServer = require('./startup/createServer');
+const db = require('./startup/db');
+
+const server = createServer();
+
+//TODO: Use express middleware to handle cookies (JWT)
+//TODO: Use express middleware to populate current user
+
+server.start({
+    credentials: true,
+    cors: process.env.FRONTEND_URL
+}, deets => {
+    console.log(`Server is now running on port http://localhost:${deets.port}`)
+})
