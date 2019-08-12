@@ -1,12 +1,55 @@
-type User {
-    id: ID!
-    name: String!
-}
-
+# import * from './generated/prisma.graphql'
+# Public facing schema
 type Mutation {
-    hi: String
+    createUser(
+        name: String
+        email: String
+        location: LocationCreateOneWithoutUsersInput!
+    ): User!
+
+    createJob(
+        title: String 
+        description: String
+        compensationType: String
+        category: String
+        description: String
+        type: String
+        maxCompensation: Float
+        minCompensation: Float
+        skills: SkillCreateManyWithoutJobsInput
+        qualifications: String
+        requirements: String
+        location: LocationCreateOneWithoutJobsInput!
+        author: UserCreateOneWithoutJobsInput! 
+        categories: CategoryCreateManyWithoutJobsInput
+    ): Job!
+
+    createLocation(
+        name: String
+        latitude: String
+        longitude: String
+    ): Location!
+
+    createCategory(
+        name: String!
+    ): Category!
+
+    createSkill(
+        name: String!
+    ): Skill!
 }
 
 type Query {
-    hi: String
+    users: [User]!
+    jobs: [Job]!
+    locations: [Location]!
+    location(where: LocationWhereUniqueInput!): Location
+    categories: [Category]!
+    category(where: CategoryWhereUniqueInput!): Category
+    skills: [Skill]!
+    skill(where: SkillWhereUniqueInput!): Skill
 }
+
+
+
+# Custom types

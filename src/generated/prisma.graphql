@@ -1,8 +1,386 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Fri Aug 09 2019 14:22:41 GMT-0700 (Pacific Daylight Time)
+# timestamp: Mon Aug 12 2019 15:51:25 GMT-0700 (Pacific Daylight Time)
+
+type AggregateApplication {
+  count: Int!
+}
+
+type AggregateCategory {
+  count: Int!
+}
+
+type AggregateJob {
+  count: Int!
+}
+
+type AggregateLocation {
+  count: Int!
+}
+
+type AggregateSkill {
+  count: Int!
+}
 
 type AggregateUser {
   count: Int!
+}
+
+type Application implements Node {
+  id: ID!
+  user: User!
+  job: Job!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type ApplicationConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ApplicationEdge]!
+  aggregate: AggregateApplication!
+}
+
+input ApplicationCreateInput {
+  id: ID
+  user: UserCreateOneWithoutApplicationsInput!
+  job: JobCreateOneWithoutApplicationsInput!
+}
+
+input ApplicationCreateManyWithoutJobInput {
+  create: [ApplicationCreateWithoutJobInput!]
+  connect: [ApplicationWhereUniqueInput!]
+}
+
+input ApplicationCreateManyWithoutUserInput {
+  create: [ApplicationCreateWithoutUserInput!]
+  connect: [ApplicationWhereUniqueInput!]
+}
+
+input ApplicationCreateWithoutJobInput {
+  id: ID
+  user: UserCreateOneWithoutApplicationsInput!
+}
+
+input ApplicationCreateWithoutUserInput {
+  id: ID
+  job: JobCreateOneWithoutApplicationsInput!
+}
+
+"""An edge in a connection."""
+type ApplicationEdge {
+  """The item at the end of the edge."""
+  node: Application!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ApplicationOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ApplicationPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input ApplicationScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ApplicationScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ApplicationScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ApplicationScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type ApplicationSubscriptionPayload {
+  mutation: MutationType!
+  node: Application
+  updatedFields: [String!]
+  previousValues: ApplicationPreviousValues
+}
+
+input ApplicationSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ApplicationSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ApplicationSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ApplicationSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ApplicationWhereInput
+}
+
+input ApplicationUpdateInput {
+  user: UserUpdateOneRequiredWithoutApplicationsInput
+  job: JobUpdateOneRequiredWithoutApplicationsInput
+}
+
+input ApplicationUpdateManyWithoutJobInput {
+  create: [ApplicationCreateWithoutJobInput!]
+  connect: [ApplicationWhereUniqueInput!]
+  set: [ApplicationWhereUniqueInput!]
+  disconnect: [ApplicationWhereUniqueInput!]
+  delete: [ApplicationWhereUniqueInput!]
+  update: [ApplicationUpdateWithWhereUniqueWithoutJobInput!]
+  deleteMany: [ApplicationScalarWhereInput!]
+  upsert: [ApplicationUpsertWithWhereUniqueWithoutJobInput!]
+}
+
+input ApplicationUpdateManyWithoutUserInput {
+  create: [ApplicationCreateWithoutUserInput!]
+  connect: [ApplicationWhereUniqueInput!]
+  set: [ApplicationWhereUniqueInput!]
+  disconnect: [ApplicationWhereUniqueInput!]
+  delete: [ApplicationWhereUniqueInput!]
+  update: [ApplicationUpdateWithWhereUniqueWithoutUserInput!]
+  deleteMany: [ApplicationScalarWhereInput!]
+  upsert: [ApplicationUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input ApplicationUpdateWithoutJobDataInput {
+  user: UserUpdateOneRequiredWithoutApplicationsInput
+}
+
+input ApplicationUpdateWithoutUserDataInput {
+  job: JobUpdateOneRequiredWithoutApplicationsInput
+}
+
+input ApplicationUpdateWithWhereUniqueWithoutJobInput {
+  where: ApplicationWhereUniqueInput!
+  data: ApplicationUpdateWithoutJobDataInput!
+}
+
+input ApplicationUpdateWithWhereUniqueWithoutUserInput {
+  where: ApplicationWhereUniqueInput!
+  data: ApplicationUpdateWithoutUserDataInput!
+}
+
+input ApplicationUpsertWithWhereUniqueWithoutJobInput {
+  where: ApplicationWhereUniqueInput!
+  update: ApplicationUpdateWithoutJobDataInput!
+  create: ApplicationCreateWithoutJobInput!
+}
+
+input ApplicationUpsertWithWhereUniqueWithoutUserInput {
+  where: ApplicationWhereUniqueInput!
+  update: ApplicationUpdateWithoutUserDataInput!
+  create: ApplicationCreateWithoutUserInput!
+}
+
+input ApplicationWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ApplicationWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ApplicationWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ApplicationWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  user: UserWhereInput
+  job: JobWhereInput
+}
+
+input ApplicationWhereUniqueInput {
+  id: ID
 }
 
 type BatchPayload {
@@ -10,7 +388,2012 @@ type BatchPayload {
   count: Long!
 }
 
+type Category implements Node {
+  id: ID!
+  name: String!
+  jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
+}
+
+"""A connection to a list of items."""
+type CategoryConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [CategoryEdge]!
+  aggregate: AggregateCategory!
+}
+
+input CategoryCreateInput {
+  id: ID
+  name: String!
+  jobs: JobCreateManyWithoutCategoriesInput
+}
+
+input CategoryCreateManyWithoutJobsInput {
+  create: [CategoryCreateWithoutJobsInput!]
+  connect: [CategoryWhereUniqueInput!]
+}
+
+input CategoryCreateWithoutJobsInput {
+  id: ID
+  name: String!
+}
+
+"""An edge in a connection."""
+type CategoryEdge {
+  """The item at the end of the edge."""
+  node: Category!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum CategoryOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+}
+
+type CategoryPreviousValues {
+  id: ID!
+  name: String!
+}
+
+input CategoryScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CategoryScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CategoryScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CategoryScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+}
+
+type CategorySubscriptionPayload {
+  mutation: MutationType!
+  node: Category
+  updatedFields: [String!]
+  previousValues: CategoryPreviousValues
+}
+
+input CategorySubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CategorySubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CategorySubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CategorySubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: CategoryWhereInput
+}
+
+input CategoryUpdateInput {
+  name: String
+  jobs: JobUpdateManyWithoutCategoriesInput
+}
+
+input CategoryUpdateManyDataInput {
+  name: String
+}
+
+input CategoryUpdateManyMutationInput {
+  name: String
+}
+
+input CategoryUpdateManyWithoutJobsInput {
+  create: [CategoryCreateWithoutJobsInput!]
+  connect: [CategoryWhereUniqueInput!]
+  set: [CategoryWhereUniqueInput!]
+  disconnect: [CategoryWhereUniqueInput!]
+  delete: [CategoryWhereUniqueInput!]
+  update: [CategoryUpdateWithWhereUniqueWithoutJobsInput!]
+  updateMany: [CategoryUpdateManyWithWhereNestedInput!]
+  deleteMany: [CategoryScalarWhereInput!]
+  upsert: [CategoryUpsertWithWhereUniqueWithoutJobsInput!]
+}
+
+input CategoryUpdateManyWithWhereNestedInput {
+  where: CategoryScalarWhereInput!
+  data: CategoryUpdateManyDataInput!
+}
+
+input CategoryUpdateWithoutJobsDataInput {
+  name: String
+}
+
+input CategoryUpdateWithWhereUniqueWithoutJobsInput {
+  where: CategoryWhereUniqueInput!
+  data: CategoryUpdateWithoutJobsDataInput!
+}
+
+input CategoryUpsertWithWhereUniqueWithoutJobsInput {
+  where: CategoryWhereUniqueInput!
+  update: CategoryUpdateWithoutJobsDataInput!
+  create: CategoryCreateWithoutJobsInput!
+}
+
+input CategoryWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CategoryWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CategoryWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CategoryWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  jobs_every: JobWhereInput
+  jobs_some: JobWhereInput
+  jobs_none: JobWhereInput
+}
+
+input CategoryWhereUniqueInput {
+  id: ID
+  name: String
+}
+
 scalar DateTime
+
+type Job implements Node {
+  id: ID!
+  title: String!
+  compensationType: String!
+  category: String!
+  description: String!
+  type: String!
+  maxCompensation: Float
+  minCompensation: Float
+  skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
+  qualifications: String!
+  requirements: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  author: User!
+  location: Location!
+  applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application!]
+  categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
+}
+
+"""A connection to a list of items."""
+type JobConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [JobEdge]!
+  aggregate: AggregateJob!
+}
+
+input JobCreateInput {
+  id: ID
+  title: String!
+  compensationType: String
+  category: String!
+  description: String!
+  type: String!
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String!
+  requirements: String!
+  skills: SkillCreateManyWithoutJobsInput
+  author: UserCreateOneWithoutJobsInput!
+  location: LocationCreateOneWithoutJobsInput!
+  applications: ApplicationCreateManyWithoutJobInput
+  categories: CategoryCreateManyWithoutJobsInput
+}
+
+input JobCreateManyWithoutAuthorInput {
+  create: [JobCreateWithoutAuthorInput!]
+  connect: [JobWhereUniqueInput!]
+}
+
+input JobCreateManyWithoutCategoriesInput {
+  create: [JobCreateWithoutCategoriesInput!]
+  connect: [JobWhereUniqueInput!]
+}
+
+input JobCreateManyWithoutLocationInput {
+  create: [JobCreateWithoutLocationInput!]
+  connect: [JobWhereUniqueInput!]
+}
+
+input JobCreateManyWithoutSkillsInput {
+  create: [JobCreateWithoutSkillsInput!]
+  connect: [JobWhereUniqueInput!]
+}
+
+input JobCreateOneWithoutApplicationsInput {
+  create: JobCreateWithoutApplicationsInput
+  connect: JobWhereUniqueInput
+}
+
+input JobCreateWithoutApplicationsInput {
+  id: ID
+  title: String!
+  compensationType: String
+  category: String!
+  description: String!
+  type: String!
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String!
+  requirements: String!
+  skills: SkillCreateManyWithoutJobsInput
+  author: UserCreateOneWithoutJobsInput!
+  location: LocationCreateOneWithoutJobsInput!
+  categories: CategoryCreateManyWithoutJobsInput
+}
+
+input JobCreateWithoutAuthorInput {
+  id: ID
+  title: String!
+  compensationType: String
+  category: String!
+  description: String!
+  type: String!
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String!
+  requirements: String!
+  skills: SkillCreateManyWithoutJobsInput
+  location: LocationCreateOneWithoutJobsInput!
+  applications: ApplicationCreateManyWithoutJobInput
+  categories: CategoryCreateManyWithoutJobsInput
+}
+
+input JobCreateWithoutCategoriesInput {
+  id: ID
+  title: String!
+  compensationType: String
+  category: String!
+  description: String!
+  type: String!
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String!
+  requirements: String!
+  skills: SkillCreateManyWithoutJobsInput
+  author: UserCreateOneWithoutJobsInput!
+  location: LocationCreateOneWithoutJobsInput!
+  applications: ApplicationCreateManyWithoutJobInput
+}
+
+input JobCreateWithoutLocationInput {
+  id: ID
+  title: String!
+  compensationType: String
+  category: String!
+  description: String!
+  type: String!
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String!
+  requirements: String!
+  skills: SkillCreateManyWithoutJobsInput
+  author: UserCreateOneWithoutJobsInput!
+  applications: ApplicationCreateManyWithoutJobInput
+  categories: CategoryCreateManyWithoutJobsInput
+}
+
+input JobCreateWithoutSkillsInput {
+  id: ID
+  title: String!
+  compensationType: String
+  category: String!
+  description: String!
+  type: String!
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String!
+  requirements: String!
+  author: UserCreateOneWithoutJobsInput!
+  location: LocationCreateOneWithoutJobsInput!
+  applications: ApplicationCreateManyWithoutJobInput
+  categories: CategoryCreateManyWithoutJobsInput
+}
+
+"""An edge in a connection."""
+type JobEdge {
+  """The item at the end of the edge."""
+  node: Job!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum JobOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  compensationType_ASC
+  compensationType_DESC
+  category_ASC
+  category_DESC
+  description_ASC
+  description_DESC
+  type_ASC
+  type_DESC
+  maxCompensation_ASC
+  maxCompensation_DESC
+  minCompensation_ASC
+  minCompensation_DESC
+  qualifications_ASC
+  qualifications_DESC
+  requirements_ASC
+  requirements_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type JobPreviousValues {
+  id: ID!
+  title: String!
+  compensationType: String!
+  category: String!
+  description: String!
+  type: String!
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String!
+  requirements: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input JobScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [JobScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [JobScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [JobScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  compensationType: String
+
+  """All values that are not equal to given value."""
+  compensationType_not: String
+
+  """All values that are contained in given list."""
+  compensationType_in: [String!]
+
+  """All values that are not contained in given list."""
+  compensationType_not_in: [String!]
+
+  """All values less than the given value."""
+  compensationType_lt: String
+
+  """All values less than or equal the given value."""
+  compensationType_lte: String
+
+  """All values greater than the given value."""
+  compensationType_gt: String
+
+  """All values greater than or equal the given value."""
+  compensationType_gte: String
+
+  """All values containing the given string."""
+  compensationType_contains: String
+
+  """All values not containing the given string."""
+  compensationType_not_contains: String
+
+  """All values starting with the given string."""
+  compensationType_starts_with: String
+
+  """All values not starting with the given string."""
+  compensationType_not_starts_with: String
+
+  """All values ending with the given string."""
+  compensationType_ends_with: String
+
+  """All values not ending with the given string."""
+  compensationType_not_ends_with: String
+  category: String
+
+  """All values that are not equal to given value."""
+  category_not: String
+
+  """All values that are contained in given list."""
+  category_in: [String!]
+
+  """All values that are not contained in given list."""
+  category_not_in: [String!]
+
+  """All values less than the given value."""
+  category_lt: String
+
+  """All values less than or equal the given value."""
+  category_lte: String
+
+  """All values greater than the given value."""
+  category_gt: String
+
+  """All values greater than or equal the given value."""
+  category_gte: String
+
+  """All values containing the given string."""
+  category_contains: String
+
+  """All values not containing the given string."""
+  category_not_contains: String
+
+  """All values starting with the given string."""
+  category_starts_with: String
+
+  """All values not starting with the given string."""
+  category_not_starts_with: String
+
+  """All values ending with the given string."""
+  category_ends_with: String
+
+  """All values not ending with the given string."""
+  category_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  type: String
+
+  """All values that are not equal to given value."""
+  type_not: String
+
+  """All values that are contained in given list."""
+  type_in: [String!]
+
+  """All values that are not contained in given list."""
+  type_not_in: [String!]
+
+  """All values less than the given value."""
+  type_lt: String
+
+  """All values less than or equal the given value."""
+  type_lte: String
+
+  """All values greater than the given value."""
+  type_gt: String
+
+  """All values greater than or equal the given value."""
+  type_gte: String
+
+  """All values containing the given string."""
+  type_contains: String
+
+  """All values not containing the given string."""
+  type_not_contains: String
+
+  """All values starting with the given string."""
+  type_starts_with: String
+
+  """All values not starting with the given string."""
+  type_not_starts_with: String
+
+  """All values ending with the given string."""
+  type_ends_with: String
+
+  """All values not ending with the given string."""
+  type_not_ends_with: String
+  maxCompensation: Float
+
+  """All values that are not equal to given value."""
+  maxCompensation_not: Float
+
+  """All values that are contained in given list."""
+  maxCompensation_in: [Float!]
+
+  """All values that are not contained in given list."""
+  maxCompensation_not_in: [Float!]
+
+  """All values less than the given value."""
+  maxCompensation_lt: Float
+
+  """All values less than or equal the given value."""
+  maxCompensation_lte: Float
+
+  """All values greater than the given value."""
+  maxCompensation_gt: Float
+
+  """All values greater than or equal the given value."""
+  maxCompensation_gte: Float
+  minCompensation: Float
+
+  """All values that are not equal to given value."""
+  minCompensation_not: Float
+
+  """All values that are contained in given list."""
+  minCompensation_in: [Float!]
+
+  """All values that are not contained in given list."""
+  minCompensation_not_in: [Float!]
+
+  """All values less than the given value."""
+  minCompensation_lt: Float
+
+  """All values less than or equal the given value."""
+  minCompensation_lte: Float
+
+  """All values greater than the given value."""
+  minCompensation_gt: Float
+
+  """All values greater than or equal the given value."""
+  minCompensation_gte: Float
+  qualifications: String
+
+  """All values that are not equal to given value."""
+  qualifications_not: String
+
+  """All values that are contained in given list."""
+  qualifications_in: [String!]
+
+  """All values that are not contained in given list."""
+  qualifications_not_in: [String!]
+
+  """All values less than the given value."""
+  qualifications_lt: String
+
+  """All values less than or equal the given value."""
+  qualifications_lte: String
+
+  """All values greater than the given value."""
+  qualifications_gt: String
+
+  """All values greater than or equal the given value."""
+  qualifications_gte: String
+
+  """All values containing the given string."""
+  qualifications_contains: String
+
+  """All values not containing the given string."""
+  qualifications_not_contains: String
+
+  """All values starting with the given string."""
+  qualifications_starts_with: String
+
+  """All values not starting with the given string."""
+  qualifications_not_starts_with: String
+
+  """All values ending with the given string."""
+  qualifications_ends_with: String
+
+  """All values not ending with the given string."""
+  qualifications_not_ends_with: String
+  requirements: String
+
+  """All values that are not equal to given value."""
+  requirements_not: String
+
+  """All values that are contained in given list."""
+  requirements_in: [String!]
+
+  """All values that are not contained in given list."""
+  requirements_not_in: [String!]
+
+  """All values less than the given value."""
+  requirements_lt: String
+
+  """All values less than or equal the given value."""
+  requirements_lte: String
+
+  """All values greater than the given value."""
+  requirements_gt: String
+
+  """All values greater than or equal the given value."""
+  requirements_gte: String
+
+  """All values containing the given string."""
+  requirements_contains: String
+
+  """All values not containing the given string."""
+  requirements_not_contains: String
+
+  """All values starting with the given string."""
+  requirements_starts_with: String
+
+  """All values not starting with the given string."""
+  requirements_not_starts_with: String
+
+  """All values ending with the given string."""
+  requirements_ends_with: String
+
+  """All values not ending with the given string."""
+  requirements_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type JobSubscriptionPayload {
+  mutation: MutationType!
+  node: Job
+  updatedFields: [String!]
+  previousValues: JobPreviousValues
+}
+
+input JobSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [JobSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [JobSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [JobSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: JobWhereInput
+}
+
+input JobUpdateInput {
+  title: String
+  compensationType: String
+  category: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+  skills: SkillUpdateManyWithoutJobsInput
+  author: UserUpdateOneRequiredWithoutJobsInput
+  location: LocationUpdateOneRequiredWithoutJobsInput
+  applications: ApplicationUpdateManyWithoutJobInput
+  categories: CategoryUpdateManyWithoutJobsInput
+}
+
+input JobUpdateManyDataInput {
+  title: String
+  compensationType: String
+  category: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+}
+
+input JobUpdateManyMutationInput {
+  title: String
+  compensationType: String
+  category: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+}
+
+input JobUpdateManyWithoutAuthorInput {
+  create: [JobCreateWithoutAuthorInput!]
+  connect: [JobWhereUniqueInput!]
+  set: [JobWhereUniqueInput!]
+  disconnect: [JobWhereUniqueInput!]
+  delete: [JobWhereUniqueInput!]
+  update: [JobUpdateWithWhereUniqueWithoutAuthorInput!]
+  updateMany: [JobUpdateManyWithWhereNestedInput!]
+  deleteMany: [JobScalarWhereInput!]
+  upsert: [JobUpsertWithWhereUniqueWithoutAuthorInput!]
+}
+
+input JobUpdateManyWithoutCategoriesInput {
+  create: [JobCreateWithoutCategoriesInput!]
+  connect: [JobWhereUniqueInput!]
+  set: [JobWhereUniqueInput!]
+  disconnect: [JobWhereUniqueInput!]
+  delete: [JobWhereUniqueInput!]
+  update: [JobUpdateWithWhereUniqueWithoutCategoriesInput!]
+  updateMany: [JobUpdateManyWithWhereNestedInput!]
+  deleteMany: [JobScalarWhereInput!]
+  upsert: [JobUpsertWithWhereUniqueWithoutCategoriesInput!]
+}
+
+input JobUpdateManyWithoutLocationInput {
+  create: [JobCreateWithoutLocationInput!]
+  connect: [JobWhereUniqueInput!]
+  set: [JobWhereUniqueInput!]
+  disconnect: [JobWhereUniqueInput!]
+  delete: [JobWhereUniqueInput!]
+  update: [JobUpdateWithWhereUniqueWithoutLocationInput!]
+  updateMany: [JobUpdateManyWithWhereNestedInput!]
+  deleteMany: [JobScalarWhereInput!]
+  upsert: [JobUpsertWithWhereUniqueWithoutLocationInput!]
+}
+
+input JobUpdateManyWithoutSkillsInput {
+  create: [JobCreateWithoutSkillsInput!]
+  connect: [JobWhereUniqueInput!]
+  set: [JobWhereUniqueInput!]
+  disconnect: [JobWhereUniqueInput!]
+  delete: [JobWhereUniqueInput!]
+  update: [JobUpdateWithWhereUniqueWithoutSkillsInput!]
+  updateMany: [JobUpdateManyWithWhereNestedInput!]
+  deleteMany: [JobScalarWhereInput!]
+  upsert: [JobUpsertWithWhereUniqueWithoutSkillsInput!]
+}
+
+input JobUpdateManyWithWhereNestedInput {
+  where: JobScalarWhereInput!
+  data: JobUpdateManyDataInput!
+}
+
+input JobUpdateOneRequiredWithoutApplicationsInput {
+  create: JobCreateWithoutApplicationsInput
+  connect: JobWhereUniqueInput
+  update: JobUpdateWithoutApplicationsDataInput
+  upsert: JobUpsertWithoutApplicationsInput
+}
+
+input JobUpdateWithoutApplicationsDataInput {
+  title: String
+  compensationType: String
+  category: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+  skills: SkillUpdateManyWithoutJobsInput
+  author: UserUpdateOneRequiredWithoutJobsInput
+  location: LocationUpdateOneRequiredWithoutJobsInput
+  categories: CategoryUpdateManyWithoutJobsInput
+}
+
+input JobUpdateWithoutAuthorDataInput {
+  title: String
+  compensationType: String
+  category: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+  skills: SkillUpdateManyWithoutJobsInput
+  location: LocationUpdateOneRequiredWithoutJobsInput
+  applications: ApplicationUpdateManyWithoutJobInput
+  categories: CategoryUpdateManyWithoutJobsInput
+}
+
+input JobUpdateWithoutCategoriesDataInput {
+  title: String
+  compensationType: String
+  category: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+  skills: SkillUpdateManyWithoutJobsInput
+  author: UserUpdateOneRequiredWithoutJobsInput
+  location: LocationUpdateOneRequiredWithoutJobsInput
+  applications: ApplicationUpdateManyWithoutJobInput
+}
+
+input JobUpdateWithoutLocationDataInput {
+  title: String
+  compensationType: String
+  category: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+  skills: SkillUpdateManyWithoutJobsInput
+  author: UserUpdateOneRequiredWithoutJobsInput
+  applications: ApplicationUpdateManyWithoutJobInput
+  categories: CategoryUpdateManyWithoutJobsInput
+}
+
+input JobUpdateWithoutSkillsDataInput {
+  title: String
+  compensationType: String
+  category: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+  author: UserUpdateOneRequiredWithoutJobsInput
+  location: LocationUpdateOneRequiredWithoutJobsInput
+  applications: ApplicationUpdateManyWithoutJobInput
+  categories: CategoryUpdateManyWithoutJobsInput
+}
+
+input JobUpdateWithWhereUniqueWithoutAuthorInput {
+  where: JobWhereUniqueInput!
+  data: JobUpdateWithoutAuthorDataInput!
+}
+
+input JobUpdateWithWhereUniqueWithoutCategoriesInput {
+  where: JobWhereUniqueInput!
+  data: JobUpdateWithoutCategoriesDataInput!
+}
+
+input JobUpdateWithWhereUniqueWithoutLocationInput {
+  where: JobWhereUniqueInput!
+  data: JobUpdateWithoutLocationDataInput!
+}
+
+input JobUpdateWithWhereUniqueWithoutSkillsInput {
+  where: JobWhereUniqueInput!
+  data: JobUpdateWithoutSkillsDataInput!
+}
+
+input JobUpsertWithoutApplicationsInput {
+  update: JobUpdateWithoutApplicationsDataInput!
+  create: JobCreateWithoutApplicationsInput!
+}
+
+input JobUpsertWithWhereUniqueWithoutAuthorInput {
+  where: JobWhereUniqueInput!
+  update: JobUpdateWithoutAuthorDataInput!
+  create: JobCreateWithoutAuthorInput!
+}
+
+input JobUpsertWithWhereUniqueWithoutCategoriesInput {
+  where: JobWhereUniqueInput!
+  update: JobUpdateWithoutCategoriesDataInput!
+  create: JobCreateWithoutCategoriesInput!
+}
+
+input JobUpsertWithWhereUniqueWithoutLocationInput {
+  where: JobWhereUniqueInput!
+  update: JobUpdateWithoutLocationDataInput!
+  create: JobCreateWithoutLocationInput!
+}
+
+input JobUpsertWithWhereUniqueWithoutSkillsInput {
+  where: JobWhereUniqueInput!
+  update: JobUpdateWithoutSkillsDataInput!
+  create: JobCreateWithoutSkillsInput!
+}
+
+input JobWhereInput {
+  """Logical AND on all given filters."""
+  AND: [JobWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [JobWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [JobWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
+  compensationType: String
+
+  """All values that are not equal to given value."""
+  compensationType_not: String
+
+  """All values that are contained in given list."""
+  compensationType_in: [String!]
+
+  """All values that are not contained in given list."""
+  compensationType_not_in: [String!]
+
+  """All values less than the given value."""
+  compensationType_lt: String
+
+  """All values less than or equal the given value."""
+  compensationType_lte: String
+
+  """All values greater than the given value."""
+  compensationType_gt: String
+
+  """All values greater than or equal the given value."""
+  compensationType_gte: String
+
+  """All values containing the given string."""
+  compensationType_contains: String
+
+  """All values not containing the given string."""
+  compensationType_not_contains: String
+
+  """All values starting with the given string."""
+  compensationType_starts_with: String
+
+  """All values not starting with the given string."""
+  compensationType_not_starts_with: String
+
+  """All values ending with the given string."""
+  compensationType_ends_with: String
+
+  """All values not ending with the given string."""
+  compensationType_not_ends_with: String
+  category: String
+
+  """All values that are not equal to given value."""
+  category_not: String
+
+  """All values that are contained in given list."""
+  category_in: [String!]
+
+  """All values that are not contained in given list."""
+  category_not_in: [String!]
+
+  """All values less than the given value."""
+  category_lt: String
+
+  """All values less than or equal the given value."""
+  category_lte: String
+
+  """All values greater than the given value."""
+  category_gt: String
+
+  """All values greater than or equal the given value."""
+  category_gte: String
+
+  """All values containing the given string."""
+  category_contains: String
+
+  """All values not containing the given string."""
+  category_not_contains: String
+
+  """All values starting with the given string."""
+  category_starts_with: String
+
+  """All values not starting with the given string."""
+  category_not_starts_with: String
+
+  """All values ending with the given string."""
+  category_ends_with: String
+
+  """All values not ending with the given string."""
+  category_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  type: String
+
+  """All values that are not equal to given value."""
+  type_not: String
+
+  """All values that are contained in given list."""
+  type_in: [String!]
+
+  """All values that are not contained in given list."""
+  type_not_in: [String!]
+
+  """All values less than the given value."""
+  type_lt: String
+
+  """All values less than or equal the given value."""
+  type_lte: String
+
+  """All values greater than the given value."""
+  type_gt: String
+
+  """All values greater than or equal the given value."""
+  type_gte: String
+
+  """All values containing the given string."""
+  type_contains: String
+
+  """All values not containing the given string."""
+  type_not_contains: String
+
+  """All values starting with the given string."""
+  type_starts_with: String
+
+  """All values not starting with the given string."""
+  type_not_starts_with: String
+
+  """All values ending with the given string."""
+  type_ends_with: String
+
+  """All values not ending with the given string."""
+  type_not_ends_with: String
+  maxCompensation: Float
+
+  """All values that are not equal to given value."""
+  maxCompensation_not: Float
+
+  """All values that are contained in given list."""
+  maxCompensation_in: [Float!]
+
+  """All values that are not contained in given list."""
+  maxCompensation_not_in: [Float!]
+
+  """All values less than the given value."""
+  maxCompensation_lt: Float
+
+  """All values less than or equal the given value."""
+  maxCompensation_lte: Float
+
+  """All values greater than the given value."""
+  maxCompensation_gt: Float
+
+  """All values greater than or equal the given value."""
+  maxCompensation_gte: Float
+  minCompensation: Float
+
+  """All values that are not equal to given value."""
+  minCompensation_not: Float
+
+  """All values that are contained in given list."""
+  minCompensation_in: [Float!]
+
+  """All values that are not contained in given list."""
+  minCompensation_not_in: [Float!]
+
+  """All values less than the given value."""
+  minCompensation_lt: Float
+
+  """All values less than or equal the given value."""
+  minCompensation_lte: Float
+
+  """All values greater than the given value."""
+  minCompensation_gt: Float
+
+  """All values greater than or equal the given value."""
+  minCompensation_gte: Float
+  qualifications: String
+
+  """All values that are not equal to given value."""
+  qualifications_not: String
+
+  """All values that are contained in given list."""
+  qualifications_in: [String!]
+
+  """All values that are not contained in given list."""
+  qualifications_not_in: [String!]
+
+  """All values less than the given value."""
+  qualifications_lt: String
+
+  """All values less than or equal the given value."""
+  qualifications_lte: String
+
+  """All values greater than the given value."""
+  qualifications_gt: String
+
+  """All values greater than or equal the given value."""
+  qualifications_gte: String
+
+  """All values containing the given string."""
+  qualifications_contains: String
+
+  """All values not containing the given string."""
+  qualifications_not_contains: String
+
+  """All values starting with the given string."""
+  qualifications_starts_with: String
+
+  """All values not starting with the given string."""
+  qualifications_not_starts_with: String
+
+  """All values ending with the given string."""
+  qualifications_ends_with: String
+
+  """All values not ending with the given string."""
+  qualifications_not_ends_with: String
+  requirements: String
+
+  """All values that are not equal to given value."""
+  requirements_not: String
+
+  """All values that are contained in given list."""
+  requirements_in: [String!]
+
+  """All values that are not contained in given list."""
+  requirements_not_in: [String!]
+
+  """All values less than the given value."""
+  requirements_lt: String
+
+  """All values less than or equal the given value."""
+  requirements_lte: String
+
+  """All values greater than the given value."""
+  requirements_gt: String
+
+  """All values greater than or equal the given value."""
+  requirements_gte: String
+
+  """All values containing the given string."""
+  requirements_contains: String
+
+  """All values not containing the given string."""
+  requirements_not_contains: String
+
+  """All values starting with the given string."""
+  requirements_starts_with: String
+
+  """All values not starting with the given string."""
+  requirements_not_starts_with: String
+
+  """All values ending with the given string."""
+  requirements_ends_with: String
+
+  """All values not ending with the given string."""
+  requirements_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  skills_every: SkillWhereInput
+  skills_some: SkillWhereInput
+  skills_none: SkillWhereInput
+  author: UserWhereInput
+  location: LocationWhereInput
+  applications_every: ApplicationWhereInput
+  applications_some: ApplicationWhereInput
+  applications_none: ApplicationWhereInput
+  categories_every: CategoryWhereInput
+  categories_some: CategoryWhereInput
+  categories_none: CategoryWhereInput
+}
+
+input JobWhereUniqueInput {
+  id: ID
+}
+
+type Location implements Node {
+  id: ID!
+  name: String!
+  longitude: String!
+  latitude: String!
+  jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+}
+
+"""A connection to a list of items."""
+type LocationConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [LocationEdge]!
+  aggregate: AggregateLocation!
+}
+
+input LocationCreateInput {
+  id: ID
+  name: String!
+  longitude: String!
+  latitude: String!
+  jobs: JobCreateManyWithoutLocationInput
+  users: UserCreateManyWithoutLocationInput
+}
+
+input LocationCreateOneWithoutJobsInput {
+  create: LocationCreateWithoutJobsInput
+  connect: LocationWhereUniqueInput
+}
+
+input LocationCreateOneWithoutUsersInput {
+  create: LocationCreateWithoutUsersInput
+  connect: LocationWhereUniqueInput
+}
+
+input LocationCreateWithoutJobsInput {
+  id: ID
+  name: String!
+  longitude: String!
+  latitude: String!
+  users: UserCreateManyWithoutLocationInput
+}
+
+input LocationCreateWithoutUsersInput {
+  id: ID
+  name: String!
+  longitude: String!
+  latitude: String!
+  jobs: JobCreateManyWithoutLocationInput
+}
+
+"""An edge in a connection."""
+type LocationEdge {
+  """The item at the end of the edge."""
+  node: Location!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum LocationOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  longitude_ASC
+  longitude_DESC
+  latitude_ASC
+  latitude_DESC
+}
+
+type LocationPreviousValues {
+  id: ID!
+  name: String!
+  longitude: String!
+  latitude: String!
+}
+
+type LocationSubscriptionPayload {
+  mutation: MutationType!
+  node: Location
+  updatedFields: [String!]
+  previousValues: LocationPreviousValues
+}
+
+input LocationSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [LocationSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [LocationSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [LocationSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: LocationWhereInput
+}
+
+input LocationUpdateInput {
+  name: String
+  longitude: String
+  latitude: String
+  jobs: JobUpdateManyWithoutLocationInput
+  users: UserUpdateManyWithoutLocationInput
+}
+
+input LocationUpdateManyMutationInput {
+  name: String
+  longitude: String
+  latitude: String
+}
+
+input LocationUpdateOneRequiredWithoutJobsInput {
+  create: LocationCreateWithoutJobsInput
+  connect: LocationWhereUniqueInput
+  update: LocationUpdateWithoutJobsDataInput
+  upsert: LocationUpsertWithoutJobsInput
+}
+
+input LocationUpdateOneRequiredWithoutUsersInput {
+  create: LocationCreateWithoutUsersInput
+  connect: LocationWhereUniqueInput
+  update: LocationUpdateWithoutUsersDataInput
+  upsert: LocationUpsertWithoutUsersInput
+}
+
+input LocationUpdateWithoutJobsDataInput {
+  name: String
+  longitude: String
+  latitude: String
+  users: UserUpdateManyWithoutLocationInput
+}
+
+input LocationUpdateWithoutUsersDataInput {
+  name: String
+  longitude: String
+  latitude: String
+  jobs: JobUpdateManyWithoutLocationInput
+}
+
+input LocationUpsertWithoutJobsInput {
+  update: LocationUpdateWithoutJobsDataInput!
+  create: LocationCreateWithoutJobsInput!
+}
+
+input LocationUpsertWithoutUsersInput {
+  update: LocationUpdateWithoutUsersDataInput!
+  create: LocationCreateWithoutUsersInput!
+}
+
+input LocationWhereInput {
+  """Logical AND on all given filters."""
+  AND: [LocationWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [LocationWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [LocationWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  longitude: String
+
+  """All values that are not equal to given value."""
+  longitude_not: String
+
+  """All values that are contained in given list."""
+  longitude_in: [String!]
+
+  """All values that are not contained in given list."""
+  longitude_not_in: [String!]
+
+  """All values less than the given value."""
+  longitude_lt: String
+
+  """All values less than or equal the given value."""
+  longitude_lte: String
+
+  """All values greater than the given value."""
+  longitude_gt: String
+
+  """All values greater than or equal the given value."""
+  longitude_gte: String
+
+  """All values containing the given string."""
+  longitude_contains: String
+
+  """All values not containing the given string."""
+  longitude_not_contains: String
+
+  """All values starting with the given string."""
+  longitude_starts_with: String
+
+  """All values not starting with the given string."""
+  longitude_not_starts_with: String
+
+  """All values ending with the given string."""
+  longitude_ends_with: String
+
+  """All values not ending with the given string."""
+  longitude_not_ends_with: String
+  latitude: String
+
+  """All values that are not equal to given value."""
+  latitude_not: String
+
+  """All values that are contained in given list."""
+  latitude_in: [String!]
+
+  """All values that are not contained in given list."""
+  latitude_not_in: [String!]
+
+  """All values less than the given value."""
+  latitude_lt: String
+
+  """All values less than or equal the given value."""
+  latitude_lte: String
+
+  """All values greater than the given value."""
+  latitude_gt: String
+
+  """All values greater than or equal the given value."""
+  latitude_gte: String
+
+  """All values containing the given string."""
+  latitude_contains: String
+
+  """All values not containing the given string."""
+  latitude_not_contains: String
+
+  """All values starting with the given string."""
+  latitude_starts_with: String
+
+  """All values not starting with the given string."""
+  latitude_not_starts_with: String
+
+  """All values ending with the given string."""
+  latitude_ends_with: String
+
+  """All values not ending with the given string."""
+  latitude_not_ends_with: String
+  jobs_every: JobWhereInput
+  jobs_some: JobWhereInput
+  jobs_none: JobWhereInput
+  users_every: UserWhereInput
+  users_some: UserWhereInput
+  users_none: UserWhereInput
+}
+
+input LocationWhereUniqueInput {
+  id: ID
+}
 
 """
 The `Long` scalar type represents non-fractional signed whole numeric values.
@@ -20,11 +2403,40 @@ scalar Long
 
 type Mutation {
   createUser(data: UserCreateInput!): User!
+  createJob(data: JobCreateInput!): Job!
+  createApplication(data: ApplicationCreateInput!): Application!
+  createLocation(data: LocationCreateInput!): Location!
+  createCategory(data: CategoryCreateInput!): Category!
+  createSkill(data: SkillCreateInput!): Skill!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateJob(data: JobUpdateInput!, where: JobWhereUniqueInput!): Job
+  updateApplication(data: ApplicationUpdateInput!, where: ApplicationWhereUniqueInput!): Application
+  updateLocation(data: LocationUpdateInput!, where: LocationWhereUniqueInput!): Location
+  updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
+  updateSkill(data: SkillUpdateInput!, where: SkillWhereUniqueInput!): Skill
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteJob(where: JobWhereUniqueInput!): Job
+  deleteApplication(where: ApplicationWhereUniqueInput!): Application
+  deleteLocation(where: LocationWhereUniqueInput!): Location
+  deleteCategory(where: CategoryWhereUniqueInput!): Category
+  deleteSkill(where: SkillWhereUniqueInput!): Skill
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertJob(where: JobWhereUniqueInput!, create: JobCreateInput!, update: JobUpdateInput!): Job!
+  upsertApplication(where: ApplicationWhereUniqueInput!, create: ApplicationCreateInput!, update: ApplicationUpdateInput!): Application!
+  upsertLocation(where: LocationWhereUniqueInput!, create: LocationCreateInput!, update: LocationUpdateInput!): Location!
+  upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
+  upsertSkill(where: SkillWhereUniqueInput!, create: SkillCreateInput!, update: SkillUpdateInput!): Skill!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyJobs(data: JobUpdateManyMutationInput!, where: JobWhereInput): BatchPayload!
+  updateManyLocations(data: LocationUpdateManyMutationInput!, where: LocationWhereInput): BatchPayload!
+  updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
+  updateManySkills(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyJobs(where: JobWhereInput): BatchPayload!
+  deleteManyApplications(where: ApplicationWhereInput): BatchPayload!
+  deleteManyLocations(where: LocationWhereInput): BatchPayload!
+  deleteManyCategories(where: CategoryWhereInput): BatchPayload!
+  deleteManySkills(where: SkillWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -56,8 +2468,23 @@ type PageInfo {
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job]!
+  applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application]!
+  locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
+  categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
+  skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
   user(where: UserWhereUniqueInput!): User
+  job(where: JobWhereUniqueInput!): Job
+  application(where: ApplicationWhereUniqueInput!): Application
+  location(where: LocationWhereUniqueInput!): Location
+  category(where: CategoryWhereUniqueInput!): Category
+  skill(where: SkillWhereUniqueInput!): Skill
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  jobsConnection(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): JobConnection!
+  applicationsConnection(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ApplicationConnection!
+  locationsConnection(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocationConnection!
+  categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
+  skillsConnection(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SkillConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -66,8 +2493,385 @@ type Query {
   ): Node
 }
 
+type Skill implements Node {
+  id: ID!
+  name: String!
+  jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+}
+
+"""A connection to a list of items."""
+type SkillConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SkillEdge]!
+  aggregate: AggregateSkill!
+}
+
+input SkillCreateInput {
+  id: ID
+  name: String!
+  jobs: JobCreateManyWithoutSkillsInput
+  users: UserCreateManyWithoutSkillsInput
+}
+
+input SkillCreateManyWithoutJobsInput {
+  create: [SkillCreateWithoutJobsInput!]
+  connect: [SkillWhereUniqueInput!]
+}
+
+input SkillCreateManyWithoutUsersInput {
+  create: [SkillCreateWithoutUsersInput!]
+  connect: [SkillWhereUniqueInput!]
+}
+
+input SkillCreateWithoutJobsInput {
+  id: ID
+  name: String!
+  users: UserCreateManyWithoutSkillsInput
+}
+
+input SkillCreateWithoutUsersInput {
+  id: ID
+  name: String!
+  jobs: JobCreateManyWithoutSkillsInput
+}
+
+"""An edge in a connection."""
+type SkillEdge {
+  """The item at the end of the edge."""
+  node: Skill!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SkillOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+}
+
+type SkillPreviousValues {
+  id: ID!
+  name: String!
+}
+
+input SkillScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SkillScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SkillScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SkillScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+}
+
+type SkillSubscriptionPayload {
+  mutation: MutationType!
+  node: Skill
+  updatedFields: [String!]
+  previousValues: SkillPreviousValues
+}
+
+input SkillSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SkillSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SkillSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SkillSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SkillWhereInput
+}
+
+input SkillUpdateInput {
+  name: String
+  jobs: JobUpdateManyWithoutSkillsInput
+  users: UserUpdateManyWithoutSkillsInput
+}
+
+input SkillUpdateManyDataInput {
+  name: String
+}
+
+input SkillUpdateManyMutationInput {
+  name: String
+}
+
+input SkillUpdateManyWithoutJobsInput {
+  create: [SkillCreateWithoutJobsInput!]
+  connect: [SkillWhereUniqueInput!]
+  set: [SkillWhereUniqueInput!]
+  disconnect: [SkillWhereUniqueInput!]
+  delete: [SkillWhereUniqueInput!]
+  update: [SkillUpdateWithWhereUniqueWithoutJobsInput!]
+  updateMany: [SkillUpdateManyWithWhereNestedInput!]
+  deleteMany: [SkillScalarWhereInput!]
+  upsert: [SkillUpsertWithWhereUniqueWithoutJobsInput!]
+}
+
+input SkillUpdateManyWithoutUsersInput {
+  create: [SkillCreateWithoutUsersInput!]
+  connect: [SkillWhereUniqueInput!]
+  set: [SkillWhereUniqueInput!]
+  disconnect: [SkillWhereUniqueInput!]
+  delete: [SkillWhereUniqueInput!]
+  update: [SkillUpdateWithWhereUniqueWithoutUsersInput!]
+  updateMany: [SkillUpdateManyWithWhereNestedInput!]
+  deleteMany: [SkillScalarWhereInput!]
+  upsert: [SkillUpsertWithWhereUniqueWithoutUsersInput!]
+}
+
+input SkillUpdateManyWithWhereNestedInput {
+  where: SkillScalarWhereInput!
+  data: SkillUpdateManyDataInput!
+}
+
+input SkillUpdateWithoutJobsDataInput {
+  name: String
+  users: UserUpdateManyWithoutSkillsInput
+}
+
+input SkillUpdateWithoutUsersDataInput {
+  name: String
+  jobs: JobUpdateManyWithoutSkillsInput
+}
+
+input SkillUpdateWithWhereUniqueWithoutJobsInput {
+  where: SkillWhereUniqueInput!
+  data: SkillUpdateWithoutJobsDataInput!
+}
+
+input SkillUpdateWithWhereUniqueWithoutUsersInput {
+  where: SkillWhereUniqueInput!
+  data: SkillUpdateWithoutUsersDataInput!
+}
+
+input SkillUpsertWithWhereUniqueWithoutJobsInput {
+  where: SkillWhereUniqueInput!
+  update: SkillUpdateWithoutJobsDataInput!
+  create: SkillCreateWithoutJobsInput!
+}
+
+input SkillUpsertWithWhereUniqueWithoutUsersInput {
+  where: SkillWhereUniqueInput!
+  update: SkillUpdateWithoutUsersDataInput!
+  create: SkillCreateWithoutUsersInput!
+}
+
+input SkillWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SkillWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SkillWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SkillWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  jobs_every: JobWhereInput
+  jobs_some: JobWhereInput
+  jobs_none: JobWhereInput
+  users_every: UserWhereInput
+  users_some: UserWhereInput
+  users_none: UserWhereInput
+}
+
+input SkillWhereUniqueInput {
+  id: ID
+  name: String
+}
+
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  job(where: JobSubscriptionWhereInput): JobSubscriptionPayload
+  application(where: ApplicationSubscriptionWhereInput): ApplicationSubscriptionPayload
+  location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
+  category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
+  skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
 }
 
 type User implements Node {
@@ -76,6 +2880,10 @@ type User implements Node {
   email: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application!]
+  jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
+  location: Location!
+  skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
 }
 
 """A connection to a list of items."""
@@ -92,6 +2900,66 @@ input UserCreateInput {
   id: ID
   name: String!
   email: String!
+  applications: ApplicationCreateManyWithoutUserInput
+  jobs: JobCreateManyWithoutAuthorInput
+  location: LocationCreateOneWithoutUsersInput!
+  skills: SkillCreateManyWithoutUsersInput
+}
+
+input UserCreateManyWithoutLocationInput {
+  create: [UserCreateWithoutLocationInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateManyWithoutSkillsInput {
+  create: [UserCreateWithoutSkillsInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneWithoutApplicationsInput {
+  create: UserCreateWithoutApplicationsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutJobsInput {
+  create: UserCreateWithoutJobsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutApplicationsInput {
+  id: ID
+  name: String!
+  email: String!
+  jobs: JobCreateManyWithoutAuthorInput
+  location: LocationCreateOneWithoutUsersInput!
+  skills: SkillCreateManyWithoutUsersInput
+}
+
+input UserCreateWithoutJobsInput {
+  id: ID
+  name: String!
+  email: String!
+  applications: ApplicationCreateManyWithoutUserInput
+  location: LocationCreateOneWithoutUsersInput!
+  skills: SkillCreateManyWithoutUsersInput
+}
+
+input UserCreateWithoutLocationInput {
+  id: ID
+  name: String!
+  email: String!
+  applications: ApplicationCreateManyWithoutUserInput
+  jobs: JobCreateManyWithoutAuthorInput
+  skills: SkillCreateManyWithoutUsersInput
+}
+
+input UserCreateWithoutSkillsInput {
+  id: ID
+  name: String!
+  email: String!
+  applications: ApplicationCreateManyWithoutUserInput
+  jobs: JobCreateManyWithoutAuthorInput
+  location: LocationCreateOneWithoutUsersInput!
 }
 
 """An edge in a connection."""
@@ -122,6 +2990,181 @@ type UserPreviousValues {
   email: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+}
+
+input UserScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
 }
 
 type UserSubscriptionPayload {
@@ -164,11 +3207,127 @@ input UserSubscriptionWhereInput {
 input UserUpdateInput {
   name: String
   email: String
+  applications: ApplicationUpdateManyWithoutUserInput
+  jobs: JobUpdateManyWithoutAuthorInput
+  location: LocationUpdateOneRequiredWithoutUsersInput
+  skills: SkillUpdateManyWithoutUsersInput
+}
+
+input UserUpdateManyDataInput {
+  name: String
+  email: String
 }
 
 input UserUpdateManyMutationInput {
   name: String
   email: String
+}
+
+input UserUpdateManyWithoutLocationInput {
+  create: [UserCreateWithoutLocationInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  delete: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutLocationInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  deleteMany: [UserScalarWhereInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutLocationInput!]
+}
+
+input UserUpdateManyWithoutSkillsInput {
+  create: [UserCreateWithoutSkillsInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  delete: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutSkillsInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  deleteMany: [UserScalarWhereInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutSkillsInput!]
+}
+
+input UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput!
+  data: UserUpdateManyDataInput!
+}
+
+input UserUpdateOneRequiredWithoutApplicationsInput {
+  create: UserCreateWithoutApplicationsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutApplicationsDataInput
+  upsert: UserUpsertWithoutApplicationsInput
+}
+
+input UserUpdateOneRequiredWithoutJobsInput {
+  create: UserCreateWithoutJobsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutJobsDataInput
+  upsert: UserUpsertWithoutJobsInput
+}
+
+input UserUpdateWithoutApplicationsDataInput {
+  name: String
+  email: String
+  jobs: JobUpdateManyWithoutAuthorInput
+  location: LocationUpdateOneRequiredWithoutUsersInput
+  skills: SkillUpdateManyWithoutUsersInput
+}
+
+input UserUpdateWithoutJobsDataInput {
+  name: String
+  email: String
+  applications: ApplicationUpdateManyWithoutUserInput
+  location: LocationUpdateOneRequiredWithoutUsersInput
+  skills: SkillUpdateManyWithoutUsersInput
+}
+
+input UserUpdateWithoutLocationDataInput {
+  name: String
+  email: String
+  applications: ApplicationUpdateManyWithoutUserInput
+  jobs: JobUpdateManyWithoutAuthorInput
+  skills: SkillUpdateManyWithoutUsersInput
+}
+
+input UserUpdateWithoutSkillsDataInput {
+  name: String
+  email: String
+  applications: ApplicationUpdateManyWithoutUserInput
+  jobs: JobUpdateManyWithoutAuthorInput
+  location: LocationUpdateOneRequiredWithoutUsersInput
+}
+
+input UserUpdateWithWhereUniqueWithoutLocationInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutLocationDataInput!
+}
+
+input UserUpdateWithWhereUniqueWithoutSkillsInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutSkillsDataInput!
+}
+
+input UserUpsertWithoutApplicationsInput {
+  update: UserUpdateWithoutApplicationsDataInput!
+  create: UserCreateWithoutApplicationsInput!
+}
+
+input UserUpsertWithoutJobsInput {
+  update: UserUpdateWithoutJobsDataInput!
+  create: UserCreateWithoutJobsInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutLocationInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutLocationDataInput!
+  create: UserCreateWithoutLocationInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutSkillsInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutSkillsDataInput!
+  create: UserCreateWithoutSkillsInput!
 }
 
 input UserWhereInput {
@@ -344,6 +3503,16 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  applications_every: ApplicationWhereInput
+  applications_some: ApplicationWhereInput
+  applications_none: ApplicationWhereInput
+  jobs_every: JobWhereInput
+  jobs_some: JobWhereInput
+  jobs_none: JobWhereInput
+  location: LocationWhereInput
+  skills_every: SkillWhereInput
+  skills_some: SkillWhereInput
+  skills_none: SkillWhereInput
 }
 
 input UserWhereUniqueInput {

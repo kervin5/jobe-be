@@ -4,4 +4,59 @@ type User {
   email: String! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  applications: [Application!]
+  jobs: [Job]
+  location: Location!
+  skills: [Skill]
+}
+
+
+type Job {
+  id: ID! @id
+  title: String!
+  compensationType: String! @default(value: "hourly")
+  category: String!
+  description: String!
+  type:  String!
+  maxCompensation: Float
+  minCompensation: Float
+  skills: [Skill!]
+  qualifications: String!
+  requirements: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  author: User!
+  location: Location!
+  applications: [Application!]
+  categories: [Category!]
+}
+
+type Application {
+  id: ID! @id
+  user: User!
+  job: Job!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Location {
+  id: ID! @id
+  name: String!
+  longitude: String!
+  latitude: String!
+  jobs: [Job]
+  users: [User]
+}
+
+type Category {
+  id: ID! @id
+  name: String! @unique
+  jobs: [Job]
+}
+
+type Skill {
+  id: ID! @id
+  name: String! @unique
+  jobs: [Job]
+  users: [User]
 }
