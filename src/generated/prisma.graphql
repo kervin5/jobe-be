@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Mon Aug 12 2019 15:51:25 GMT-0700 (Pacific Daylight Time)
+# timestamp: Mon Aug 12 2019 16:13:47 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -719,12 +719,10 @@ type Job implements Node {
   id: ID!
   title: String!
   compensationType: String!
-  category: String!
   description: String!
   type: String!
   maxCompensation: Float
   minCompensation: Float
-  skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
   qualifications: String!
   requirements: String!
   createdAt: DateTime!
@@ -733,6 +731,7 @@ type Job implements Node {
   location: Location!
   applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application!]
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
+  skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
 }
 
 """A connection to a list of items."""
@@ -749,18 +748,17 @@ input JobCreateInput {
   id: ID
   title: String!
   compensationType: String
-  category: String!
   description: String!
   type: String!
   maxCompensation: Float
   minCompensation: Float
   qualifications: String!
   requirements: String!
-  skills: SkillCreateManyWithoutJobsInput
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
+  skills: SkillCreateManyWithoutJobsInput
 }
 
 input JobCreateManyWithoutAuthorInput {
@@ -792,75 +790,70 @@ input JobCreateWithoutApplicationsInput {
   id: ID
   title: String!
   compensationType: String
-  category: String!
   description: String!
   type: String!
   maxCompensation: Float
   minCompensation: Float
   qualifications: String!
   requirements: String!
-  skills: SkillCreateManyWithoutJobsInput
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   categories: CategoryCreateManyWithoutJobsInput
+  skills: SkillCreateManyWithoutJobsInput
 }
 
 input JobCreateWithoutAuthorInput {
   id: ID
   title: String!
   compensationType: String
-  category: String!
   description: String!
   type: String!
   maxCompensation: Float
   minCompensation: Float
   qualifications: String!
   requirements: String!
-  skills: SkillCreateManyWithoutJobsInput
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
+  skills: SkillCreateManyWithoutJobsInput
 }
 
 input JobCreateWithoutCategoriesInput {
   id: ID
   title: String!
   compensationType: String
-  category: String!
   description: String!
   type: String!
   maxCompensation: Float
   minCompensation: Float
   qualifications: String!
   requirements: String!
-  skills: SkillCreateManyWithoutJobsInput
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
+  skills: SkillCreateManyWithoutJobsInput
 }
 
 input JobCreateWithoutLocationInput {
   id: ID
   title: String!
   compensationType: String
-  category: String!
   description: String!
   type: String!
   maxCompensation: Float
   minCompensation: Float
   qualifications: String!
   requirements: String!
-  skills: SkillCreateManyWithoutJobsInput
   author: UserCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
+  skills: SkillCreateManyWithoutJobsInput
 }
 
 input JobCreateWithoutSkillsInput {
   id: ID
   title: String!
   compensationType: String
-  category: String!
   description: String!
   type: String!
   maxCompensation: Float
@@ -889,8 +882,6 @@ enum JobOrderByInput {
   title_DESC
   compensationType_ASC
   compensationType_DESC
-  category_ASC
-  category_DESC
   description_ASC
   description_DESC
   type_ASC
@@ -913,7 +904,6 @@ type JobPreviousValues {
   id: ID!
   title: String!
   compensationType: String!
-  category: String!
   description: String!
   type: String!
   maxCompensation: Float
@@ -1053,46 +1043,6 @@ input JobScalarWhereInput {
 
   """All values not ending with the given string."""
   compensationType_not_ends_with: String
-  category: String
-
-  """All values that are not equal to given value."""
-  category_not: String
-
-  """All values that are contained in given list."""
-  category_in: [String!]
-
-  """All values that are not contained in given list."""
-  category_not_in: [String!]
-
-  """All values less than the given value."""
-  category_lt: String
-
-  """All values less than or equal the given value."""
-  category_lte: String
-
-  """All values greater than the given value."""
-  category_gt: String
-
-  """All values greater than or equal the given value."""
-  category_gte: String
-
-  """All values containing the given string."""
-  category_contains: String
-
-  """All values not containing the given string."""
-  category_not_contains: String
-
-  """All values starting with the given string."""
-  category_starts_with: String
-
-  """All values not starting with the given string."""
-  category_not_starts_with: String
-
-  """All values ending with the given string."""
-  category_ends_with: String
-
-  """All values not ending with the given string."""
-  category_not_ends_with: String
   description: String
 
   """All values that are not equal to given value."""
@@ -1383,24 +1333,22 @@ input JobSubscriptionWhereInput {
 input JobUpdateInput {
   title: String
   compensationType: String
-  category: String
   description: String
   type: String
   maxCompensation: Float
   minCompensation: Float
   qualifications: String
   requirements: String
-  skills: SkillUpdateManyWithoutJobsInput
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
+  skills: SkillUpdateManyWithoutJobsInput
 }
 
 input JobUpdateManyDataInput {
   title: String
   compensationType: String
-  category: String
   description: String
   type: String
   maxCompensation: Float
@@ -1412,7 +1360,6 @@ input JobUpdateManyDataInput {
 input JobUpdateManyMutationInput {
   title: String
   compensationType: String
-  category: String
   description: String
   type: String
   maxCompensation: Float
@@ -1484,71 +1431,66 @@ input JobUpdateOneRequiredWithoutApplicationsInput {
 input JobUpdateWithoutApplicationsDataInput {
   title: String
   compensationType: String
-  category: String
   description: String
   type: String
   maxCompensation: Float
   minCompensation: Float
   qualifications: String
   requirements: String
-  skills: SkillUpdateManyWithoutJobsInput
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   categories: CategoryUpdateManyWithoutJobsInput
+  skills: SkillUpdateManyWithoutJobsInput
 }
 
 input JobUpdateWithoutAuthorDataInput {
   title: String
   compensationType: String
-  category: String
   description: String
   type: String
   maxCompensation: Float
   minCompensation: Float
   qualifications: String
   requirements: String
-  skills: SkillUpdateManyWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
+  skills: SkillUpdateManyWithoutJobsInput
 }
 
 input JobUpdateWithoutCategoriesDataInput {
   title: String
   compensationType: String
-  category: String
   description: String
   type: String
   maxCompensation: Float
   minCompensation: Float
   qualifications: String
   requirements: String
-  skills: SkillUpdateManyWithoutJobsInput
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
+  skills: SkillUpdateManyWithoutJobsInput
 }
 
 input JobUpdateWithoutLocationDataInput {
   title: String
   compensationType: String
-  category: String
   description: String
   type: String
   maxCompensation: Float
   minCompensation: Float
   qualifications: String
   requirements: String
-  skills: SkillUpdateManyWithoutJobsInput
   author: UserUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
+  skills: SkillUpdateManyWithoutJobsInput
 }
 
 input JobUpdateWithoutSkillsDataInput {
   title: String
   compensationType: String
-  category: String
   description: String
   type: String
   maxCompensation: Float
@@ -1739,46 +1681,6 @@ input JobWhereInput {
 
   """All values not ending with the given string."""
   compensationType_not_ends_with: String
-  category: String
-
-  """All values that are not equal to given value."""
-  category_not: String
-
-  """All values that are contained in given list."""
-  category_in: [String!]
-
-  """All values that are not contained in given list."""
-  category_not_in: [String!]
-
-  """All values less than the given value."""
-  category_lt: String
-
-  """All values less than or equal the given value."""
-  category_lte: String
-
-  """All values greater than the given value."""
-  category_gt: String
-
-  """All values greater than or equal the given value."""
-  category_gte: String
-
-  """All values containing the given string."""
-  category_contains: String
-
-  """All values not containing the given string."""
-  category_not_contains: String
-
-  """All values starting with the given string."""
-  category_starts_with: String
-
-  """All values not starting with the given string."""
-  category_not_starts_with: String
-
-  """All values ending with the given string."""
-  category_ends_with: String
-
-  """All values not ending with the given string."""
-  category_not_ends_with: String
   description: String
 
   """All values that are not equal to given value."""
@@ -2027,9 +1929,6 @@ input JobWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
-  skills_every: SkillWhereInput
-  skills_some: SkillWhereInput
-  skills_none: SkillWhereInput
   author: UserWhereInput
   location: LocationWhereInput
   applications_every: ApplicationWhereInput
@@ -2038,6 +1937,9 @@ input JobWhereInput {
   categories_every: CategoryWhereInput
   categories_some: CategoryWhereInput
   categories_none: CategoryWhereInput
+  skills_every: SkillWhereInput
+  skills_some: SkillWhereInput
+  skills_none: SkillWhereInput
 }
 
 input JobWhereUniqueInput {

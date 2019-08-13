@@ -4,7 +4,7 @@ type User {
   email: String! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  applications: [Application!]
+  applications: [Application]
   jobs: [Job]
   location: Location!
   skills: [Skill]
@@ -15,12 +15,10 @@ type Job {
   id: ID! @id
   title: String!
   compensationType: String! @default(value: "hourly")
-  category: String!
   description: String!
   type:  String!
   maxCompensation: Float
   minCompensation: Float
-  skills: [Skill!]
   qualifications: String!
   requirements: String!
   createdAt: DateTime! @createdAt
@@ -29,6 +27,7 @@ type Job {
   location: Location!
   applications: [Application!]
   categories: [Category!]
+  skills: [Skill!]
 }
 
 type Application {

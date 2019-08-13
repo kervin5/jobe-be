@@ -8,20 +8,20 @@ type Mutation {
     ): User!
 
     createJob(
-        title: String 
-        description: String
+        title: String!
+        description: String!
         compensationType: String
         category: String
         description: String
         type: String
         maxCompensation: Float
         minCompensation: Float
-        skills: SkillCreateManyWithoutJobsInput
         qualifications: String
         requirements: String
         location: LocationCreateOneWithoutJobsInput!
         author: UserCreateOneWithoutJobsInput! 
-        categories: CategoryCreateManyWithoutJobsInput
+        categories: CategoryCreateManyWithoutJobsInput!
+        skills: SkillCreateManyWithoutJobsInput
     ): Job!
 
     createLocation(
@@ -40,13 +40,13 @@ type Mutation {
 }
 
 type Query {
-    users: [User]!
-    jobs: [Job]!
-    locations: [Location]!
+    users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+    jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job]!
+    locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
     location(where: LocationWhereUniqueInput!): Location
-    categories: [Category]!
+    categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
     category(where: CategoryWhereUniqueInput!): Category
-    skills: [Skill]!
+    skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
     skill(where: SkillWhereUniqueInput!): Skill
 }
 

@@ -5,6 +5,8 @@ const Query = {
     //     const locations = await ctx.db.query.locations();
     //     return locations;
     // }
+    jobs: forwardTo('db'),
+    users: forwardTo('db'),
     locations: forwardTo('db'),
     location: forwardTo('db'),
     categories: forwardTo('db'),

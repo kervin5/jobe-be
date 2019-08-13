@@ -34,6 +34,16 @@ const Mutations = {
             }
         }, info);
         return skill;
+    },
+
+    async createJob(parent, args, ctx, info) {
+        const job = await ctx.db.mutation.createJob({
+            data: {
+                ...args
+            }
+        }, info);
+        
+        return job;
     }
 };
 
