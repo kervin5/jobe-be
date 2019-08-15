@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Mon Aug 12 2019 16:13:47 GMT-0700 (Pacific Daylight Time)
+# timestamp: Thu Aug 15 2019 15:10:04 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -2780,6 +2780,7 @@ type User implements Node {
   id: ID!
   name: String!
   email: String!
+  password: String!
   createdAt: DateTime!
   updatedAt: DateTime!
   applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application!]
@@ -2802,6 +2803,7 @@ input UserCreateInput {
   id: ID
   name: String!
   email: String!
+  password: String!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput!
@@ -2832,6 +2834,7 @@ input UserCreateWithoutApplicationsInput {
   id: ID
   name: String!
   email: String!
+  password: String!
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput!
   skills: SkillCreateManyWithoutUsersInput
@@ -2841,6 +2844,7 @@ input UserCreateWithoutJobsInput {
   id: ID
   name: String!
   email: String!
+  password: String!
   applications: ApplicationCreateManyWithoutUserInput
   location: LocationCreateOneWithoutUsersInput!
   skills: SkillCreateManyWithoutUsersInput
@@ -2850,6 +2854,7 @@ input UserCreateWithoutLocationInput {
   id: ID
   name: String!
   email: String!
+  password: String!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   skills: SkillCreateManyWithoutUsersInput
@@ -2859,6 +2864,7 @@ input UserCreateWithoutSkillsInput {
   id: ID
   name: String!
   email: String!
+  password: String!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput!
@@ -2880,6 +2886,8 @@ enum UserOrderByInput {
   name_DESC
   email_ASC
   email_DESC
+  password_ASC
+  password_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -2890,6 +2898,7 @@ type UserPreviousValues {
   id: ID!
   name: String!
   email: String!
+  password: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -3023,6 +3032,46 @@ input UserScalarWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
+  password: String
+
+  """All values that are not equal to given value."""
+  password_not: String
+
+  """All values that are contained in given list."""
+  password_in: [String!]
+
+  """All values that are not contained in given list."""
+  password_not_in: [String!]
+
+  """All values less than the given value."""
+  password_lt: String
+
+  """All values less than or equal the given value."""
+  password_lte: String
+
+  """All values greater than the given value."""
+  password_gt: String
+
+  """All values greater than or equal the given value."""
+  password_gte: String
+
+  """All values containing the given string."""
+  password_contains: String
+
+  """All values not containing the given string."""
+  password_not_contains: String
+
+  """All values starting with the given string."""
+  password_starts_with: String
+
+  """All values not starting with the given string."""
+  password_not_starts_with: String
+
+  """All values ending with the given string."""
+  password_ends_with: String
+
+  """All values not ending with the given string."""
+  password_not_ends_with: String
   createdAt: DateTime
 
   """All values that are not equal to given value."""
@@ -3109,6 +3158,7 @@ input UserSubscriptionWhereInput {
 input UserUpdateInput {
   name: String
   email: String
+  password: String
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneRequiredWithoutUsersInput
@@ -3118,11 +3168,13 @@ input UserUpdateInput {
 input UserUpdateManyDataInput {
   name: String
   email: String
+  password: String
 }
 
 input UserUpdateManyMutationInput {
   name: String
   email: String
+  password: String
 }
 
 input UserUpdateManyWithoutLocationInput {
@@ -3171,6 +3223,7 @@ input UserUpdateOneRequiredWithoutJobsInput {
 input UserUpdateWithoutApplicationsDataInput {
   name: String
   email: String
+  password: String
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneRequiredWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
@@ -3179,6 +3232,7 @@ input UserUpdateWithoutApplicationsDataInput {
 input UserUpdateWithoutJobsDataInput {
   name: String
   email: String
+  password: String
   applications: ApplicationUpdateManyWithoutUserInput
   location: LocationUpdateOneRequiredWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
@@ -3187,6 +3241,7 @@ input UserUpdateWithoutJobsDataInput {
 input UserUpdateWithoutLocationDataInput {
   name: String
   email: String
+  password: String
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   skills: SkillUpdateManyWithoutUsersInput
@@ -3195,6 +3250,7 @@ input UserUpdateWithoutLocationDataInput {
 input UserUpdateWithoutSkillsDataInput {
   name: String
   email: String
+  password: String
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneRequiredWithoutUsersInput
@@ -3361,6 +3417,46 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
+  password: String
+
+  """All values that are not equal to given value."""
+  password_not: String
+
+  """All values that are contained in given list."""
+  password_in: [String!]
+
+  """All values that are not contained in given list."""
+  password_not_in: [String!]
+
+  """All values less than the given value."""
+  password_lt: String
+
+  """All values less than or equal the given value."""
+  password_lte: String
+
+  """All values greater than the given value."""
+  password_gt: String
+
+  """All values greater than or equal the given value."""
+  password_gte: String
+
+  """All values containing the given string."""
+  password_contains: String
+
+  """All values not containing the given string."""
+  password_not_contains: String
+
+  """All values starting with the given string."""
+  password_starts_with: String
+
+  """All values not starting with the given string."""
+  password_not_starts_with: String
+
+  """All values ending with the given string."""
+  password_ends_with: String
+
+  """All values not ending with the given string."""
+  password_not_ends_with: String
   createdAt: DateTime
 
   """All values that are not equal to given value."""

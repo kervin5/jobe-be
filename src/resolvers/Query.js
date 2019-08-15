@@ -6,6 +6,7 @@ const Query = {
     //     return locations;
     // }
     jobs: forwardTo('db'),
+    job: forwardTo('db'),
     users: forwardTo('db'),
     locations: forwardTo('db'),
     location: forwardTo('db'),

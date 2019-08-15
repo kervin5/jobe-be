@@ -1,14 +1,19 @@
+const bcrypt = require('bcrypt');
+
 const Mutations = {
     async createUser(parent, args, ctx, info) {
+        const salt = await bcrypt.genSalt(10);
         const user = await ctx.db.mutation.createUser({
             data: {
-                ...args
+                ...args,
+                password: await bcrypt.hash(args.password, salt)
             }
         }, info);
         return user;
     },
 
     async createLocation(parent, args, ctx, info) {
+        
         const location = await ctx.db.mutation.createLocation({
             data: {
                 ...args
