@@ -12,7 +12,6 @@ type Mutation {
         title: String!
         description: String!
         compensationType: String
-        category: String
         description: String
         type: String
         maxCompensation: Float
@@ -38,6 +37,8 @@ type Mutation {
     createSkill(
         name: String!
     ): Skill!
+
+    login(email: String! password: String!): String!
 }
 
 type Query {
@@ -50,6 +51,7 @@ type Query {
     category(where: CategoryWhereUniqueInput!): Category
     skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
     skill(where: SkillWhereUniqueInput!): Skill
+    authorize(token: String!): Boolean!
 }
 
 

@@ -1,4 +1,5 @@
 const { forwardTo } = require('prisma-binding');
+const jwt = require('jsonwebtoken');
 
 const Query = {
     // async locations(parent, args, ctx, info) {
@@ -13,7 +14,19 @@ const Query = {
     categories: forwardTo('db'),
     category: forwardTo('db'),
     skills: forwardTo('db'),
-    skill: forwardTo('db')
+    async authorize(parent, args, ctx, info) {
+        let result = false;
+        try {
+            const { userId } = jwt.verify(args.token, process.env.APP_SECRET);
+            result = !!userId;
+        } catch(ex) {
+            result = false;
+        }
+        
+        // put the userId onto the req for future requests to access
+        
+        return result;
+    }
 };
 
 module.exports = Query;

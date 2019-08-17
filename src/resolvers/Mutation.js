@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const Mutations = {
     async createUser(parent, args, ctx, info) {
@@ -11,7 +12,26 @@ const Mutations = {
         }, info);
         return user;
     },
-
+    
+    async login(parent, {email, password}, ctx, info){
+        // 1. check if there is a user with that email
+        const user = await ctx.db.query.user({ where: { email } });
+        if (!user) {
+        throw new Error(`No such user found for email ${email}`);
+        }
+        // 2. Check if their password is correct
+        const valid = await bcrypt.compare(password, user.password);
+        if (!valid) {
+        throw new Error('Invalid Password!');
+        }
+        // 3. generate the JWT Token
+        const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+        // 4. Set the cookie with the token
+        ctx.response.header('token', token);
+        // 5. Return the user
+        return token;
+    }
+    ,
     async createLocation(parent, args, ctx, info) {
         
         const location = await ctx.db.mutation.createLocation({
