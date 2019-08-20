@@ -15,7 +15,7 @@ const Query = {
     category: forwardTo('db'),
     skills: forwardTo('db'),
     async authorize(parent, args, ctx, info) {
-        return (typeof ctx.request.user !== "undefined" && ctx.request.user.userId);
+        return !!(typeof ctx.request.user !== "undefined" && ctx.request.user.userId);
         // put the userId onto the req for future requests to access
     }
 };
