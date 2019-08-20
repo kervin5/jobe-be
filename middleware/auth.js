@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports = function (req, res, next) {
   
-  const token = req.headers['authorization'];
-
+  const token = req.cookies.token || req.headers['authorization'];
   // if (!token) return res.status(401).send({error: 'Access denied.'});
 
   try {
@@ -13,10 +12,10 @@ module.exports = function (req, res, next) {
   }
   
   catch (ex) {
-    // res.status(401).send({error: 'Access denied'});
-    // console.log("Bad token");
-    // console.log(ex);
-    // console.log(req.headers['authorization']);
+    //TODO: Handle missing AUTH
+    // console.log("error");
+    // console.log(token);
+    // console.log(Object.keys(req.headers));
   }
 
 

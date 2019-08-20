@@ -16,6 +16,7 @@ const Mutations = {
     
 
     async signup(parent, args, ctx, info) {
+        console.log(args);
         const salt = await bcrypt.genSalt(10);
         const user = await ctx.db.mutation.createUser({
             data: {
@@ -28,6 +29,10 @@ const Mutations = {
 
         // 4. Set the cookie with the token
         ctx.response.header('token', token);
+        ctx.response.cookie('token', token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 365,
+        });
         // console.log(user);
         return token;
     },
@@ -47,6 +52,11 @@ const Mutations = {
         const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
         // 4. Set the cookie with the token
         ctx.response.header('token', token);
+
+        ctx.response.cookie('token', token, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24 * 365,
+        });
         // 5. Return the user
         return token;
     }

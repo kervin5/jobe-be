@@ -15,17 +15,8 @@ const Query = {
     category: forwardTo('db'),
     skills: forwardTo('db'),
     async authorize(parent, args, ctx, info) {
-        let result = false;
-        try {
-            const { userId } = jwt.verify(args.token, process.env.APP_SECRET);
-            result = !!userId;
-        } catch(ex) {
-            result = false;
-        }
-        
+        return !!ctx.request.user.userId || false
         // put the userId onto the req for future requests to access
-        
-        return result;
     }
 };
 

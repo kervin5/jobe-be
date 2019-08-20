@@ -50,7 +50,7 @@ type Query {
     category(where: CategoryWhereUniqueInput!): Category
     skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
     skill(where: SkillWhereUniqueInput!): Skill
-    authorize(token: String!): Boolean!
+    authorize: Boolean!
 }
 
 

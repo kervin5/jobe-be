@@ -2,6 +2,7 @@ require('dotenv').config();
 const createServer = require('./startup/createServer');
 const db = require('./startup/db');
 const auth = require('./middleware/auth');
+const cookieParser = require('cookie-parser');
 
 const server = createServer();
 
@@ -20,6 +21,7 @@ const server = createServer();
 //     }
 //     next();
 //   });
+server.express.use(cookieParser());
 server.express.use(auth);
 
 

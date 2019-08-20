@@ -4,8 +4,8 @@
   "description": "GraphQL API for Jobboard platform",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -e js && graphql -x node src/index.js",
-    "dev": "nodemon -e js && graphql -x node --inspect src/index.js",
+    "start": "nodemon -e js,graphql -x node src/index.js",
+    "dev": "nodemon -e js,graphql" ,
     "test": "jest",
     "deploy": "prisma deploy"
   },
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.6",
+    "cookie-parser": "^1.4.4",
     "dotenv": "^8.0.0",
     "graphql": "^14.4.2",
     "graphql-cli": "^3.0.12",
