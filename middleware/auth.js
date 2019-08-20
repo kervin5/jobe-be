@@ -1,22 +1,24 @@
 const jwt = require('jsonwebtoken');
-const config = require('config');
+// const config = require('config');
 
 module.exports = function (req, res, next) {
   
-  const token =
-  req.body.token ||
-  req.query.token ||
-  req.headers['authorization'] ||
-  (req.cookies && req.cookies.token);
+  const token = req.headers['authorization'];
 
-  if (!token) return res.status(401).send({error: 'Access denied.'});
+  // if (!token) return res.status(401).send({error: 'Access denied.'});
 
   try {
-    const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
+    const decoded = jwt.verify(token, process.env.APP_SECRET);
     req.user = decoded; 
-    next();
   }
+  
   catch (ex) {
-    res.status(401).send({error: 'Access denied'});
+    // res.status(401).send({error: 'Access denied'});
+    // console.log("Bad token");
+    // console.log(ex);
+    // console.log(req.headers['authorization']);
   }
+
+
+  next();
 };

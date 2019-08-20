@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Thu Aug 15 2019 15:10:04 GMT-0700 (Pacific Daylight Time)
+# timestamp: Mon Aug 19 2019 16:11:17 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -721,8 +721,8 @@ type Job implements Node {
   compensationType: String!
   description: String!
   type: String!
-  maxCompensation: Float
-  minCompensation: Float
+  maxCompensation: Float!
+  minCompensation: Float!
   qualifications: String!
   requirements: String!
   createdAt: DateTime!
@@ -732,6 +732,7 @@ type Job implements Node {
   applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application!]
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
+  status: Status
 }
 
 """A connection to a list of items."""
@@ -750,10 +751,11 @@ input JobCreateInput {
   compensationType: String
   description: String!
   type: String!
-  maxCompensation: Float
-  minCompensation: Float
+  maxCompensation: Float!
+  minCompensation: Float!
   qualifications: String!
   requirements: String!
+  status: Status
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -792,10 +794,11 @@ input JobCreateWithoutApplicationsInput {
   compensationType: String
   description: String!
   type: String!
-  maxCompensation: Float
-  minCompensation: Float
+  maxCompensation: Float!
+  minCompensation: Float!
   qualifications: String!
   requirements: String!
+  status: Status
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   categories: CategoryCreateManyWithoutJobsInput
@@ -808,10 +811,11 @@ input JobCreateWithoutAuthorInput {
   compensationType: String
   description: String!
   type: String!
-  maxCompensation: Float
-  minCompensation: Float
+  maxCompensation: Float!
+  minCompensation: Float!
   qualifications: String!
   requirements: String!
+  status: Status
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
@@ -824,10 +828,11 @@ input JobCreateWithoutCategoriesInput {
   compensationType: String
   description: String!
   type: String!
-  maxCompensation: Float
-  minCompensation: Float
+  maxCompensation: Float!
+  minCompensation: Float!
   qualifications: String!
   requirements: String!
+  status: Status
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -840,10 +845,11 @@ input JobCreateWithoutLocationInput {
   compensationType: String
   description: String!
   type: String!
-  maxCompensation: Float
-  minCompensation: Float
+  maxCompensation: Float!
+  minCompensation: Float!
   qualifications: String!
   requirements: String!
+  status: Status
   author: UserCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
@@ -856,10 +862,11 @@ input JobCreateWithoutSkillsInput {
   compensationType: String
   description: String!
   type: String!
-  maxCompensation: Float
-  minCompensation: Float
+  maxCompensation: Float!
+  minCompensation: Float!
   qualifications: String!
   requirements: String!
+  status: Status
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -898,6 +905,8 @@ enum JobOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  status_ASC
+  status_DESC
 }
 
 type JobPreviousValues {
@@ -906,12 +915,13 @@ type JobPreviousValues {
   compensationType: String!
   description: String!
   type: String!
-  maxCompensation: Float
-  minCompensation: Float
+  maxCompensation: Float!
+  minCompensation: Float!
   qualifications: String!
   requirements: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  status: Status
 }
 
 input JobScalarWhereInput {
@@ -1291,6 +1301,16 @@ input JobScalarWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  status: Status
+
+  """All values that are not equal to given value."""
+  status_not: Status
+
+  """All values that are contained in given list."""
+  status_in: [Status!]
+
+  """All values that are not contained in given list."""
+  status_not_in: [Status!]
 }
 
 type JobSubscriptionPayload {
@@ -1339,6 +1359,7 @@ input JobUpdateInput {
   minCompensation: Float
   qualifications: String
   requirements: String
+  status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -1355,6 +1376,7 @@ input JobUpdateManyDataInput {
   minCompensation: Float
   qualifications: String
   requirements: String
+  status: Status
 }
 
 input JobUpdateManyMutationInput {
@@ -1366,6 +1388,7 @@ input JobUpdateManyMutationInput {
   minCompensation: Float
   qualifications: String
   requirements: String
+  status: Status
 }
 
 input JobUpdateManyWithoutAuthorInput {
@@ -1437,6 +1460,7 @@ input JobUpdateWithoutApplicationsDataInput {
   minCompensation: Float
   qualifications: String
   requirements: String
+  status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   categories: CategoryUpdateManyWithoutJobsInput
@@ -1452,6 +1476,7 @@ input JobUpdateWithoutAuthorDataInput {
   minCompensation: Float
   qualifications: String
   requirements: String
+  status: Status
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
@@ -1467,6 +1492,7 @@ input JobUpdateWithoutCategoriesDataInput {
   minCompensation: Float
   qualifications: String
   requirements: String
+  status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -1482,6 +1508,7 @@ input JobUpdateWithoutLocationDataInput {
   minCompensation: Float
   qualifications: String
   requirements: String
+  status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
@@ -1497,6 +1524,7 @@ input JobUpdateWithoutSkillsDataInput {
   minCompensation: Float
   qualifications: String
   requirements: String
+  status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -1929,6 +1957,16 @@ input JobWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  status: Status
+
+  """All values that are not equal to given value."""
+  status_not: Status
+
+  """All values that are contained in given list."""
+  status_in: [Status!]
+
+  """All values that are not contained in given list."""
+  status_not_in: [Status!]
   author: UserWhereInput
   location: LocationWhereInput
   applications_every: ApplicationWhereInput
@@ -1949,8 +1987,8 @@ input JobWhereUniqueInput {
 type Location implements Node {
   id: ID!
   name: String!
-  longitude: String!
-  latitude: String!
+  longitude: Float!
+  latitude: Float!
   jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
 }
@@ -1968,8 +2006,8 @@ type LocationConnection {
 input LocationCreateInput {
   id: ID
   name: String!
-  longitude: String!
-  latitude: String!
+  longitude: Float!
+  latitude: Float!
   jobs: JobCreateManyWithoutLocationInput
   users: UserCreateManyWithoutLocationInput
 }
@@ -1987,16 +2025,16 @@ input LocationCreateOneWithoutUsersInput {
 input LocationCreateWithoutJobsInput {
   id: ID
   name: String!
-  longitude: String!
-  latitude: String!
+  longitude: Float!
+  latitude: Float!
   users: UserCreateManyWithoutLocationInput
 }
 
 input LocationCreateWithoutUsersInput {
   id: ID
   name: String!
-  longitude: String!
-  latitude: String!
+  longitude: Float!
+  latitude: Float!
   jobs: JobCreateManyWithoutLocationInput
 }
 
@@ -2023,8 +2061,8 @@ enum LocationOrderByInput {
 type LocationPreviousValues {
   id: ID!
   name: String!
-  longitude: String!
-  latitude: String!
+  longitude: Float!
+  latitude: Float!
 }
 
 type LocationSubscriptionPayload {
@@ -2066,16 +2104,16 @@ input LocationSubscriptionWhereInput {
 
 input LocationUpdateInput {
   name: String
-  longitude: String
-  latitude: String
+  longitude: Float
+  latitude: Float
   jobs: JobUpdateManyWithoutLocationInput
   users: UserUpdateManyWithoutLocationInput
 }
 
 input LocationUpdateManyMutationInput {
   name: String
-  longitude: String
-  latitude: String
+  longitude: Float
+  latitude: Float
 }
 
 input LocationUpdateOneRequiredWithoutJobsInput {
@@ -2085,24 +2123,26 @@ input LocationUpdateOneRequiredWithoutJobsInput {
   upsert: LocationUpsertWithoutJobsInput
 }
 
-input LocationUpdateOneRequiredWithoutUsersInput {
+input LocationUpdateOneWithoutUsersInput {
   create: LocationCreateWithoutUsersInput
   connect: LocationWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
   update: LocationUpdateWithoutUsersDataInput
   upsert: LocationUpsertWithoutUsersInput
 }
 
 input LocationUpdateWithoutJobsDataInput {
   name: String
-  longitude: String
-  latitude: String
+  longitude: Float
+  latitude: Float
   users: UserUpdateManyWithoutLocationInput
 }
 
 input LocationUpdateWithoutUsersDataInput {
   name: String
-  longitude: String
-  latitude: String
+  longitude: Float
+  latitude: Float
   jobs: JobUpdateManyWithoutLocationInput
 }
 
@@ -2205,86 +2245,50 @@ input LocationWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
-  longitude: String
+  longitude: Float
 
   """All values that are not equal to given value."""
-  longitude_not: String
+  longitude_not: Float
 
   """All values that are contained in given list."""
-  longitude_in: [String!]
+  longitude_in: [Float!]
 
   """All values that are not contained in given list."""
-  longitude_not_in: [String!]
+  longitude_not_in: [Float!]
 
   """All values less than the given value."""
-  longitude_lt: String
+  longitude_lt: Float
 
   """All values less than or equal the given value."""
-  longitude_lte: String
+  longitude_lte: Float
 
   """All values greater than the given value."""
-  longitude_gt: String
+  longitude_gt: Float
 
   """All values greater than or equal the given value."""
-  longitude_gte: String
-
-  """All values containing the given string."""
-  longitude_contains: String
-
-  """All values not containing the given string."""
-  longitude_not_contains: String
-
-  """All values starting with the given string."""
-  longitude_starts_with: String
-
-  """All values not starting with the given string."""
-  longitude_not_starts_with: String
-
-  """All values ending with the given string."""
-  longitude_ends_with: String
-
-  """All values not ending with the given string."""
-  longitude_not_ends_with: String
-  latitude: String
+  longitude_gte: Float
+  latitude: Float
 
   """All values that are not equal to given value."""
-  latitude_not: String
+  latitude_not: Float
 
   """All values that are contained in given list."""
-  latitude_in: [String!]
+  latitude_in: [Float!]
 
   """All values that are not contained in given list."""
-  latitude_not_in: [String!]
+  latitude_not_in: [Float!]
 
   """All values less than the given value."""
-  latitude_lt: String
+  latitude_lt: Float
 
   """All values less than or equal the given value."""
-  latitude_lte: String
+  latitude_lte: Float
 
   """All values greater than the given value."""
-  latitude_gt: String
+  latitude_gt: Float
 
   """All values greater than or equal the given value."""
-  latitude_gte: String
-
-  """All values containing the given string."""
-  latitude_contains: String
-
-  """All values not containing the given string."""
-  latitude_not_contains: String
-
-  """All values starting with the given string."""
-  latitude_starts_with: String
-
-  """All values not starting with the given string."""
-  latitude_not_starts_with: String
-
-  """All values ending with the given string."""
-  latitude_ends_with: String
-
-  """All values not ending with the given string."""
-  latitude_not_ends_with: String
+  latitude_gte: Float
   jobs_every: JobWhereInput
   jobs_some: JobWhereInput
   jobs_none: JobWhereInput
@@ -2767,6 +2771,14 @@ input SkillWhereUniqueInput {
   name: String
 }
 
+enum Status {
+  DRAFT
+  POSTED
+  DELETED
+  EDITING
+  EXPIRED
+}
+
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   job(where: JobSubscriptionWhereInput): JobSubscriptionPayload
@@ -2785,7 +2797,7 @@ type User implements Node {
   updatedAt: DateTime!
   applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application!]
   jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
-  location: Location!
+  location: Location
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
 }
 
@@ -2806,7 +2818,7 @@ input UserCreateInput {
   password: String!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
-  location: LocationCreateOneWithoutUsersInput!
+  location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
 }
 
@@ -2836,7 +2848,7 @@ input UserCreateWithoutApplicationsInput {
   email: String!
   password: String!
   jobs: JobCreateManyWithoutAuthorInput
-  location: LocationCreateOneWithoutUsersInput!
+  location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
 }
 
@@ -2846,7 +2858,7 @@ input UserCreateWithoutJobsInput {
   email: String!
   password: String!
   applications: ApplicationCreateManyWithoutUserInput
-  location: LocationCreateOneWithoutUsersInput!
+  location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
 }
 
@@ -2867,7 +2879,7 @@ input UserCreateWithoutSkillsInput {
   password: String!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
-  location: LocationCreateOneWithoutUsersInput!
+  location: LocationCreateOneWithoutUsersInput
 }
 
 """An edge in a connection."""
@@ -3161,7 +3173,7 @@ input UserUpdateInput {
   password: String
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
-  location: LocationUpdateOneRequiredWithoutUsersInput
+  location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
 }
 
@@ -3225,7 +3237,7 @@ input UserUpdateWithoutApplicationsDataInput {
   email: String
   password: String
   jobs: JobUpdateManyWithoutAuthorInput
-  location: LocationUpdateOneRequiredWithoutUsersInput
+  location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
 }
 
@@ -3234,7 +3246,7 @@ input UserUpdateWithoutJobsDataInput {
   email: String
   password: String
   applications: ApplicationUpdateManyWithoutUserInput
-  location: LocationUpdateOneRequiredWithoutUsersInput
+  location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
 }
 
@@ -3253,7 +3265,7 @@ input UserUpdateWithoutSkillsDataInput {
   password: String
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
-  location: LocationUpdateOneRequiredWithoutUsersInput
+  location: LocationUpdateOneWithoutUsersInput
 }
 
 input UserUpdateWithWhereUniqueWithoutLocationInput {

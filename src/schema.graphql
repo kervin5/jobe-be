@@ -4,30 +4,28 @@ type Mutation {
     createUser(
         name: String
         email: String
-        location: LocationCreateOneWithoutUsersInput!
         password: String
     ): User!
 
     createJob(
         title: String!
         description: String!
-        compensationType: String
-        description: String
-        type: String
-        maxCompensation: Float
-        minCompensation: Float
-        qualifications: String
-        requirements: String
+        compensationType: String!
+        description: String!
+        type: String!
+        maxCompensation: Float!
+        minCompensation: Float!
+        qualifications: String!
+        requirements: String!
         location: LocationCreateOneWithoutJobsInput!
-        author: UserCreateOneWithoutJobsInput! 
-        categories: CategoryCreateManyWithoutJobsInput!
-        skills: SkillCreateManyWithoutJobsInput
+        categories: [String!]!
+        skills: [String!]!
     ): Job!
 
     createLocation(
         name: String
-        latitude: String
-        longitude: String
+        latitude: Float!
+        longitude: Float!
     ): Location!
 
     createCategory(
@@ -39,6 +37,7 @@ type Mutation {
     ): Skill!
 
     login(email: String! password: String!): String!
+    signup(name: String! password: String! email: String!): String!
 }
 
 type Query {

@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const prisma = require('../../startup/db');
 
 const Mutations = {
     async createUser(parent, args, ctx, info) {
@@ -13,6 +14,24 @@ const Mutations = {
         return user;
     },
     
+
+    async signup(parent, args, ctx, info) {
+        const salt = await bcrypt.genSalt(10);
+        const user = await ctx.db.mutation.createUser({
+            data: {
+                ...args,
+                password: await bcrypt.hash(args.password, salt)
+            }
+        });
+
+        const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+
+        // 4. Set the cookie with the token
+        ctx.response.header('token', token);
+        // console.log(user);
+        return token;
+    },
+
     async login(parent, {email, password}, ctx, info){
         // 1. check if there is a user with that email
         const user = await ctx.db.query.user({ where: { email } });
@@ -62,6 +81,28 @@ const Mutations = {
     },
 
     async createJob(parent, args, ctx, info) {
+        const jobLocation = args.location.create;
+        const locationExists =  await prisma.exists.Location({
+            ...jobLocation
+        });
+
+        if(locationExists) {
+            const existingLocations = await ctx.db.query.locations({
+                where: {
+                    ...jobLocation
+                }
+            });
+            //Deletes the create mutation and forces connection to existing location if the location already exists
+            delete args.location.create;
+            args.location.connect = {id: existingLocations[0].id};
+        }
+
+        //Connect User to job
+        args.author = { connect: {id: ctx.request.user.userId}};
+        args.categories = {connect : args.categories.map(category => ({name: category}))};
+        args.skills = {connect : args.skills.map(skill => ({name: skill}))};
+        args.status = 'DRAFT';
+
         const job = await ctx.db.mutation.createJob({
             data: {
                 ...args

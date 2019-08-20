@@ -1,24 +1,27 @@
 require('dotenv').config();
 const createServer = require('./startup/createServer');
 const db = require('./startup/db');
+const auth = require('./middleware/auth');
 
 const server = createServer();
 
-//TODO: Use express middleware to handle cookies (JWT)
-server.express.use((req, res, next) => {
-    let token = null;
+// //TODO: Use express middleware to handle cookies (JWT)
+// server.express.use((req, res, next) => {
+//     let token = null;
 
-    if(req.headers['authorization']) {
-        token  =  req.headers['authorization'].token ;
-    }
+//     if(req.headers['authorization']) {
+//         token  =  req.headers['authorization'].token ;
+//     }
 
-    if (token) {
-      const { userId } = jwt.verify(token, process.env.APP_SECRET);
-      // put the userId onto the req for future requests to access
-      req.userId = userId;
-    }
-    next();
-  });
+//     if (token) {
+//       const { userId } = jwt.verify(token, process.env.APP_SECRET);
+//       // put the userId onto the req for future requests to access
+//       req.userId = userId;
+//     }
+//     next();
+//   });
+server.express.use(auth);
+
 
 //TODO: Use express middleware to populate current user
 server.express.use(async (req, res, next) => {
@@ -30,8 +33,7 @@ server.express.use(async (req, res, next) => {
     );
     req.user = user;
     next();
-  });
-  
+});
 
 server.start({
     cors: {

@@ -1,3 +1,11 @@
+enum Status {
+  DRAFT
+  POSTED
+  DELETED
+  EDITING
+  EXPIRED
+}
+
 type User {
   id: ID! @id
   name: String!
@@ -7,28 +15,29 @@ type User {
   updatedAt: DateTime! @updatedAt
   applications: [Application]
   jobs: [Job]
-  location: Location!
+  location: Location
   skills: [Skill]
 }
 
-
 type Job {
   id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
   title: String!
   compensationType: String! @default(value: "hourly")
   description: String!
   type:  String!
-  maxCompensation: Float
-  minCompensation: Float
+  maxCompensation: Float!
+  minCompensation: Float!
   qualifications: String!
   requirements: String!
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
+ 
   author: User!
   location: Location!
   applications: [Application!]
-  categories: [Category!]
-  skills: [Skill!]
+  categories: [Category!]!
+  skills: [Skill!]!
+  status(jobStatus: Status = DRAFT): Status!
 }
 
 type Application {
@@ -42,8 +51,8 @@ type Application {
 type Location {
   id: ID! @id
   name: String!
-  longitude: String!
-  latitude: String!
+  longitude: Float!
+  latitude: Float!
   jobs: [Job]
   users: [User]
 }
