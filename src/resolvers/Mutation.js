@@ -139,6 +139,12 @@ const Mutations = {
     },
 
     async addFavorite(parent, args, ctx, info) {
+        if (!ctx.request.user.userId) {
+            return null;
+        }
+
+        args.user = { connect: {id: ctx.request.user.userId}};
+
         const result = await ctx.db.mutation.createFavorite({
             data: {
                 ...args
