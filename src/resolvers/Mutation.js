@@ -122,6 +122,21 @@ const Mutations = {
         
         return job;
     },
+    async createApplication(parent, args, ctx, info) {
+        if (!ctx.request.user.userId) {
+            return null;
+        }
+
+        args.user = { connect: {id: ctx.request.user.userId}};
+
+        const application = await ctx.db.mutation.createApplication({
+            data: {
+                ...args
+            }
+        }, info);
+        
+        return application;
+    },
 
     async addFavorite(parent, args, ctx, info) {
         const result = await ctx.db.mutation.createFavorite({

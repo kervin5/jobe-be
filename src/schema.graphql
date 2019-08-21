@@ -22,6 +22,10 @@ type Mutation {
         skills: [String!]!
     ): Job!
 
+    createApplication(
+        job: JobCreateOneWithoutApplicationsInput!
+    ): Application
+
     createLocation(
         name: String
         latitude: Float!
