@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../../startup/db');
+const { forwardTo } = require('prisma-binding');
 
 const Mutations = {
     async createUser(parent, args, ctx, info) {
@@ -120,6 +121,16 @@ const Mutations = {
         }, info);
         
         return job;
+    },
+
+    async addFavorite(parent, args, ctx, info) {
+        const result = await ctx.db.mutation.createFavorite({
+            data: {
+                ...args
+            }
+        }, info);
+
+        return result;
     }
 };
 
