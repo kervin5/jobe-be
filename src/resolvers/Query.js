@@ -6,9 +6,21 @@ const Query = {
     //     const locations = await ctx.db.query.locations();
     //     return locations;
     // }
-    jobs: forwardTo('db'),
+    jobs: forwardTo('db'), 
     job: forwardTo('db'),
+    async jobsConnectionPerUser(parent, args, ctx, info) {
+        if (!ctx.request.user.userId) {
+            return null;
+        }
+        return await ctx.db.query.jobsConnection({where: { author: {id: ctx.request.user.userId} }}, info)
+    },
     users: forwardTo('db'),
+    async me(parent, args, ctx, info) {
+        if (!ctx.request.user.userId) {
+            return null;
+        }
+        return await ctx.db.query.user({where: { id: ctx.request.user.userId },},info);
+    },
     locations: forwardTo('db'),
     location: forwardTo('db'),
     categories: forwardTo('db'),

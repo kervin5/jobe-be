@@ -17,6 +17,7 @@ type User {
   jobs: [Job]
   location: Location
   skills: [Skill]
+  favorites: [Favorite]
 }
 
 type Job {
@@ -31,13 +32,13 @@ type Job {
   minCompensation: Float!
   qualifications: String!
   requirements: String!
- 
   author: User!
   location: Location!
   applications: [Application!]
   categories: [Category!]!
   skills: [Skill!]!
-  status(jobStatus: Status = DRAFT): Status!
+  status(jobStatus: Status = DRAFT): Status
+  favorites: [Favorite]
 }
 
 type Application {
@@ -46,6 +47,12 @@ type Application {
   job: Job!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+}
+
+type Favorite {
+  id: ID! @id
+  user: User!
+  job: Job!
 }
 
 type Location {

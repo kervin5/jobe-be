@@ -1,11 +1,15 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Mon Aug 19 2019 16:11:17 GMT-0700 (Pacific Daylight Time)
+# timestamp: Wed Aug 21 2019 11:55:28 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
 }
 
 type AggregateCategory {
+  count: Int!
+}
+
+type AggregateFavorite {
   count: Int!
 }
 
@@ -715,8 +719,272 @@ input CategoryWhereUniqueInput {
 
 scalar DateTime
 
+type Favorite implements Node {
+  id: ID!
+  user: User!
+  job: Job!
+}
+
+"""A connection to a list of items."""
+type FavoriteConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [FavoriteEdge]!
+  aggregate: AggregateFavorite!
+}
+
+input FavoriteCreateInput {
+  id: ID
+  user: UserCreateOneWithoutFavoritesInput!
+  job: JobCreateOneWithoutFavoritesInput!
+}
+
+input FavoriteCreateManyWithoutJobInput {
+  create: [FavoriteCreateWithoutJobInput!]
+  connect: [FavoriteWhereUniqueInput!]
+}
+
+input FavoriteCreateManyWithoutUserInput {
+  create: [FavoriteCreateWithoutUserInput!]
+  connect: [FavoriteWhereUniqueInput!]
+}
+
+input FavoriteCreateWithoutJobInput {
+  id: ID
+  user: UserCreateOneWithoutFavoritesInput!
+}
+
+input FavoriteCreateWithoutUserInput {
+  id: ID
+  job: JobCreateOneWithoutFavoritesInput!
+}
+
+"""An edge in a connection."""
+type FavoriteEdge {
+  """The item at the end of the edge."""
+  node: Favorite!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum FavoriteOrderByInput {
+  id_ASC
+  id_DESC
+}
+
+type FavoritePreviousValues {
+  id: ID!
+}
+
+input FavoriteScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FavoriteScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FavoriteScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FavoriteScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+}
+
+type FavoriteSubscriptionPayload {
+  mutation: MutationType!
+  node: Favorite
+  updatedFields: [String!]
+  previousValues: FavoritePreviousValues
+}
+
+input FavoriteSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FavoriteSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FavoriteSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FavoriteSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: FavoriteWhereInput
+}
+
+input FavoriteUpdateInput {
+  user: UserUpdateOneRequiredWithoutFavoritesInput
+  job: JobUpdateOneRequiredWithoutFavoritesInput
+}
+
+input FavoriteUpdateManyWithoutJobInput {
+  create: [FavoriteCreateWithoutJobInput!]
+  connect: [FavoriteWhereUniqueInput!]
+  set: [FavoriteWhereUniqueInput!]
+  disconnect: [FavoriteWhereUniqueInput!]
+  delete: [FavoriteWhereUniqueInput!]
+  update: [FavoriteUpdateWithWhereUniqueWithoutJobInput!]
+  deleteMany: [FavoriteScalarWhereInput!]
+  upsert: [FavoriteUpsertWithWhereUniqueWithoutJobInput!]
+}
+
+input FavoriteUpdateManyWithoutUserInput {
+  create: [FavoriteCreateWithoutUserInput!]
+  connect: [FavoriteWhereUniqueInput!]
+  set: [FavoriteWhereUniqueInput!]
+  disconnect: [FavoriteWhereUniqueInput!]
+  delete: [FavoriteWhereUniqueInput!]
+  update: [FavoriteUpdateWithWhereUniqueWithoutUserInput!]
+  deleteMany: [FavoriteScalarWhereInput!]
+  upsert: [FavoriteUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input FavoriteUpdateWithoutJobDataInput {
+  user: UserUpdateOneRequiredWithoutFavoritesInput
+}
+
+input FavoriteUpdateWithoutUserDataInput {
+  job: JobUpdateOneRequiredWithoutFavoritesInput
+}
+
+input FavoriteUpdateWithWhereUniqueWithoutJobInput {
+  where: FavoriteWhereUniqueInput!
+  data: FavoriteUpdateWithoutJobDataInput!
+}
+
+input FavoriteUpdateWithWhereUniqueWithoutUserInput {
+  where: FavoriteWhereUniqueInput!
+  data: FavoriteUpdateWithoutUserDataInput!
+}
+
+input FavoriteUpsertWithWhereUniqueWithoutJobInput {
+  where: FavoriteWhereUniqueInput!
+  update: FavoriteUpdateWithoutJobDataInput!
+  create: FavoriteCreateWithoutJobInput!
+}
+
+input FavoriteUpsertWithWhereUniqueWithoutUserInput {
+  where: FavoriteWhereUniqueInput!
+  update: FavoriteUpdateWithoutUserDataInput!
+  create: FavoriteCreateWithoutUserInput!
+}
+
+input FavoriteWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FavoriteWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FavoriteWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FavoriteWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  user: UserWhereInput
+  job: JobWhereInput
+}
+
+input FavoriteWhereUniqueInput {
+  id: ID
+}
+
 type Job implements Node {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   title: String!
   compensationType: String!
   description: String!
@@ -725,14 +993,13 @@ type Job implements Node {
   minCompensation: Float!
   qualifications: String!
   requirements: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   author: User!
   location: Location!
   applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application!]
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category!]
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
   status: Status
+  favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite!]
 }
 
 """A connection to a list of items."""
@@ -761,6 +1028,7 @@ input JobCreateInput {
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
+  favorites: FavoriteCreateManyWithoutJobInput
 }
 
 input JobCreateManyWithoutAuthorInput {
@@ -788,6 +1056,11 @@ input JobCreateOneWithoutApplicationsInput {
   connect: JobWhereUniqueInput
 }
 
+input JobCreateOneWithoutFavoritesInput {
+  create: JobCreateWithoutFavoritesInput
+  connect: JobWhereUniqueInput
+}
+
 input JobCreateWithoutApplicationsInput {
   id: ID
   title: String!
@@ -803,6 +1076,7 @@ input JobCreateWithoutApplicationsInput {
   location: LocationCreateOneWithoutJobsInput!
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
+  favorites: FavoriteCreateManyWithoutJobInput
 }
 
 input JobCreateWithoutAuthorInput {
@@ -820,6 +1094,7 @@ input JobCreateWithoutAuthorInput {
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
+  favorites: FavoriteCreateManyWithoutJobInput
 }
 
 input JobCreateWithoutCategoriesInput {
@@ -836,6 +1111,25 @@ input JobCreateWithoutCategoriesInput {
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
+  skills: SkillCreateManyWithoutJobsInput
+  favorites: FavoriteCreateManyWithoutJobInput
+}
+
+input JobCreateWithoutFavoritesInput {
+  id: ID
+  title: String!
+  compensationType: String
+  description: String!
+  type: String!
+  maxCompensation: Float!
+  minCompensation: Float!
+  qualifications: String!
+  requirements: String!
+  status: Status
+  author: UserCreateOneWithoutJobsInput!
+  location: LocationCreateOneWithoutJobsInput!
+  applications: ApplicationCreateManyWithoutJobInput
+  categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
 }
 
@@ -854,6 +1148,7 @@ input JobCreateWithoutLocationInput {
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
+  favorites: FavoriteCreateManyWithoutJobInput
 }
 
 input JobCreateWithoutSkillsInput {
@@ -871,6 +1166,7 @@ input JobCreateWithoutSkillsInput {
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
+  favorites: FavoriteCreateManyWithoutJobInput
 }
 
 """An edge in a connection."""
@@ -885,6 +1181,10 @@ type JobEdge {
 enum JobOrderByInput {
   id_ASC
   id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
   title_ASC
   title_DESC
   compensationType_ASC
@@ -901,16 +1201,14 @@ enum JobOrderByInput {
   qualifications_DESC
   requirements_ASC
   requirements_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
   status_ASC
   status_DESC
 }
 
 type JobPreviousValues {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   title: String!
   compensationType: String!
   description: String!
@@ -919,8 +1217,6 @@ type JobPreviousValues {
   minCompensation: Float!
   qualifications: String!
   requirements: String!
-  createdAt: DateTime!
-  updatedAt: DateTime!
   status: Status
 }
 
@@ -973,6 +1269,50 @@ input JobScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   title: String
 
   """All values that are not equal to given value."""
@@ -1257,50 +1597,6 @@ input JobScalarWhereInput {
 
   """All values not ending with the given string."""
   requirements_not_ends_with: String
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
   status: Status
 
   """All values that are not equal to given value."""
@@ -1365,6 +1661,7 @@ input JobUpdateInput {
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
+  favorites: FavoriteUpdateManyWithoutJobInput
 }
 
 input JobUpdateManyDataInput {
@@ -1451,6 +1748,13 @@ input JobUpdateOneRequiredWithoutApplicationsInput {
   upsert: JobUpsertWithoutApplicationsInput
 }
 
+input JobUpdateOneRequiredWithoutFavoritesInput {
+  create: JobCreateWithoutFavoritesInput
+  connect: JobWhereUniqueInput
+  update: JobUpdateWithoutFavoritesDataInput
+  upsert: JobUpsertWithoutFavoritesInput
+}
+
 input JobUpdateWithoutApplicationsDataInput {
   title: String
   compensationType: String
@@ -1465,6 +1769,7 @@ input JobUpdateWithoutApplicationsDataInput {
   location: LocationUpdateOneRequiredWithoutJobsInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
+  favorites: FavoriteUpdateManyWithoutJobInput
 }
 
 input JobUpdateWithoutAuthorDataInput {
@@ -1481,6 +1786,7 @@ input JobUpdateWithoutAuthorDataInput {
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
+  favorites: FavoriteUpdateManyWithoutJobInput
 }
 
 input JobUpdateWithoutCategoriesDataInput {
@@ -1496,6 +1802,24 @@ input JobUpdateWithoutCategoriesDataInput {
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
+  skills: SkillUpdateManyWithoutJobsInput
+  favorites: FavoriteUpdateManyWithoutJobInput
+}
+
+input JobUpdateWithoutFavoritesDataInput {
+  title: String
+  compensationType: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+  status: Status
+  author: UserUpdateOneRequiredWithoutJobsInput
+  location: LocationUpdateOneRequiredWithoutJobsInput
+  applications: ApplicationUpdateManyWithoutJobInput
+  categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
 }
 
@@ -1513,6 +1837,7 @@ input JobUpdateWithoutLocationDataInput {
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
+  favorites: FavoriteUpdateManyWithoutJobInput
 }
 
 input JobUpdateWithoutSkillsDataInput {
@@ -1529,6 +1854,7 @@ input JobUpdateWithoutSkillsDataInput {
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
+  favorites: FavoriteUpdateManyWithoutJobInput
 }
 
 input JobUpdateWithWhereUniqueWithoutAuthorInput {
@@ -1554,6 +1880,11 @@ input JobUpdateWithWhereUniqueWithoutSkillsInput {
 input JobUpsertWithoutApplicationsInput {
   update: JobUpdateWithoutApplicationsDataInput!
   create: JobCreateWithoutApplicationsInput!
+}
+
+input JobUpsertWithoutFavoritesInput {
+  update: JobUpdateWithoutFavoritesDataInput!
+  create: JobCreateWithoutFavoritesInput!
 }
 
 input JobUpsertWithWhereUniqueWithoutAuthorInput {
@@ -1629,6 +1960,50 @@ input JobWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
   title: String
 
   """All values that are not equal to given value."""
@@ -1913,50 +2288,6 @@ input JobWhereInput {
 
   """All values not ending with the given string."""
   requirements_not_ends_with: String
-  createdAt: DateTime
-
-  """All values that are not equal to given value."""
-  createdAt_not: DateTime
-
-  """All values that are contained in given list."""
-  createdAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  createdAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  createdAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  createdAt_lte: DateTime
-
-  """All values greater than the given value."""
-  createdAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-
-  """All values that are not equal to given value."""
-  updatedAt_not: DateTime
-
-  """All values that are contained in given list."""
-  updatedAt_in: [DateTime!]
-
-  """All values that are not contained in given list."""
-  updatedAt_not_in: [DateTime!]
-
-  """All values less than the given value."""
-  updatedAt_lt: DateTime
-
-  """All values less than or equal the given value."""
-  updatedAt_lte: DateTime
-
-  """All values greater than the given value."""
-  updatedAt_gt: DateTime
-
-  """All values greater than or equal the given value."""
-  updatedAt_gte: DateTime
   status: Status
 
   """All values that are not equal to given value."""
@@ -1978,6 +2309,9 @@ input JobWhereInput {
   skills_every: SkillWhereInput
   skills_some: SkillWhereInput
   skills_none: SkillWhereInput
+  favorites_every: FavoriteWhereInput
+  favorites_some: FavoriteWhereInput
+  favorites_none: FavoriteWhereInput
 }
 
 input JobWhereUniqueInput {
@@ -2311,24 +2645,28 @@ type Mutation {
   createUser(data: UserCreateInput!): User!
   createJob(data: JobCreateInput!): Job!
   createApplication(data: ApplicationCreateInput!): Application!
+  createFavorite(data: FavoriteCreateInput!): Favorite!
   createLocation(data: LocationCreateInput!): Location!
   createCategory(data: CategoryCreateInput!): Category!
   createSkill(data: SkillCreateInput!): Skill!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateJob(data: JobUpdateInput!, where: JobWhereUniqueInput!): Job
   updateApplication(data: ApplicationUpdateInput!, where: ApplicationWhereUniqueInput!): Application
+  updateFavorite(data: FavoriteUpdateInput!, where: FavoriteWhereUniqueInput!): Favorite
   updateLocation(data: LocationUpdateInput!, where: LocationWhereUniqueInput!): Location
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   updateSkill(data: SkillUpdateInput!, where: SkillWhereUniqueInput!): Skill
   deleteUser(where: UserWhereUniqueInput!): User
   deleteJob(where: JobWhereUniqueInput!): Job
   deleteApplication(where: ApplicationWhereUniqueInput!): Application
+  deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
   deleteLocation(where: LocationWhereUniqueInput!): Location
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteSkill(where: SkillWhereUniqueInput!): Skill
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertJob(where: JobWhereUniqueInput!, create: JobCreateInput!, update: JobUpdateInput!): Job!
   upsertApplication(where: ApplicationWhereUniqueInput!, create: ApplicationCreateInput!, update: ApplicationUpdateInput!): Application!
+  upsertFavorite(where: FavoriteWhereUniqueInput!, create: FavoriteCreateInput!, update: FavoriteUpdateInput!): Favorite!
   upsertLocation(where: LocationWhereUniqueInput!, create: LocationCreateInput!, update: LocationUpdateInput!): Location!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
   upsertSkill(where: SkillWhereUniqueInput!, create: SkillCreateInput!, update: SkillUpdateInput!): Skill!
@@ -2340,6 +2678,7 @@ type Mutation {
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyJobs(where: JobWhereInput): BatchPayload!
   deleteManyApplications(where: ApplicationWhereInput): BatchPayload!
+  deleteManyFavorites(where: FavoriteWhereInput): BatchPayload!
   deleteManyLocations(where: LocationWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
   deleteManySkills(where: SkillWhereInput): BatchPayload!
@@ -2376,18 +2715,21 @@ type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job]!
   applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application]!
+  favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite]!
   locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
   user(where: UserWhereUniqueInput!): User
   job(where: JobWhereUniqueInput!): Job
   application(where: ApplicationWhereUniqueInput!): Application
+  favorite(where: FavoriteWhereUniqueInput!): Favorite
   location(where: LocationWhereUniqueInput!): Location
   category(where: CategoryWhereUniqueInput!): Category
   skill(where: SkillWhereUniqueInput!): Skill
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   jobsConnection(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): JobConnection!
   applicationsConnection(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ApplicationConnection!
+  favoritesConnection(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FavoriteConnection!
   locationsConnection(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocationConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
   skillsConnection(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SkillConnection!
@@ -2783,6 +3125,7 @@ type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   job(where: JobSubscriptionWhereInput): JobSubscriptionPayload
   application(where: ApplicationSubscriptionWhereInput): ApplicationSubscriptionPayload
+  favorite(where: FavoriteSubscriptionWhereInput): FavoriteSubscriptionPayload
   location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
   skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
@@ -2799,6 +3142,7 @@ type User implements Node {
   jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
   location: Location
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
+  favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite!]
 }
 
 """A connection to a list of items."""
@@ -2820,6 +3164,7 @@ input UserCreateInput {
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
+  favorites: FavoriteCreateManyWithoutUserInput
 }
 
 input UserCreateManyWithoutLocationInput {
@@ -2837,6 +3182,11 @@ input UserCreateOneWithoutApplicationsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateOneWithoutFavoritesInput {
+  create: UserCreateWithoutFavoritesInput
+  connect: UserWhereUniqueInput
+}
+
 input UserCreateOneWithoutJobsInput {
   create: UserCreateWithoutJobsInput
   connect: UserWhereUniqueInput
@@ -2850,6 +3200,18 @@ input UserCreateWithoutApplicationsInput {
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
+  favorites: FavoriteCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutFavoritesInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
+  applications: ApplicationCreateManyWithoutUserInput
+  jobs: JobCreateManyWithoutAuthorInput
+  location: LocationCreateOneWithoutUsersInput
+  skills: SkillCreateManyWithoutUsersInput
 }
 
 input UserCreateWithoutJobsInput {
@@ -2860,6 +3222,7 @@ input UserCreateWithoutJobsInput {
   applications: ApplicationCreateManyWithoutUserInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
+  favorites: FavoriteCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutLocationInput {
@@ -2870,6 +3233,7 @@ input UserCreateWithoutLocationInput {
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   skills: SkillCreateManyWithoutUsersInput
+  favorites: FavoriteCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutSkillsInput {
@@ -2880,6 +3244,7 @@ input UserCreateWithoutSkillsInput {
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
+  favorites: FavoriteCreateManyWithoutUserInput
 }
 
 """An edge in a connection."""
@@ -3175,6 +3540,7 @@ input UserUpdateInput {
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
+  favorites: FavoriteUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyDataInput {
@@ -3225,6 +3591,13 @@ input UserUpdateOneRequiredWithoutApplicationsInput {
   upsert: UserUpsertWithoutApplicationsInput
 }
 
+input UserUpdateOneRequiredWithoutFavoritesInput {
+  create: UserCreateWithoutFavoritesInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutFavoritesDataInput
+  upsert: UserUpsertWithoutFavoritesInput
+}
+
 input UserUpdateOneRequiredWithoutJobsInput {
   create: UserCreateWithoutJobsInput
   connect: UserWhereUniqueInput
@@ -3239,6 +3612,17 @@ input UserUpdateWithoutApplicationsDataInput {
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
+  favorites: FavoriteUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutFavoritesDataInput {
+  name: String
+  email: String
+  password: String
+  applications: ApplicationUpdateManyWithoutUserInput
+  jobs: JobUpdateManyWithoutAuthorInput
+  location: LocationUpdateOneWithoutUsersInput
+  skills: SkillUpdateManyWithoutUsersInput
 }
 
 input UserUpdateWithoutJobsDataInput {
@@ -3248,6 +3632,7 @@ input UserUpdateWithoutJobsDataInput {
   applications: ApplicationUpdateManyWithoutUserInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
+  favorites: FavoriteUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutLocationDataInput {
@@ -3257,6 +3642,7 @@ input UserUpdateWithoutLocationDataInput {
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   skills: SkillUpdateManyWithoutUsersInput
+  favorites: FavoriteUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutSkillsDataInput {
@@ -3266,6 +3652,7 @@ input UserUpdateWithoutSkillsDataInput {
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
+  favorites: FavoriteUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithWhereUniqueWithoutLocationInput {
@@ -3281,6 +3668,11 @@ input UserUpdateWithWhereUniqueWithoutSkillsInput {
 input UserUpsertWithoutApplicationsInput {
   update: UserUpdateWithoutApplicationsDataInput!
   create: UserCreateWithoutApplicationsInput!
+}
+
+input UserUpsertWithoutFavoritesInput {
+  update: UserUpdateWithoutFavoritesDataInput!
+  create: UserCreateWithoutFavoritesInput!
 }
 
 input UserUpsertWithoutJobsInput {
@@ -3523,6 +3915,9 @@ input UserWhereInput {
   skills_every: SkillWhereInput
   skills_some: SkillWhereInput
   skills_none: SkillWhereInput
+  favorites_every: FavoriteWhereInput
+  favorites_some: FavoriteWhereInput
+  favorites_none: FavoriteWhereInput
 }
 
 input UserWhereUniqueInput {
