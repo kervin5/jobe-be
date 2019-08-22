@@ -44,6 +44,10 @@ type Mutation {
        job: JobCreateOneWithoutFavoritesInput!
     ): Favorite
 
+    deleteFavorite(
+        where: FavoriteWhereUniqueInput!
+    ): Favorite
+
     login(email: String! password: String!): String!
     signup(name: String! password: String! email: String!): String!
 
@@ -62,6 +66,7 @@ type Query {
     skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
     skill(where: SkillWhereUniqueInput!): Skill
     authorize: Boolean!
+    applicationsConnection(where: ApplicationWhereInput): ApplicationConnection!
 }
 
 

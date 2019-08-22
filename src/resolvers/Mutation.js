@@ -152,6 +152,15 @@ const Mutations = {
         }, info);
 
         return result;
+    },
+
+    async deleteFavorite(parent, args, ctx, info) {
+        if(!ctx.request.user.userId) {
+            return null;
+        }
+
+        return await ctx.db.mutation.deleteFavorite(args, info);
+
     }
 };
 
