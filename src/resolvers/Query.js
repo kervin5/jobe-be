@@ -9,16 +9,17 @@ const Query = {
     jobs: forwardTo('db'), 
     job: forwardTo('db'),
     async jobsConnectionPerUser(parent, args, ctx, info) {
-        if (!ctx.request.user.userId) {
+        if (!userExists(ctx)) {
             return null;
         }
         return await ctx.db.query.jobsConnection({where: { author: {id: ctx.request.user.userId} }}, info)
     },
     users: forwardTo('db'),
     async me(parent, args, ctx, info) {
-        if (!ctx.request.user.userId) {
+        if (!userExists(ctx)) {
             return null;
         }
+
         return await ctx.db.query.user({where: { id: ctx.request.user.userId },},info);
     },
     locations: forwardTo('db'),
@@ -27,11 +28,11 @@ const Query = {
     category: forwardTo('db'),
     skills: forwardTo('db'),
     async authorize(parent, args, ctx, info) {
-        return !!(typeof ctx.request.user !== "undefined" && ctx.request.user.userId);
+        return userExists(ctx);
         // put the userId onto the req for future requests to access
     },
     async applicationsConnection(parent, args, ctx, info) {
-        if (!ctx.request.user.userId) {
+        if (!userExists(ctx)) {
             return null;
         }
 
@@ -40,5 +41,9 @@ const Query = {
         return await ctx.db.query.applicationsConnection(args,info);
     }
 };
+
+const userExists = (ctx) => {
+   return !!(typeof ctx.request.user !== "undefined" && ctx.request.user.userId);
+}
 
 module.exports = Query;

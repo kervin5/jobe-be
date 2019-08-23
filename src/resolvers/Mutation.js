@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../../startup/db');
 const { forwardTo } = require('prisma-binding');
+const {userExists} = require('../lib/utils');
 
 const Mutations = {
     async createUser(parent, args, ctx, info) {
@@ -139,7 +140,7 @@ const Mutations = {
     },
 
     async addFavorite(parent, args, ctx, info) {
-        if (!ctx.request.user.userId) {
+        if (!userExists(ctx)) {
             return null;
         }
 
@@ -155,7 +156,7 @@ const Mutations = {
     },
 
     async deleteFavorite(parent, args, ctx, info) {
-        if(!ctx.request.user.userId) {
+        if(!userExists(ctx)) {
             return null;
         }
 
