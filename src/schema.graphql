@@ -1,5 +1,21 @@
 # import * from './generated/prisma.graphql'
 # Public facing schema
+
+input UpdateJobCustomInput {
+    title: String
+    description: String
+    compensationType: String
+    type: String
+    maxCompensation: Float
+    minCompensation: Float
+    qualifications: String
+    requirements: String
+    location: LocationCreateOneWithoutJobsInput
+    categories: [String!]
+    skills: [String!]
+}
+
+
 type Mutation {
     createUser(
         name: String
@@ -22,7 +38,7 @@ type Mutation {
         skills: [String!]!
     ): Job!
 
-    updateJob(data: JobUpdateInput!, where: JobWhereUniqueInput!): Job 
+    updateJob( where: JobWhereUniqueInput! data: UpdateJobCustomInput!): Job 
 
     createApplication(
         job: JobCreateOneWithoutApplicationsInput!

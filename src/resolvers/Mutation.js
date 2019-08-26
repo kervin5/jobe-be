@@ -124,7 +124,37 @@ const Mutations = {
         return job;
     },
     async updateJob(parent, args, ctx, info) {
+        if(args.location) {
+            const jobLocation = args.data.location.create;
+            const locationExists =  await prisma.exists.Location({
+                ...jobLocation
+            });
+    
+            if(locationExists) {
+                const existingLocations = await ctx.db.query.locations({
+                    where: {
+                        ...jobLocation
+                    }
+                });
+                //Deletes the create mutation and forces connection to existing location if the location already exists
+                delete args.data.location.create;
+                args.data.location.connect = {id: existingLocations[0].id};
+            }
+        }
+                                   
+        // console.log(args);
+        //Connect User to job
+        if(args.categories) {
+            args.categories = {connect : args.data.categories.map(category => ({name: category}))};
+        }
+
+        if(args.skills) {
+            args.skills = {connect : args.data.skills.map(skill => ({name: skill}))};
+        }
+
+        const job = await ctx.db.mutation.updateJob(args, info);
         
+        return job;
     }
     ,
     async createApplication(parent, args, ctx, info) {
