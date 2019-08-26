@@ -123,6 +123,10 @@ const Mutations = {
         
         return job;
     },
+    async updateJob(parent, args, ctx, info) {
+        
+    }
+    ,
     async createApplication(parent, args, ctx, info) {
         if (!ctx.request.user.userId) {
             return null;

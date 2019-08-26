@@ -22,6 +22,8 @@ type Mutation {
         skills: [String!]!
     ): Job!
 
+    updateJob(data: JobUpdateInput!, where: JobWhereUniqueInput!): Job 
+
     createApplication(
         job: JobCreateOneWithoutApplicationsInput!
     ): Application
@@ -66,7 +68,7 @@ type Query {
     skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
     skill(where: SkillWhereUniqueInput!): Skill
     authorize: Boolean!
-    applicationsConnection(where: ApplicationWhereInput): ApplicationConnection!
+    applicationsConnection(where: ApplicationWhereInput): ApplicationConnection
 }
 
 
