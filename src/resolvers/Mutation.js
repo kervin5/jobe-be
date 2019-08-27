@@ -144,12 +144,13 @@ const Mutations = {
                                    
         // console.log(args);
         //Connect User to job
-        if(args.categories) {
-            args.categories = {connect : args.data.categories.map(category => ({name: category}))};
+        if(args.data.categories) {
+            const newCategories = args.data.categories.map(category => ({name: category}))
+            args.data.categories = {set : newCategories };
         }
 
-        if(args.skills) {
-            args.skills = {connect : args.data.skills.map(skill => ({name: skill}))};
+        if(args.data.skills) {
+            args.data.skills = {connect : args.data.skills.map(skill => ({name: skill}))};
         }
 
         const job = await ctx.db.mutation.updateJob(args, info);
