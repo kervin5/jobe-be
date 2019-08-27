@@ -61,6 +61,10 @@ const Mutations = {
         });
         // 5. Return the user
         return token;
+    },
+    logout(parent, args, ctx, info) {
+        ctx.response.clearCookie("token");
+        return "log out";
     }
     ,
     async createLocation(parent, args, ctx, info) {
@@ -140,17 +144,15 @@ const Mutations = {
                 delete args.data.location.create;
                 args.data.location.connect = {id: existingLocations[0].id};
             }
-        }
-                                   
+        } 
         // console.log(args);
         //Connect User to job
         if(args.data.categories) {
-            const newCategories = args.data.categories.map(category => ({name: category}))
-            args.data.categories = {set : newCategories };
+            args.data.categories = {set : args.data.categories.map(category => ({name: category})) };
         }
 
         if(args.data.skills) {
-            args.data.skills = {connect : args.data.skills.map(skill => ({name: skill}))};
+            args.data.skills = {set: args.data.skills.map(skill => ({name: skill}))};
         }
 
         const job = await ctx.db.mutation.updateJob(args, info);

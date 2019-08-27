@@ -68,7 +68,7 @@ type Mutation {
 
     login(email: String! password: String!): String!
     signup(name: String! password: String! email: String!): String!
-
+    logout:String
 }
 
 type Query {
@@ -76,7 +76,7 @@ type Query {
     me: User
     jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job]!
     job(where: JobWhereUniqueInput!): Job
-    jobsConnectionPerUser(where: UserWhereUniqueInput): JobConnection!
+    jobsConnectionPerUser(where: UserWhereUniqueInput): JobConnection
     locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
     location(where: LocationWhereUniqueInput!): Location
     categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
