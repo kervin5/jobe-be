@@ -56,7 +56,7 @@ const Mutations = {
         ctx.response.header('token', token);
 
         ctx.response.cookie('token', token, {
-            // httpOnly: true,
+            httpOnly: true,
             maxAge: 1000 * 60 * 60 * 24 * 365,
         });
         // 5. Return the user
