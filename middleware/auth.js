@@ -5,6 +5,8 @@ module.exports = function (req, res, next) {
   
   const token = req.cookies.token || req.headers['authorization'];
   // if (!token) return res.status(401).send({error: 'Access denied.'});
+  console.log(req.cookies);
+  console.log("token=================================>",token);
 
   try {
     const decoded = jwt.verify(token, process.env.APP_SECRET);
