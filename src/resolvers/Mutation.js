@@ -155,6 +155,10 @@ const Mutations = {
             args.data.skills = {set: args.data.skills.map(skill => ({name: skill}))};
         }
 
+        if(!args.data.status) {
+            args.data.status = "EDITING";
+        }
+        
         const job = await ctx.db.mutation.updateJob(args, info);
         
         return job;
