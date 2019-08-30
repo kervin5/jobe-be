@@ -16,6 +16,10 @@ input UpdateJobCustomInput {
     status: Status
 }
 
+type SignedFileUploadRequest {
+    signedRequest: String!
+    url: String!
+}
 
 type Mutation {
     createUser(
@@ -66,7 +70,7 @@ type Mutation {
     deleteFavorite(
         where: FavoriteWhereUniqueInput!
     ): Favorite
-
+    signFileUpload(fileName: String! fileType: String!): SignedFileUploadRequest
     login(email: String! password: String!): String!
     signup(name: String! password: String! email: String!): String!
     logout:String

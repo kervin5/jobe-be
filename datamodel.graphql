@@ -30,6 +30,7 @@ type User {
   favorites: [Favorite]
   permissions: [Permission] @scalarList(strategy: RELATION)
   company: Company
+  resumes: [Resume]
 }
 
 type Job {
@@ -59,6 +60,7 @@ type Application {
   job: Job!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  resumes: [Resume]
 }
 
 type Favorite {
@@ -94,4 +96,20 @@ type Skill {
   name: String! @unique
   jobs: [Job]
   users: [User]
+}
+
+type File {
+  id: ID! @id
+  uri: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Resume {
+  id: ID! @id
+  file: File!
+  user: User!
+  skills: [Skill]
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
 }

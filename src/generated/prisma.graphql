@@ -1,5 +1,5 @@
 # source: https://myexactjobsstaging-417309a1d8.herokuapp.com/myexactjobs-staging/prod
-# timestamp: Thu Aug 29 2019 12:07:39 GMT-0700 (Pacific Daylight Time)
+# timestamp: Fri Aug 30 2019 10:31:23 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -17,11 +17,19 @@ type AggregateFavorite {
   count: Int!
 }
 
+type AggregateFile {
+  count: Int!
+}
+
 type AggregateJob {
   count: Int!
 }
 
 type AggregateLocation {
+  count: Int!
+}
+
+type AggregateResume {
   count: Int!
 }
 
@@ -39,6 +47,7 @@ type Application implements Node {
   job: Job!
   createdAt: DateTime!
   updatedAt: DateTime!
+  resumes(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Resume!]
 }
 
 """A connection to a list of items."""
@@ -55,6 +64,7 @@ input ApplicationCreateInput {
   id: ID
   user: UserCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
+  resumes: ResumeCreateManyInput
 }
 
 input ApplicationCreateManyWithoutJobInput {
@@ -70,11 +80,13 @@ input ApplicationCreateManyWithoutUserInput {
 input ApplicationCreateWithoutJobInput {
   id: ID
   user: UserCreateOneWithoutApplicationsInput!
+  resumes: ResumeCreateManyInput
 }
 
 input ApplicationCreateWithoutUserInput {
   id: ID
   job: JobCreateOneWithoutApplicationsInput!
+  resumes: ResumeCreateManyInput
 }
 
 """An edge in a connection."""
@@ -236,6 +248,7 @@ input ApplicationSubscriptionWhereInput {
 input ApplicationUpdateInput {
   user: UserUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
+  resumes: ResumeUpdateManyInput
 }
 
 input ApplicationUpdateManyWithoutJobInput {
@@ -262,10 +275,12 @@ input ApplicationUpdateManyWithoutUserInput {
 
 input ApplicationUpdateWithoutJobDataInput {
   user: UserUpdateOneRequiredWithoutApplicationsInput
+  resumes: ResumeUpdateManyInput
 }
 
 input ApplicationUpdateWithoutUserDataInput {
   job: JobUpdateOneRequiredWithoutApplicationsInput
+  resumes: ResumeUpdateManyInput
 }
 
 input ApplicationUpdateWithWhereUniqueWithoutJobInput {
@@ -385,6 +400,9 @@ input ApplicationWhereInput {
   updatedAt_gte: DateTime
   user: UserWhereInput
   job: JobWhereInput
+  resumes_every: ResumeWhereInput
+  resumes_some: ResumeWhereInput
+  resumes_none: ResumeWhereInput
 }
 
 input ApplicationWhereUniqueInput {
@@ -1203,6 +1221,260 @@ input FavoriteWhereInput {
 }
 
 input FavoriteWhereUniqueInput {
+  id: ID
+}
+
+type File implements Node {
+  id: ID!
+  uri: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type FileConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [FileEdge]!
+  aggregate: AggregateFile!
+}
+
+input FileCreateInput {
+  id: ID
+  uri: String!
+}
+
+input FileCreateOneInput {
+  create: FileCreateInput
+  connect: FileWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type FileEdge {
+  """The item at the end of the edge."""
+  node: File!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum FileOrderByInput {
+  id_ASC
+  id_DESC
+  uri_ASC
+  uri_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type FilePreviousValues {
+  id: ID!
+  uri: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type FileSubscriptionPayload {
+  mutation: MutationType!
+  node: File
+  updatedFields: [String!]
+  previousValues: FilePreviousValues
+}
+
+input FileSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FileSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FileSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FileSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: FileWhereInput
+}
+
+input FileUpdateDataInput {
+  uri: String
+}
+
+input FileUpdateInput {
+  uri: String
+}
+
+input FileUpdateManyMutationInput {
+  uri: String
+}
+
+input FileUpdateOneRequiredInput {
+  create: FileCreateInput
+  connect: FileWhereUniqueInput
+  update: FileUpdateDataInput
+  upsert: FileUpsertNestedInput
+}
+
+input FileUpsertNestedInput {
+  update: FileUpdateDataInput!
+  create: FileCreateInput!
+}
+
+input FileWhereInput {
+  """Logical AND on all given filters."""
+  AND: [FileWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [FileWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [FileWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  uri: String
+
+  """All values that are not equal to given value."""
+  uri_not: String
+
+  """All values that are contained in given list."""
+  uri_in: [String!]
+
+  """All values that are not contained in given list."""
+  uri_not_in: [String!]
+
+  """All values less than the given value."""
+  uri_lt: String
+
+  """All values less than or equal the given value."""
+  uri_lte: String
+
+  """All values greater than the given value."""
+  uri_gt: String
+
+  """All values greater than or equal the given value."""
+  uri_gte: String
+
+  """All values containing the given string."""
+  uri_contains: String
+
+  """All values not containing the given string."""
+  uri_not_contains: String
+
+  """All values starting with the given string."""
+  uri_starts_with: String
+
+  """All values not starting with the given string."""
+  uri_not_starts_with: String
+
+  """All values ending with the given string."""
+  uri_ends_with: String
+
+  """All values not ending with the given string."""
+  uri_not_ends_with: String
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+input FileWhereUniqueInput {
   id: ID
 }
 
@@ -2900,6 +3172,8 @@ type Mutation {
   createFavorite(data: FavoriteCreateInput!): Favorite!
   createCompany(data: CompanyCreateInput!): Company!
   createCategory(data: CategoryCreateInput!): Category!
+  createFile(data: FileCreateInput!): File!
+  createResume(data: ResumeCreateInput!): Resume!
   createSkill(data: SkillCreateInput!): Skill!
   createLocation(data: LocationCreateInput!): Location!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
@@ -2908,6 +3182,8 @@ type Mutation {
   updateFavorite(data: FavoriteUpdateInput!, where: FavoriteWhereUniqueInput!): Favorite
   updateCompany(data: CompanyUpdateInput!, where: CompanyWhereUniqueInput!): Company
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
+  updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
+  updateResume(data: ResumeUpdateInput!, where: ResumeWhereUniqueInput!): Resume
   updateSkill(data: SkillUpdateInput!, where: SkillWhereUniqueInput!): Skill
   updateLocation(data: LocationUpdateInput!, where: LocationWhereUniqueInput!): Location
   deleteUser(where: UserWhereUniqueInput!): User
@@ -2916,6 +3192,8 @@ type Mutation {
   deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
   deleteCompany(where: CompanyWhereUniqueInput!): Company
   deleteCategory(where: CategoryWhereUniqueInput!): Category
+  deleteFile(where: FileWhereUniqueInput!): File
+  deleteResume(where: ResumeWhereUniqueInput!): Resume
   deleteSkill(where: SkillWhereUniqueInput!): Skill
   deleteLocation(where: LocationWhereUniqueInput!): Location
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
@@ -2924,12 +3202,15 @@ type Mutation {
   upsertFavorite(where: FavoriteWhereUniqueInput!, create: FavoriteCreateInput!, update: FavoriteUpdateInput!): Favorite!
   upsertCompany(where: CompanyWhereUniqueInput!, create: CompanyCreateInput!, update: CompanyUpdateInput!): Company!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
+  upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
+  upsertResume(where: ResumeWhereUniqueInput!, create: ResumeCreateInput!, update: ResumeUpdateInput!): Resume!
   upsertSkill(where: SkillWhereUniqueInput!, create: SkillCreateInput!, update: SkillUpdateInput!): Skill!
   upsertLocation(where: LocationWhereUniqueInput!, create: LocationCreateInput!, update: LocationUpdateInput!): Location!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyJobs(data: JobUpdateManyMutationInput!, where: JobWhereInput): BatchPayload!
   updateManyCompanies(data: CompanyUpdateManyMutationInput!, where: CompanyWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
+  updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
   updateManySkills(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
   updateManyLocations(data: LocationUpdateManyMutationInput!, where: LocationWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
@@ -2938,6 +3219,8 @@ type Mutation {
   deleteManyFavorites(where: FavoriteWhereInput): BatchPayload!
   deleteManyCompanies(where: CompanyWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
+  deleteManyFiles(where: FileWhereInput): BatchPayload!
+  deleteManyResumes(where: ResumeWhereInput): BatchPayload!
   deleteManySkills(where: SkillWhereInput): BatchPayload!
   deleteManyLocations(where: LocationWhereInput): BatchPayload!
 }
@@ -2986,6 +3269,8 @@ type Query {
   favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite]!
   companies(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Company]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
+  files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File]!
+  resumes(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Resume]!
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
   locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
   user(where: UserWhereUniqueInput!): User
@@ -2994,6 +3279,8 @@ type Query {
   favorite(where: FavoriteWhereUniqueInput!): Favorite
   company(where: CompanyWhereUniqueInput!): Company
   category(where: CategoryWhereUniqueInput!): Category
+  file(where: FileWhereUniqueInput!): File
+  resume(where: ResumeWhereUniqueInput!): Resume
   skill(where: SkillWhereUniqueInput!): Skill
   location(where: LocationWhereUniqueInput!): Location
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -3002,6 +3289,8 @@ type Query {
   favoritesConnection(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FavoriteConnection!
   companiesConnection(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CompanyConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
+  filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
+  resumesConnection(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ResumeConnection!
   skillsConnection(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SkillConnection!
   locationsConnection(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocationConnection!
 
@@ -3010,6 +3299,369 @@ type Query {
     """The ID of an object"""
     id: ID!
   ): Node
+}
+
+type Resume implements Node {
+  id: ID!
+  file: File!
+  user: User!
+  skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""A connection to a list of items."""
+type ResumeConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ResumeEdge]!
+  aggregate: AggregateResume!
+}
+
+input ResumeCreateInput {
+  id: ID
+  file: FileCreateOneInput!
+  user: UserCreateOneWithoutResumesInput!
+  skills: SkillCreateManyInput
+}
+
+input ResumeCreateManyInput {
+  create: [ResumeCreateInput!]
+  connect: [ResumeWhereUniqueInput!]
+}
+
+input ResumeCreateManyWithoutUserInput {
+  create: [ResumeCreateWithoutUserInput!]
+  connect: [ResumeWhereUniqueInput!]
+}
+
+input ResumeCreateWithoutUserInput {
+  id: ID
+  file: FileCreateOneInput!
+  skills: SkillCreateManyInput
+}
+
+"""An edge in a connection."""
+type ResumeEdge {
+  """The item at the end of the edge."""
+  node: Resume!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ResumeOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type ResumePreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input ResumeScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ResumeScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ResumeScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ResumeScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+}
+
+type ResumeSubscriptionPayload {
+  mutation: MutationType!
+  node: Resume
+  updatedFields: [String!]
+  previousValues: ResumePreviousValues
+}
+
+input ResumeSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ResumeSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ResumeSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ResumeSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ResumeWhereInput
+}
+
+input ResumeUpdateDataInput {
+  file: FileUpdateOneRequiredInput
+  user: UserUpdateOneRequiredWithoutResumesInput
+  skills: SkillUpdateManyInput
+}
+
+input ResumeUpdateInput {
+  file: FileUpdateOneRequiredInput
+  user: UserUpdateOneRequiredWithoutResumesInput
+  skills: SkillUpdateManyInput
+}
+
+input ResumeUpdateManyInput {
+  create: [ResumeCreateInput!]
+  connect: [ResumeWhereUniqueInput!]
+  set: [ResumeWhereUniqueInput!]
+  disconnect: [ResumeWhereUniqueInput!]
+  delete: [ResumeWhereUniqueInput!]
+  update: [ResumeUpdateWithWhereUniqueNestedInput!]
+  deleteMany: [ResumeScalarWhereInput!]
+  upsert: [ResumeUpsertWithWhereUniqueNestedInput!]
+}
+
+input ResumeUpdateManyWithoutUserInput {
+  create: [ResumeCreateWithoutUserInput!]
+  connect: [ResumeWhereUniqueInput!]
+  set: [ResumeWhereUniqueInput!]
+  disconnect: [ResumeWhereUniqueInput!]
+  delete: [ResumeWhereUniqueInput!]
+  update: [ResumeUpdateWithWhereUniqueWithoutUserInput!]
+  deleteMany: [ResumeScalarWhereInput!]
+  upsert: [ResumeUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input ResumeUpdateWithoutUserDataInput {
+  file: FileUpdateOneRequiredInput
+  skills: SkillUpdateManyInput
+}
+
+input ResumeUpdateWithWhereUniqueNestedInput {
+  where: ResumeWhereUniqueInput!
+  data: ResumeUpdateDataInput!
+}
+
+input ResumeUpdateWithWhereUniqueWithoutUserInput {
+  where: ResumeWhereUniqueInput!
+  data: ResumeUpdateWithoutUserDataInput!
+}
+
+input ResumeUpsertWithWhereUniqueNestedInput {
+  where: ResumeWhereUniqueInput!
+  update: ResumeUpdateDataInput!
+  create: ResumeCreateInput!
+}
+
+input ResumeUpsertWithWhereUniqueWithoutUserInput {
+  where: ResumeWhereUniqueInput!
+  update: ResumeUpdateWithoutUserDataInput!
+  create: ResumeCreateWithoutUserInput!
+}
+
+input ResumeWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ResumeWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ResumeWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ResumeWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  file: FileWhereInput
+  user: UserWhereInput
+  skills_every: SkillWhereInput
+  skills_some: SkillWhereInput
+  skills_none: SkillWhereInput
+}
+
+input ResumeWhereUniqueInput {
+  id: ID
 }
 
 type Skill implements Node {
@@ -3034,6 +3686,11 @@ input SkillCreateInput {
   name: String!
   jobs: JobCreateManyWithoutSkillsInput
   users: UserCreateManyWithoutSkillsInput
+}
+
+input SkillCreateManyInput {
+  create: [SkillCreateInput!]
+  connect: [SkillWhereUniqueInput!]
 }
 
 input SkillCreateManyWithoutJobsInput {
@@ -3207,6 +3864,12 @@ input SkillSubscriptionWhereInput {
   node: SkillWhereInput
 }
 
+input SkillUpdateDataInput {
+  name: String
+  jobs: JobUpdateManyWithoutSkillsInput
+  users: UserUpdateManyWithoutSkillsInput
+}
+
 input SkillUpdateInput {
   name: String
   jobs: JobUpdateManyWithoutSkillsInput
@@ -3215,6 +3878,18 @@ input SkillUpdateInput {
 
 input SkillUpdateManyDataInput {
   name: String
+}
+
+input SkillUpdateManyInput {
+  create: [SkillCreateInput!]
+  connect: [SkillWhereUniqueInput!]
+  set: [SkillWhereUniqueInput!]
+  disconnect: [SkillWhereUniqueInput!]
+  delete: [SkillWhereUniqueInput!]
+  update: [SkillUpdateWithWhereUniqueNestedInput!]
+  updateMany: [SkillUpdateManyWithWhereNestedInput!]
+  deleteMany: [SkillScalarWhereInput!]
+  upsert: [SkillUpsertWithWhereUniqueNestedInput!]
 }
 
 input SkillUpdateManyMutationInput {
@@ -3260,6 +3935,11 @@ input SkillUpdateWithoutUsersDataInput {
   jobs: JobUpdateManyWithoutSkillsInput
 }
 
+input SkillUpdateWithWhereUniqueNestedInput {
+  where: SkillWhereUniqueInput!
+  data: SkillUpdateDataInput!
+}
+
 input SkillUpdateWithWhereUniqueWithoutJobsInput {
   where: SkillWhereUniqueInput!
   data: SkillUpdateWithoutJobsDataInput!
@@ -3268,6 +3948,12 @@ input SkillUpdateWithWhereUniqueWithoutJobsInput {
 input SkillUpdateWithWhereUniqueWithoutUsersInput {
   where: SkillWhereUniqueInput!
   data: SkillUpdateWithoutUsersDataInput!
+}
+
+input SkillUpsertWithWhereUniqueNestedInput {
+  where: SkillWhereUniqueInput!
+  update: SkillUpdateDataInput!
+  create: SkillCreateInput!
 }
 
 input SkillUpsertWithWhereUniqueWithoutJobsInput {
@@ -3399,6 +4085,8 @@ type Subscription {
   favorite(where: FavoriteSubscriptionWhereInput): FavoriteSubscriptionPayload
   company(where: CompanySubscriptionWhereInput): CompanySubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
+  file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
+  resume(where: ResumeSubscriptionWhereInput): ResumeSubscriptionPayload
   skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
   location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
 }
@@ -3417,6 +4105,7 @@ type User implements Node {
   favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite!]
   permissions: [Permission!]!
   company: Company
+  resumes(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Resume!]
 }
 
 """A connection to a list of items."""
@@ -3441,6 +4130,7 @@ input UserCreateInput {
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   company: CompanyCreateOneWithoutUsersInput
+  resumes: ResumeCreateManyWithoutUserInput
 }
 
 input UserCreateManyWithoutCompanyInput {
@@ -3473,6 +4163,11 @@ input UserCreateOneWithoutJobsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateOneWithoutResumesInput {
+  create: UserCreateWithoutResumesInput
+  connect: UserWhereUniqueInput
+}
+
 input UserCreatepermissionsInput {
   set: [Permission!]
 }
@@ -3488,6 +4183,7 @@ input UserCreateWithoutApplicationsInput {
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   company: CompanyCreateOneWithoutUsersInput
+  resumes: ResumeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutCompanyInput {
@@ -3501,6 +4197,7 @@ input UserCreateWithoutCompanyInput {
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
+  resumes: ResumeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutFavoritesInput {
@@ -3514,6 +4211,7 @@ input UserCreateWithoutFavoritesInput {
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   company: CompanyCreateOneWithoutUsersInput
+  resumes: ResumeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutJobsInput {
@@ -3527,6 +4225,7 @@ input UserCreateWithoutJobsInput {
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   company: CompanyCreateOneWithoutUsersInput
+  resumes: ResumeCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutLocationInput {
@@ -3537,6 +4236,21 @@ input UserCreateWithoutLocationInput {
   permissions: UserCreatepermissionsInput
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
+  skills: SkillCreateManyWithoutUsersInput
+  favorites: FavoriteCreateManyWithoutUserInput
+  company: CompanyCreateOneWithoutUsersInput
+  resumes: ResumeCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutResumesInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
+  permissions: UserCreatepermissionsInput
+  applications: ApplicationCreateManyWithoutUserInput
+  jobs: JobCreateManyWithoutAuthorInput
+  location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   company: CompanyCreateOneWithoutUsersInput
@@ -3553,6 +4267,7 @@ input UserCreateWithoutSkillsInput {
   location: LocationCreateOneWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   company: CompanyCreateOneWithoutUsersInput
+  resumes: ResumeCreateManyWithoutUserInput
 }
 
 """An edge in a connection."""
@@ -3852,6 +4567,7 @@ input UserUpdateInput {
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   company: CompanyUpdateOneWithoutUsersInput
+  resumes: ResumeUpdateManyWithoutUserInput
 }
 
 input UserUpdateManyDataInput {
@@ -3930,6 +4646,13 @@ input UserUpdateOneRequiredWithoutJobsInput {
   upsert: UserUpsertWithoutJobsInput
 }
 
+input UserUpdateOneRequiredWithoutResumesInput {
+  create: UserCreateWithoutResumesInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutResumesDataInput
+  upsert: UserUpsertWithoutResumesInput
+}
+
 input UserUpdatepermissionsInput {
   set: [Permission!]
 }
@@ -3944,6 +4667,7 @@ input UserUpdateWithoutApplicationsDataInput {
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   company: CompanyUpdateOneWithoutUsersInput
+  resumes: ResumeUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutCompanyDataInput {
@@ -3956,6 +4680,7 @@ input UserUpdateWithoutCompanyDataInput {
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
+  resumes: ResumeUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutFavoritesDataInput {
@@ -3968,6 +4693,7 @@ input UserUpdateWithoutFavoritesDataInput {
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   company: CompanyUpdateOneWithoutUsersInput
+  resumes: ResumeUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutJobsDataInput {
@@ -3980,6 +4706,7 @@ input UserUpdateWithoutJobsDataInput {
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   company: CompanyUpdateOneWithoutUsersInput
+  resumes: ResumeUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutLocationDataInput {
@@ -3989,6 +4716,20 @@ input UserUpdateWithoutLocationDataInput {
   permissions: UserUpdatepermissionsInput
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
+  skills: SkillUpdateManyWithoutUsersInput
+  favorites: FavoriteUpdateManyWithoutUserInput
+  company: CompanyUpdateOneWithoutUsersInput
+  resumes: ResumeUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutResumesDataInput {
+  name: String
+  email: String
+  password: String
+  permissions: UserUpdatepermissionsInput
+  applications: ApplicationUpdateManyWithoutUserInput
+  jobs: JobUpdateManyWithoutAuthorInput
+  location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   company: CompanyUpdateOneWithoutUsersInput
@@ -4004,6 +4745,7 @@ input UserUpdateWithoutSkillsDataInput {
   location: LocationUpdateOneWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   company: CompanyUpdateOneWithoutUsersInput
+  resumes: ResumeUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithWhereUniqueWithoutCompanyInput {
@@ -4034,6 +4776,11 @@ input UserUpsertWithoutFavoritesInput {
 input UserUpsertWithoutJobsInput {
   update: UserUpdateWithoutJobsDataInput!
   create: UserCreateWithoutJobsInput!
+}
+
+input UserUpsertWithoutResumesInput {
+  update: UserUpdateWithoutResumesDataInput!
+  create: UserCreateWithoutResumesInput!
 }
 
 input UserUpsertWithWhereUniqueWithoutCompanyInput {
@@ -4281,6 +5028,9 @@ input UserWhereInput {
   favorites_some: FavoriteWhereInput
   favorites_none: FavoriteWhereInput
   company: CompanyWhereInput
+  resumes_every: ResumeWhereInput
+  resumes_some: ResumeWhereInput
+  resumes_none: ResumeWhereInput
 }
 
 input UserWhereUniqueInput {

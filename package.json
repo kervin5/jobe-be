@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon -e js,graphql" ,
+    "dev": "nodemon -e js,graphql",
     "test": "jest",
     "deploy": "prisma deploy"
   },
   "author": "kervin5",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.520.0",
     "bcrypt": "^3.0.6",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.0.0",

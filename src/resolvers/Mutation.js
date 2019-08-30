@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const prisma = require('../../startup/db');
 const { forwardTo } = require('prisma-binding');
 const {userExists} = require('../lib/utils');
+const { sign_s3 } = require('../lib/aws');
 
 const Mutations = {
     async createUser(parent, args, ctx, info) {
@@ -204,6 +205,14 @@ const Mutations = {
 
         return await ctx.db.mutation.deleteFavorite(args, info);
 
+    },
+    async signFileUpload(parent, args, ctx, info) {
+        if(!userExists(ctx)) {
+            return null;
+        }
+
+        const result = await sign_s3({fileName: args.fileType, fileType: args.fileName});
+        return result.success ? result.data : null;  
     }
 };
 
