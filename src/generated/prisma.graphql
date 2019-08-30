@@ -1,11 +1,15 @@
-# source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Wed Aug 21 2019 11:55:28 GMT-0700 (Pacific Daylight Time)
+# source: https://myexactjobsstaging-417309a1d8.herokuapp.com/myexactjobs-staging/prod
+# timestamp: Thu Aug 29 2019 12:07:39 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
 }
 
 type AggregateCategory {
+  count: Int!
+}
+
+type AggregateCompany {
   count: Int!
 }
 
@@ -715,6 +719,227 @@ input CategoryWhereInput {
 input CategoryWhereUniqueInput {
   id: ID
   name: String
+}
+
+type Company implements Node {
+  id: ID!
+  name: String!
+  location: Location
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+}
+
+"""A connection to a list of items."""
+type CompanyConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [CompanyEdge]!
+  aggregate: AggregateCompany!
+}
+
+input CompanyCreateInput {
+  id: ID
+  name: String!
+  location: LocationCreateOneInput
+  users: UserCreateManyWithoutCompanyInput
+}
+
+input CompanyCreateOneWithoutUsersInput {
+  create: CompanyCreateWithoutUsersInput
+  connect: CompanyWhereUniqueInput
+}
+
+input CompanyCreateWithoutUsersInput {
+  id: ID
+  name: String!
+  location: LocationCreateOneInput
+}
+
+"""An edge in a connection."""
+type CompanyEdge {
+  """The item at the end of the edge."""
+  node: Company!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum CompanyOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+}
+
+type CompanyPreviousValues {
+  id: ID!
+  name: String!
+}
+
+type CompanySubscriptionPayload {
+  mutation: MutationType!
+  node: Company
+  updatedFields: [String!]
+  previousValues: CompanyPreviousValues
+}
+
+input CompanySubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CompanySubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CompanySubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CompanySubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: CompanyWhereInput
+}
+
+input CompanyUpdateInput {
+  name: String
+  location: LocationUpdateOneInput
+  users: UserUpdateManyWithoutCompanyInput
+}
+
+input CompanyUpdateManyMutationInput {
+  name: String
+}
+
+input CompanyUpdateOneWithoutUsersInput {
+  create: CompanyCreateWithoutUsersInput
+  connect: CompanyWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: CompanyUpdateWithoutUsersDataInput
+  upsert: CompanyUpsertWithoutUsersInput
+}
+
+input CompanyUpdateWithoutUsersDataInput {
+  name: String
+  location: LocationUpdateOneInput
+}
+
+input CompanyUpsertWithoutUsersInput {
+  update: CompanyUpdateWithoutUsersDataInput!
+  create: CompanyCreateWithoutUsersInput!
+}
+
+input CompanyWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CompanyWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CompanyWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CompanyWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  location: LocationWhereInput
+  users_every: UserWhereInput
+  users_some: UserWhereInput
+  users_none: UserWhereInput
+}
+
+input CompanyWhereUniqueInput {
+  id: ID
 }
 
 scalar DateTime
@@ -2346,6 +2571,11 @@ input LocationCreateInput {
   users: UserCreateManyWithoutLocationInput
 }
 
+input LocationCreateOneInput {
+  create: LocationCreateInput
+  connect: LocationWhereUniqueInput
+}
+
 input LocationCreateOneWithoutJobsInput {
   create: LocationCreateWithoutJobsInput
   connect: LocationWhereUniqueInput
@@ -2436,6 +2666,14 @@ input LocationSubscriptionWhereInput {
   node: LocationWhereInput
 }
 
+input LocationUpdateDataInput {
+  name: String
+  longitude: Float
+  latitude: Float
+  jobs: JobUpdateManyWithoutLocationInput
+  users: UserUpdateManyWithoutLocationInput
+}
+
 input LocationUpdateInput {
   name: String
   longitude: Float
@@ -2448,6 +2686,15 @@ input LocationUpdateManyMutationInput {
   name: String
   longitude: Float
   latitude: Float
+}
+
+input LocationUpdateOneInput {
+  create: LocationCreateInput
+  connect: LocationWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: LocationUpdateDataInput
+  upsert: LocationUpsertNestedInput
 }
 
 input LocationUpdateOneRequiredWithoutJobsInput {
@@ -2478,6 +2725,11 @@ input LocationUpdateWithoutUsersDataInput {
   longitude: Float
   latitude: Float
   jobs: JobUpdateManyWithoutLocationInput
+}
+
+input LocationUpsertNestedInput {
+  update: LocationUpdateDataInput!
+  create: LocationCreateInput!
 }
 
 input LocationUpsertWithoutJobsInput {
@@ -2646,42 +2898,48 @@ type Mutation {
   createJob(data: JobCreateInput!): Job!
   createApplication(data: ApplicationCreateInput!): Application!
   createFavorite(data: FavoriteCreateInput!): Favorite!
-  createLocation(data: LocationCreateInput!): Location!
+  createCompany(data: CompanyCreateInput!): Company!
   createCategory(data: CategoryCreateInput!): Category!
   createSkill(data: SkillCreateInput!): Skill!
+  createLocation(data: LocationCreateInput!): Location!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateJob(data: JobUpdateInput!, where: JobWhereUniqueInput!): Job
   updateApplication(data: ApplicationUpdateInput!, where: ApplicationWhereUniqueInput!): Application
   updateFavorite(data: FavoriteUpdateInput!, where: FavoriteWhereUniqueInput!): Favorite
-  updateLocation(data: LocationUpdateInput!, where: LocationWhereUniqueInput!): Location
+  updateCompany(data: CompanyUpdateInput!, where: CompanyWhereUniqueInput!): Company
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   updateSkill(data: SkillUpdateInput!, where: SkillWhereUniqueInput!): Skill
+  updateLocation(data: LocationUpdateInput!, where: LocationWhereUniqueInput!): Location
   deleteUser(where: UserWhereUniqueInput!): User
   deleteJob(where: JobWhereUniqueInput!): Job
   deleteApplication(where: ApplicationWhereUniqueInput!): Application
   deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
-  deleteLocation(where: LocationWhereUniqueInput!): Location
+  deleteCompany(where: CompanyWhereUniqueInput!): Company
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteSkill(where: SkillWhereUniqueInput!): Skill
+  deleteLocation(where: LocationWhereUniqueInput!): Location
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertJob(where: JobWhereUniqueInput!, create: JobCreateInput!, update: JobUpdateInput!): Job!
   upsertApplication(where: ApplicationWhereUniqueInput!, create: ApplicationCreateInput!, update: ApplicationUpdateInput!): Application!
   upsertFavorite(where: FavoriteWhereUniqueInput!, create: FavoriteCreateInput!, update: FavoriteUpdateInput!): Favorite!
-  upsertLocation(where: LocationWhereUniqueInput!, create: LocationCreateInput!, update: LocationUpdateInput!): Location!
+  upsertCompany(where: CompanyWhereUniqueInput!, create: CompanyCreateInput!, update: CompanyUpdateInput!): Company!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
   upsertSkill(where: SkillWhereUniqueInput!, create: SkillCreateInput!, update: SkillUpdateInput!): Skill!
+  upsertLocation(where: LocationWhereUniqueInput!, create: LocationCreateInput!, update: LocationUpdateInput!): Location!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyJobs(data: JobUpdateManyMutationInput!, where: JobWhereInput): BatchPayload!
-  updateManyLocations(data: LocationUpdateManyMutationInput!, where: LocationWhereInput): BatchPayload!
+  updateManyCompanies(data: CompanyUpdateManyMutationInput!, where: CompanyWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
   updateManySkills(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
+  updateManyLocations(data: LocationUpdateManyMutationInput!, where: LocationWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyJobs(where: JobWhereInput): BatchPayload!
   deleteManyApplications(where: ApplicationWhereInput): BatchPayload!
   deleteManyFavorites(where: FavoriteWhereInput): BatchPayload!
-  deleteManyLocations(where: LocationWhereInput): BatchPayload!
+  deleteManyCompanies(where: CompanyWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
   deleteManySkills(where: SkillWhereInput): BatchPayload!
+  deleteManyLocations(where: LocationWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -2711,28 +2969,41 @@ type PageInfo {
   endCursor: String
 }
 
+enum Permission {
+  SUDO
+  ADMIN
+  USER
+  JOBCREATE
+  JOBUPDATE
+  JOBDELETE
+  PERMISSIONUPDATE
+}
+
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job]!
   applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application]!
   favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite]!
-  locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
+  companies(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Company]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
+  locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
   user(where: UserWhereUniqueInput!): User
   job(where: JobWhereUniqueInput!): Job
   application(where: ApplicationWhereUniqueInput!): Application
   favorite(where: FavoriteWhereUniqueInput!): Favorite
-  location(where: LocationWhereUniqueInput!): Location
+  company(where: CompanyWhereUniqueInput!): Company
   category(where: CategoryWhereUniqueInput!): Category
   skill(where: SkillWhereUniqueInput!): Skill
+  location(where: LocationWhereUniqueInput!): Location
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   jobsConnection(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): JobConnection!
   applicationsConnection(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ApplicationConnection!
   favoritesConnection(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FavoriteConnection!
-  locationsConnection(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocationConnection!
+  companiesConnection(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CompanyConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
   skillsConnection(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SkillConnection!
+  locationsConnection(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocationConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -3126,9 +3397,10 @@ type Subscription {
   job(where: JobSubscriptionWhereInput): JobSubscriptionPayload
   application(where: ApplicationSubscriptionWhereInput): ApplicationSubscriptionPayload
   favorite(where: FavoriteSubscriptionWhereInput): FavoriteSubscriptionPayload
-  location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
+  company(where: CompanySubscriptionWhereInput): CompanySubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
   skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
+  location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
 }
 
 type User implements Node {
@@ -3143,6 +3415,8 @@ type User implements Node {
   location: Location
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
   favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite!]
+  permissions: [Permission!]!
+  company: Company
 }
 
 """A connection to a list of items."""
@@ -3160,11 +3434,18 @@ input UserCreateInput {
   name: String!
   email: String!
   password: String!
+  permissions: UserCreatepermissionsInput
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
+  company: CompanyCreateOneWithoutUsersInput
+}
+
+input UserCreateManyWithoutCompanyInput {
+  create: [UserCreateWithoutCompanyInput!]
+  connect: [UserWhereUniqueInput!]
 }
 
 input UserCreateManyWithoutLocationInput {
@@ -3192,11 +3473,30 @@ input UserCreateOneWithoutJobsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreatepermissionsInput {
+  set: [Permission!]
+}
+
 input UserCreateWithoutApplicationsInput {
   id: ID
   name: String!
   email: String!
   password: String!
+  permissions: UserCreatepermissionsInput
+  jobs: JobCreateManyWithoutAuthorInput
+  location: LocationCreateOneWithoutUsersInput
+  skills: SkillCreateManyWithoutUsersInput
+  favorites: FavoriteCreateManyWithoutUserInput
+  company: CompanyCreateOneWithoutUsersInput
+}
+
+input UserCreateWithoutCompanyInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
+  permissions: UserCreatepermissionsInput
+  applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
@@ -3208,10 +3508,12 @@ input UserCreateWithoutFavoritesInput {
   name: String!
   email: String!
   password: String!
+  permissions: UserCreatepermissionsInput
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
+  company: CompanyCreateOneWithoutUsersInput
 }
 
 input UserCreateWithoutJobsInput {
@@ -3219,10 +3521,12 @@ input UserCreateWithoutJobsInput {
   name: String!
   email: String!
   password: String!
+  permissions: UserCreatepermissionsInput
   applications: ApplicationCreateManyWithoutUserInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
+  company: CompanyCreateOneWithoutUsersInput
 }
 
 input UserCreateWithoutLocationInput {
@@ -3230,10 +3534,12 @@ input UserCreateWithoutLocationInput {
   name: String!
   email: String!
   password: String!
+  permissions: UserCreatepermissionsInput
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
+  company: CompanyCreateOneWithoutUsersInput
 }
 
 input UserCreateWithoutSkillsInput {
@@ -3241,10 +3547,12 @@ input UserCreateWithoutSkillsInput {
   name: String!
   email: String!
   password: String!
+  permissions: UserCreatepermissionsInput
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
+  company: CompanyCreateOneWithoutUsersInput
 }
 
 """An edge in a connection."""
@@ -3278,6 +3586,7 @@ type UserPreviousValues {
   password: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  permissions: [Permission!]!
 }
 
 input UserScalarWhereInput {
@@ -3536,23 +3845,39 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
+  permissions: UserUpdatepermissionsInput
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
+  company: CompanyUpdateOneWithoutUsersInput
 }
 
 input UserUpdateManyDataInput {
   name: String
   email: String
   password: String
+  permissions: UserUpdatepermissionsInput
 }
 
 input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+  permissions: UserUpdatepermissionsInput
+}
+
+input UserUpdateManyWithoutCompanyInput {
+  create: [UserCreateWithoutCompanyInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  delete: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueWithoutCompanyInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  deleteMany: [UserScalarWhereInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutCompanyInput!]
 }
 
 input UserUpdateManyWithoutLocationInput {
@@ -3605,10 +3930,28 @@ input UserUpdateOneRequiredWithoutJobsInput {
   upsert: UserUpsertWithoutJobsInput
 }
 
+input UserUpdatepermissionsInput {
+  set: [Permission!]
+}
+
 input UserUpdateWithoutApplicationsDataInput {
   name: String
   email: String
   password: String
+  permissions: UserUpdatepermissionsInput
+  jobs: JobUpdateManyWithoutAuthorInput
+  location: LocationUpdateOneWithoutUsersInput
+  skills: SkillUpdateManyWithoutUsersInput
+  favorites: FavoriteUpdateManyWithoutUserInput
+  company: CompanyUpdateOneWithoutUsersInput
+}
+
+input UserUpdateWithoutCompanyDataInput {
+  name: String
+  email: String
+  password: String
+  permissions: UserUpdatepermissionsInput
+  applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
@@ -3619,40 +3962,53 @@ input UserUpdateWithoutFavoritesDataInput {
   name: String
   email: String
   password: String
+  permissions: UserUpdatepermissionsInput
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
+  company: CompanyUpdateOneWithoutUsersInput
 }
 
 input UserUpdateWithoutJobsDataInput {
   name: String
   email: String
   password: String
+  permissions: UserUpdatepermissionsInput
   applications: ApplicationUpdateManyWithoutUserInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
+  company: CompanyUpdateOneWithoutUsersInput
 }
 
 input UserUpdateWithoutLocationDataInput {
   name: String
   email: String
   password: String
+  permissions: UserUpdatepermissionsInput
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
+  company: CompanyUpdateOneWithoutUsersInput
 }
 
 input UserUpdateWithoutSkillsDataInput {
   name: String
   email: String
   password: String
+  permissions: UserUpdatepermissionsInput
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
+  company: CompanyUpdateOneWithoutUsersInput
+}
+
+input UserUpdateWithWhereUniqueWithoutCompanyInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateWithoutCompanyDataInput!
 }
 
 input UserUpdateWithWhereUniqueWithoutLocationInput {
@@ -3678,6 +4034,12 @@ input UserUpsertWithoutFavoritesInput {
 input UserUpsertWithoutJobsInput {
   update: UserUpdateWithoutJobsDataInput!
   create: UserCreateWithoutJobsInput!
+}
+
+input UserUpsertWithWhereUniqueWithoutCompanyInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateWithoutCompanyDataInput!
+  create: UserCreateWithoutCompanyInput!
 }
 
 input UserUpsertWithWhereUniqueWithoutLocationInput {
@@ -3918,6 +4280,7 @@ input UserWhereInput {
   favorites_every: FavoriteWhereInput
   favorites_some: FavoriteWhereInput
   favorites_none: FavoriteWhereInput
+  company: CompanyWhereInput
 }
 
 input UserWhereUniqueInput {

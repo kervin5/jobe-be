@@ -6,6 +6,16 @@ enum Status {
   EXPIRED
 }
 
+enum Permission {
+  SUDO
+  ADMIN
+  USER
+  JOBCREATE
+  JOBUPDATE
+  JOBDELETE
+  PERMISSIONUPDATE
+}
+
 type User {
   id: ID! @id
   name: String!
@@ -18,6 +28,8 @@ type User {
   location: Location
   skills: [Skill]
   favorites: [Favorite]
+  permissions: [Permission] @scalarList(strategy: RELATION)
+  company: Company
 }
 
 type Job {
@@ -53,6 +65,13 @@ type Favorite {
   id: ID! @id
   user: User!
   job: Job!
+}
+
+type Company {
+  id: ID! @id
+  name: String!
+  location: Location
+  users: [User]
 }
 
 type Location {
