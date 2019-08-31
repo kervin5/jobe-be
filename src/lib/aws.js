@@ -1,17 +1,23 @@
 const aws = require('aws-sdk'); 
 
 // Configure aws with your accessKeyId and your secretAccessKey
-aws.config.update({
-    region: 'us-west-1', // Put your aws region here
-    accessKeyId: process.env.AWSAccessKeyId,
-    secretAccessKey: process.env.AWSSecretKey
-});
+// aws.config.update({
+//     region: 'us-west-1', // Put your aws region here
+//     accessKeyId: process.env.AWSAccessKeyId,
+//     secretAccessKey: process.env.AWSSecretKey
+// });
 
 const S3_BUCKET = process.env.bucket;
 
-// Now lets export this function so we can call it from somewhere else
+// Now lets export this function so we can call it from somewhere else 
 exports.sign_s3 = async ({fileName, fileType}) => {
-    const s3 = new aws.S3();  // Create a new instance of S3
+  console.log(process.env.AWSAccessKeyId,process.env.AWSSecretKey);
+    const s3 = new aws.S3({
+      region: 'us-west-1',
+      accessKeyId: process.env.AWSAccessKeyId,
+      secretAccessKey: process.env.AWSSecretKey,
+      Bucket: S3_BUCKET
+    });  // Create a new instance of S3
     let returnData = {};
   // Set up the payload of what we are sending to the S3 api
     const s3Params = {
