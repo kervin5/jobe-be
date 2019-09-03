@@ -212,7 +212,28 @@ const Mutations = {
         }
 
         const result = await sign_s3({fileName:  args.fileName , fileType: args.fileType});
+
         return result.success ? result.data : null;  
+    },
+    async createResume(parent, args, ctx, info) {
+        if(!userExists(ctx)) {
+            return null;
+        }
+
+        const result = await ctx.db.mutation.createResume({data: {
+            file: {
+                create: {
+                    path: args.path,
+                    mimetype: args.type
+                }
+            },
+
+            user: {
+                connect: {id: ctx.request.user.userId}
+            }
+        }}, info)
+
+        return result;
     }
 };
 

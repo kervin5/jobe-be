@@ -60,7 +60,6 @@ type Application {
   job: Job!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  resumes: [Resume]
 }
 
 type Favorite {
@@ -100,7 +99,8 @@ type Skill {
 
 type File {
   id: ID! @id
-  uri: String!
+  path: String!
+  mimetype: String!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
