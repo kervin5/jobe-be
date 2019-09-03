@@ -211,7 +211,7 @@ const Mutations = {
             return null;
         }
 
-        const result = await sign_s3({fileName: args.fileType, fileType: args.fileName});
+        const result = await sign_s3({fileName:  args.fileName , fileType: args.fileType});
         return result.success ? result.data : null;  
     }
 };

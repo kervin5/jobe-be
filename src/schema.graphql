@@ -19,6 +19,7 @@ input UpdateJobCustomInput {
 type SignedFileUploadRequest {
     signedRequest: String!
     url: String!
+    acl: String!
 }
 
 type Mutation {
