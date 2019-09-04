@@ -1,5 +1,5 @@
 # source: https://myexactjobsstaging-417309a1d8.herokuapp.com/myexactjobs-staging/prod
-# timestamp: Tue Sep 03 2019 13:17:54 GMT-0700 (Pacific Daylight Time)
+# timestamp: Wed Sep 04 2019 12:58:21 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -44,6 +44,7 @@ type AggregateUser {
 type Application implements Node {
   id: ID!
   user: User!
+  resume: Resume
   job: Job!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -62,6 +63,7 @@ type ApplicationConnection {
 input ApplicationCreateInput {
   id: ID
   user: UserCreateOneWithoutApplicationsInput!
+  resume: ResumeCreateOneInput
   job: JobCreateOneWithoutApplicationsInput!
 }
 
@@ -78,10 +80,12 @@ input ApplicationCreateManyWithoutUserInput {
 input ApplicationCreateWithoutJobInput {
   id: ID
   user: UserCreateOneWithoutApplicationsInput!
+  resume: ResumeCreateOneInput
 }
 
 input ApplicationCreateWithoutUserInput {
   id: ID
+  resume: ResumeCreateOneInput
   job: JobCreateOneWithoutApplicationsInput!
 }
 
@@ -243,6 +247,7 @@ input ApplicationSubscriptionWhereInput {
 
 input ApplicationUpdateInput {
   user: UserUpdateOneRequiredWithoutApplicationsInput
+  resume: ResumeUpdateOneInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
 }
 
@@ -270,9 +275,11 @@ input ApplicationUpdateManyWithoutUserInput {
 
 input ApplicationUpdateWithoutJobDataInput {
   user: UserUpdateOneRequiredWithoutApplicationsInput
+  resume: ResumeUpdateOneInput
 }
 
 input ApplicationUpdateWithoutUserDataInput {
+  resume: ResumeUpdateOneInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
 }
 
@@ -392,6 +399,7 @@ input ApplicationWhereInput {
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
   user: UserWhereInput
+  resume: ResumeWhereInput
   job: JobWhereInput
 }
 
@@ -3210,40 +3218,40 @@ type Mutation {
   createFavorite(data: FavoriteCreateInput!): Favorite!
   createCompany(data: CompanyCreateInput!): Company!
   createCategory(data: CategoryCreateInput!): Category!
-  createResume(data: ResumeCreateInput!): Resume!
   createFile(data: FileCreateInput!): File!
   createSkill(data: SkillCreateInput!): Skill!
   createLocation(data: LocationCreateInput!): Location!
+  createResume(data: ResumeCreateInput!): Resume!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateJob(data: JobUpdateInput!, where: JobWhereUniqueInput!): Job
   updateApplication(data: ApplicationUpdateInput!, where: ApplicationWhereUniqueInput!): Application
   updateFavorite(data: FavoriteUpdateInput!, where: FavoriteWhereUniqueInput!): Favorite
   updateCompany(data: CompanyUpdateInput!, where: CompanyWhereUniqueInput!): Company
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
-  updateResume(data: ResumeUpdateInput!, where: ResumeWhereUniqueInput!): Resume
   updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
   updateSkill(data: SkillUpdateInput!, where: SkillWhereUniqueInput!): Skill
   updateLocation(data: LocationUpdateInput!, where: LocationWhereUniqueInput!): Location
+  updateResume(data: ResumeUpdateInput!, where: ResumeWhereUniqueInput!): Resume
   deleteUser(where: UserWhereUniqueInput!): User
   deleteJob(where: JobWhereUniqueInput!): Job
   deleteApplication(where: ApplicationWhereUniqueInput!): Application
   deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
   deleteCompany(where: CompanyWhereUniqueInput!): Company
   deleteCategory(where: CategoryWhereUniqueInput!): Category
-  deleteResume(where: ResumeWhereUniqueInput!): Resume
   deleteFile(where: FileWhereUniqueInput!): File
   deleteSkill(where: SkillWhereUniqueInput!): Skill
   deleteLocation(where: LocationWhereUniqueInput!): Location
+  deleteResume(where: ResumeWhereUniqueInput!): Resume
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertJob(where: JobWhereUniqueInput!, create: JobCreateInput!, update: JobUpdateInput!): Job!
   upsertApplication(where: ApplicationWhereUniqueInput!, create: ApplicationCreateInput!, update: ApplicationUpdateInput!): Application!
   upsertFavorite(where: FavoriteWhereUniqueInput!, create: FavoriteCreateInput!, update: FavoriteUpdateInput!): Favorite!
   upsertCompany(where: CompanyWhereUniqueInput!, create: CompanyCreateInput!, update: CompanyUpdateInput!): Company!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
-  upsertResume(where: ResumeWhereUniqueInput!, create: ResumeCreateInput!, update: ResumeUpdateInput!): Resume!
   upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
   upsertSkill(where: SkillWhereUniqueInput!, create: SkillCreateInput!, update: SkillUpdateInput!): Skill!
   upsertLocation(where: LocationWhereUniqueInput!, create: LocationCreateInput!, update: LocationUpdateInput!): Location!
+  upsertResume(where: ResumeWhereUniqueInput!, create: ResumeCreateInput!, update: ResumeUpdateInput!): Resume!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyJobs(data: JobUpdateManyMutationInput!, where: JobWhereInput): BatchPayload!
   updateManyCompanies(data: CompanyUpdateManyMutationInput!, where: CompanyWhereInput): BatchPayload!
@@ -3257,10 +3265,10 @@ type Mutation {
   deleteManyFavorites(where: FavoriteWhereInput): BatchPayload!
   deleteManyCompanies(where: CompanyWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
-  deleteManyResumes(where: ResumeWhereInput): BatchPayload!
   deleteManyFiles(where: FileWhereInput): BatchPayload!
   deleteManySkills(where: SkillWhereInput): BatchPayload!
   deleteManyLocations(where: LocationWhereInput): BatchPayload!
+  deleteManyResumes(where: ResumeWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -3307,30 +3315,30 @@ type Query {
   favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite]!
   companies(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Company]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
-  resumes(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Resume]!
   files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File]!
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
   locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
+  resumes(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Resume]!
   user(where: UserWhereUniqueInput!): User
   job(where: JobWhereUniqueInput!): Job
   application(where: ApplicationWhereUniqueInput!): Application
   favorite(where: FavoriteWhereUniqueInput!): Favorite
   company(where: CompanyWhereUniqueInput!): Company
   category(where: CategoryWhereUniqueInput!): Category
-  resume(where: ResumeWhereUniqueInput!): Resume
   file(where: FileWhereUniqueInput!): File
   skill(where: SkillWhereUniqueInput!): Skill
   location(where: LocationWhereUniqueInput!): Location
+  resume(where: ResumeWhereUniqueInput!): Resume
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   jobsConnection(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): JobConnection!
   applicationsConnection(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ApplicationConnection!
   favoritesConnection(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FavoriteConnection!
   companiesConnection(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CompanyConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
-  resumesConnection(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ResumeConnection!
   filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
   skillsConnection(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SkillConnection!
   locationsConnection(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocationConnection!
+  resumesConnection(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ResumeConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -3368,6 +3376,11 @@ input ResumeCreateInput {
 input ResumeCreateManyWithoutUserInput {
   create: [ResumeCreateWithoutUserInput!]
   connect: [ResumeWhereUniqueInput!]
+}
+
+input ResumeCreateOneInput {
+  create: ResumeCreateInput
+  connect: ResumeWhereUniqueInput
 }
 
 input ResumeCreateWithoutUserInput {
@@ -3532,6 +3545,12 @@ input ResumeSubscriptionWhereInput {
   node: ResumeWhereInput
 }
 
+input ResumeUpdateDataInput {
+  file: FileUpdateOneRequiredInput
+  user: UserUpdateOneRequiredWithoutResumesInput
+  skills: SkillUpdateManyInput
+}
+
 input ResumeUpdateInput {
   file: FileUpdateOneRequiredInput
   user: UserUpdateOneRequiredWithoutResumesInput
@@ -3549,6 +3568,15 @@ input ResumeUpdateManyWithoutUserInput {
   upsert: [ResumeUpsertWithWhereUniqueWithoutUserInput!]
 }
 
+input ResumeUpdateOneInput {
+  create: ResumeCreateInput
+  connect: ResumeWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: ResumeUpdateDataInput
+  upsert: ResumeUpsertNestedInput
+}
+
 input ResumeUpdateWithoutUserDataInput {
   file: FileUpdateOneRequiredInput
   skills: SkillUpdateManyInput
@@ -3557,6 +3585,11 @@ input ResumeUpdateWithoutUserDataInput {
 input ResumeUpdateWithWhereUniqueWithoutUserInput {
   where: ResumeWhereUniqueInput!
   data: ResumeUpdateWithoutUserDataInput!
+}
+
+input ResumeUpsertNestedInput {
+  update: ResumeUpdateDataInput!
+  create: ResumeCreateInput!
 }
 
 input ResumeUpsertWithWhereUniqueWithoutUserInput {
@@ -4090,10 +4123,10 @@ type Subscription {
   favorite(where: FavoriteSubscriptionWhereInput): FavoriteSubscriptionPayload
   company(where: CompanySubscriptionWhereInput): CompanySubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
-  resume(where: ResumeSubscriptionWhereInput): ResumeSubscriptionPayload
   file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
   skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
   location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
+  resume(where: ResumeSubscriptionWhereInput): ResumeSubscriptionPayload
 }
 
 type User implements Node {
