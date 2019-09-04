@@ -19,7 +19,6 @@ const Mutations = {
     
 
     async signup(parent, args, ctx, info) {
-        console.log(args);
         const salt = await bcrypt.genSalt(10);
         const user = await ctx.db.mutation.createUser({
             data: {
