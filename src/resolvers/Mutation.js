@@ -24,7 +24,7 @@ const Mutations = {
             data: {
                 ...args,
                 password: await bcrypt.hash(args.password, salt),
-                permissions: { set:  ['USER'] }
+                permissions: 'USER' 
             }
         });
 
@@ -43,6 +43,7 @@ const Mutations = {
     async login(parent, {email, password}, ctx, info){
         // 1. check if there is a user with that email
         const user = await ctx.db.query.user({ where: { email } });
+        console.log(user);
         if (!user) {
         throw new Error(`No such user found for email ${email}`);
         }
@@ -103,9 +104,10 @@ const Mutations = {
             throw new Error(`You are not authorized to perform this action`);
         }
 
-        const user = await ctx.db.query.user({where: {id: user.userId}});
+        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}},info);
 
-        if(user.permissions.includes('USER') && user.permissions.length === 1) {
+        console.log(user);
+        if(user.permissions ==='USER')  {
             throw new Error(`You are not authorized to perform this action`);
         }
 

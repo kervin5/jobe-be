@@ -7,13 +7,15 @@ enum Status {
 }
 
 enum Permission {
-  SUDO
-  ADMIN
   USER
-  JOBCREATE
-  JOBUPDATE
-  JOBDELETE
-  PERMISSIONUPDATE
+  ADMIN
+  SUDO
+  
+ 
+  # JOBCREATE
+  # JOBUPDATE
+  # JOBDELETE
+  # PERMISSIONUPDATE
 }
 
 type User {
@@ -28,7 +30,7 @@ type User {
   location: Location
   skills: [Skill]
   favorites: [Favorite]
-  permissions: [Permission] @scalarList(strategy: RELATION)
+  permissions: Permission!
   company: Company
   resumes: [Resume]
 }
