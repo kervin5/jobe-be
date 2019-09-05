@@ -103,16 +103,17 @@ const Mutations = {
             throw new Error(`You are not authorized to perform this action`);
         }
 
-        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}});
+        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}},`{ id email permissions company { id }}`);
 
         console.log(user);
         if(user.permissions ==='USER')  {
             throw new Error(`You are not authorized to perform this action`);
         }
 
-        args.author = { connect: {id: ctx.request.user.userId}};
+       
         const jobLocation = args.location.create;
 
+        // Checks if location exists in DB
         const locationExists =  await prisma.exists.Location({
             ...jobLocation
         });
@@ -133,7 +134,9 @@ const Mutations = {
                 ...args,
                 categories:  {connect : args.categories.map(category => ({name: category}))},
                 skills: {connect : args.skills.map(skill => ({name: skill}))},
-                status: 'DRAFT'
+                status: 'DRAFT',
+                author: { connect: {id: ctx.request.user.userId}},
+                company: {connect: {id: user.company.id}}
             }
         }, info);
         
