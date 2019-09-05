@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../../startup/db');
 const { forwardTo } = require('prisma-binding');
-const {userExists} = require('../lib/utils');
+const { userExists } = require('../lib/utils');
 const { sign_s3 } = require('../lib/aws');
 
 const Mutations = {
@@ -16,7 +16,7 @@ const Mutations = {
         }, info);
         return user;
     },
-    
+
 
     async signup(parent, args, ctx, info) {
         const salt = await bcrypt.genSalt(10);
@@ -24,7 +24,7 @@ const Mutations = {
             data: {
                 ...args,
                 password: await bcrypt.hash(args.password, salt),
-                permissions: 'USER' 
+                permissions: 'USER'
             }
         });
 
@@ -40,16 +40,16 @@ const Mutations = {
         return token;
     },
 
-    async login(parent, {email, password}, ctx, info){
+    async login(parent, { email, password }, ctx, info) {
         // 1. check if there is a user with that email
         const user = await ctx.db.query.user({ where: { email } });
         if (!user) {
-        throw new Error(`No such user found for email ${email}`);
+            throw new Error(`No such user found for email ${email}`);
         }
         // 2. Check if their password is correct
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) {
-        throw new Error('Invalid Password!');
+            throw new Error('Invalid Password!');
         }
         // 3. generate the JWT Token
         const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
@@ -70,11 +70,11 @@ const Mutations = {
     }
     ,
     async createLocation(parent, args, ctx, info) {
-        
+
         const location = await ctx.db.mutation.createLocation({
             data: {
                 ...args
-                
+
             }
         }, info);
         return location;
@@ -103,14 +103,17 @@ const Mutations = {
             throw new Error(`You are not authorized to perform this action`);
         }
 
+<<<<<<< HEAD
         const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}},`{ id email permissions company { id }}`);
+=======
+        const user = await ctx.db.query.user({ where: { id: ctx.request.user.userId } });
+>>>>>>> b96e770bd9e4fd1e901e2b4efd4775a904fd1464
 
         console.log(user);
-        if(user.permissions ==='USER')  {
+        if (user.permissions === 'USER') {
             throw new Error(`You are not authorized to perform this action`);
         }
 
-       
         const jobLocation = args.location.create;
 
         // Checks if location exists in DB
@@ -118,7 +121,7 @@ const Mutations = {
             ...jobLocation
         });
 
-        if(locationExists) {
+        if (locationExists) {
             const existingLocations = await ctx.db.query.locations({
                 where: {
                     ...jobLocation
@@ -126,7 +129,7 @@ const Mutations = {
             });
             //Deletes the create mutation and forces connection to existing location if the location already exists
             delete args.location.create;
-            args.location.connect = {id: existingLocations[0].id};
+            args.location.connect = { id: existingLocations[0].id };
         }
 
         const job = await ctx.db.mutation.createJob({
@@ -139,17 +142,17 @@ const Mutations = {
                 company: {connect: {id: user.company.id}}
             }
         }, info);
-        
+
         return job;
     },
     async updateJob(parent, args, ctx, info) {
-        if(args.location) {
+        if (args.location) {
             const jobLocation = args.data.location.create;
-            const locationExists =  await prisma.exists.Location({
+            const locationExists = await prisma.exists.Location({
                 ...jobLocation
             });
-    
-            if(locationExists) {
+
+            if (locationExists) {
                 const existingLocations = await ctx.db.query.locations({
                     where: {
                         ...jobLocation
@@ -157,25 +160,25 @@ const Mutations = {
                 });
                 //Deletes the create mutation and forces connection to existing location if the location already exists
                 delete args.data.location.create;
-                args.data.location.connect = {id: existingLocations[0].id};
+                args.data.location.connect = { id: existingLocations[0].id };
             }
-        } 
+        }
         // console.log(args);
         //Connect User to job
-        if(args.data.categories) {
-            args.data.categories = {set : args.data.categories.map(category => ({name: category})) };
+        if (args.data.categories) {
+            args.data.categories = { set: args.data.categories.map(category => ({ name: category })) };
         }
 
-        if(args.data.skills) {
-            args.data.skills = {set: args.data.skills.map(skill => ({name: skill}))};
+        if (args.data.skills) {
+            args.data.skills = { set: args.data.skills.map(skill => ({ name: skill })) };
         }
 
-        if(!args.data.status) {
+        if (!args.data.status) {
             args.data.status = "EDITING";
         }
-        
+
         const job = await ctx.db.mutation.updateJob(args, info);
-        
+
         return job;
     }
     ,
@@ -184,14 +187,14 @@ const Mutations = {
             return null;
         }
 
-        args.user = { connect: {id: ctx.request.user.userId}};
+        args.user = { connect: { id: ctx.request.user.userId } };
 
         const application = await ctx.db.mutation.createApplication({
             data: {
                 ...args
             }
         }, info);
-        
+
         return application;
     },
 
@@ -200,7 +203,7 @@ const Mutations = {
             return null;
         }
 
-        args.user = { connect: {id: ctx.request.user.userId}};
+        args.user = { connect: { id: ctx.request.user.userId } };
 
         const result = await ctx.db.mutation.createFavorite({
             data: {
@@ -212,7 +215,7 @@ const Mutations = {
     },
 
     async deleteFavorite(parent, args, ctx, info) {
-        if(!userExists(ctx)) {
+        if (!userExists(ctx)) {
             return null;
         }
 
@@ -220,36 +223,47 @@ const Mutations = {
 
     },
     async signFileUpload(parent, args, ctx, info) {
-        if(!userExists(ctx)) {
+        if (!userExists(ctx)) {
             return null;
         }
 
-        const result = await sign_s3({fileName:  args.fileName , fileType: args.fileType});
+        const result = await sign_s3({ fileName: args.fileName, fileType: args.fileType });
 
-        return result.success ? result.data : null;  
+        return result.success ? result.data : null;
     },
     async createResume(parent, args, ctx, info) {
-        if(!userExists(ctx)) {
+        if (!userExists(ctx)) {
             return null;
         }
 
-        const result = await ctx.db.mutation.createResume({data: {
-            file: {
-                create: {
-                    path: args.path,
-                    mimetype: args.type
-                }
-            },
+        const result = await ctx.db.mutation.createResume({
+            data: {
+                file: {
+                    create: {
+                        path: args.path,
+                        mimetype: args.type
+                    }
+                },
 
-            user: {
-                connect: {id: ctx.request.user.userId}
-            },
+                user: {
+                    connect: { id: ctx.request.user.userId }
+                },
 
-            title: args.title
-        
-        }}, info)
+                title: args.title
+
+            }
+        }, info)
 
         return result;
+    },
+
+    async createCompany(parent, args, ctx, info) {
+        const company = await ctx.db.mutation.createCompany({
+            data: {
+                ...args
+            }
+        }, info)
+        return company;
     }
 };
 

@@ -76,6 +76,7 @@ type Mutation {
     login(email: String! password: String!): String!
     signup(name: String! password: String! email: String!): String!
     logout:String
+    createCompany(name: String! description: String!): Company!
 }
 
 type Query {
