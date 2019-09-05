@@ -52,6 +52,7 @@ type Job {
   skills: [Skill!]!
   status(jobStatus: Status = DRAFT): Status
   favorites: [Favorite]
+  company: Company!
 }
 
 type Application {
@@ -73,7 +74,9 @@ type Company {
   id: ID! @id
   name: String!
   location: Location
+  description: String!
   users: [User]
+  jobs: [Job]
 }
 
 type Location {

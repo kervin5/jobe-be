@@ -1,5 +1,5 @@
 # source: https://myexactjobsstaging-417309a1d8.herokuapp.com/myexactjobs-staging/prod
-# timestamp: Wed Sep 04 2019 15:34:11 GMT-0700 (Pacific Daylight Time)
+# timestamp: Wed Sep 04 2019 17:22:10 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -741,7 +741,9 @@ type Company implements Node {
   id: ID!
   name: String!
   location: Location
+  description: String!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
 }
 
 """A connection to a list of items."""
@@ -757,8 +759,15 @@ type CompanyConnection {
 input CompanyCreateInput {
   id: ID
   name: String!
+  description: String!
   location: LocationCreateOneInput
   users: UserCreateManyWithoutCompanyInput
+  jobs: JobCreateManyWithoutCompanyInput
+}
+
+input CompanyCreateOneWithoutJobsInput {
+  create: CompanyCreateWithoutJobsInput
+  connect: CompanyWhereUniqueInput
 }
 
 input CompanyCreateOneWithoutUsersInput {
@@ -766,10 +775,20 @@ input CompanyCreateOneWithoutUsersInput {
   connect: CompanyWhereUniqueInput
 }
 
+input CompanyCreateWithoutJobsInput {
+  id: ID
+  name: String!
+  description: String!
+  location: LocationCreateOneInput
+  users: UserCreateManyWithoutCompanyInput
+}
+
 input CompanyCreateWithoutUsersInput {
   id: ID
   name: String!
+  description: String!
   location: LocationCreateOneInput
+  jobs: JobCreateManyWithoutCompanyInput
 }
 
 """An edge in a connection."""
@@ -786,11 +805,14 @@ enum CompanyOrderByInput {
   id_DESC
   name_ASC
   name_DESC
+  description_ASC
+  description_DESC
 }
 
 type CompanyPreviousValues {
   id: ID!
   name: String!
+  description: String!
 }
 
 type CompanySubscriptionPayload {
@@ -832,12 +854,22 @@ input CompanySubscriptionWhereInput {
 
 input CompanyUpdateInput {
   name: String
+  description: String
   location: LocationUpdateOneInput
   users: UserUpdateManyWithoutCompanyInput
+  jobs: JobUpdateManyWithoutCompanyInput
 }
 
 input CompanyUpdateManyMutationInput {
   name: String
+  description: String
+}
+
+input CompanyUpdateOneRequiredWithoutJobsInput {
+  create: CompanyCreateWithoutJobsInput
+  connect: CompanyWhereUniqueInput
+  update: CompanyUpdateWithoutJobsDataInput
+  upsert: CompanyUpsertWithoutJobsInput
 }
 
 input CompanyUpdateOneWithoutUsersInput {
@@ -849,9 +881,23 @@ input CompanyUpdateOneWithoutUsersInput {
   upsert: CompanyUpsertWithoutUsersInput
 }
 
+input CompanyUpdateWithoutJobsDataInput {
+  name: String
+  description: String
+  location: LocationUpdateOneInput
+  users: UserUpdateManyWithoutCompanyInput
+}
+
 input CompanyUpdateWithoutUsersDataInput {
   name: String
+  description: String
   location: LocationUpdateOneInput
+  jobs: JobUpdateManyWithoutCompanyInput
+}
+
+input CompanyUpsertWithoutJobsInput {
+  update: CompanyUpdateWithoutJobsDataInput!
+  create: CompanyCreateWithoutJobsInput!
 }
 
 input CompanyUpsertWithoutUsersInput {
@@ -948,10 +994,53 @@ input CompanyWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
   location: LocationWhereInput
   users_every: UserWhereInput
   users_some: UserWhereInput
   users_none: UserWhereInput
+  jobs_every: JobWhereInput
+  jobs_some: JobWhereInput
+  jobs_none: JobWhereInput
 }
 
 input CompanyWhereUniqueInput {
@@ -1543,6 +1632,7 @@ type Job implements Node {
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
   status: Status
   favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite!]
+  company: Company!
 }
 
 """A connection to a list of items."""
@@ -1572,6 +1662,7 @@ input JobCreateInput {
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
+  company: CompanyCreateOneWithoutJobsInput!
 }
 
 input JobCreateManyWithoutAuthorInput {
@@ -1581,6 +1672,11 @@ input JobCreateManyWithoutAuthorInput {
 
 input JobCreateManyWithoutCategoriesInput {
   create: [JobCreateWithoutCategoriesInput!]
+  connect: [JobWhereUniqueInput!]
+}
+
+input JobCreateManyWithoutCompanyInput {
+  create: [JobCreateWithoutCompanyInput!]
   connect: [JobWhereUniqueInput!]
 }
 
@@ -1620,6 +1716,7 @@ input JobCreateWithoutApplicationsInput {
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
+  company: CompanyCreateOneWithoutJobsInput!
 }
 
 input JobCreateWithoutAuthorInput {
@@ -1638,6 +1735,7 @@ input JobCreateWithoutAuthorInput {
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
+  company: CompanyCreateOneWithoutJobsInput!
 }
 
 input JobCreateWithoutCategoriesInput {
@@ -1654,6 +1752,26 @@ input JobCreateWithoutCategoriesInput {
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
+  skills: SkillCreateManyWithoutJobsInput
+  favorites: FavoriteCreateManyWithoutJobInput
+  company: CompanyCreateOneWithoutJobsInput!
+}
+
+input JobCreateWithoutCompanyInput {
+  id: ID
+  title: String!
+  compensationType: String
+  description: String!
+  type: String!
+  maxCompensation: Float!
+  minCompensation: Float!
+  qualifications: String!
+  requirements: String!
+  status: Status
+  author: UserCreateOneWithoutJobsInput!
+  location: LocationCreateOneWithoutJobsInput!
+  applications: ApplicationCreateManyWithoutJobInput
+  categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
 }
@@ -1674,6 +1792,7 @@ input JobCreateWithoutFavoritesInput {
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
+  company: CompanyCreateOneWithoutJobsInput!
 }
 
 input JobCreateWithoutLocationInput {
@@ -1692,6 +1811,7 @@ input JobCreateWithoutLocationInput {
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
+  company: CompanyCreateOneWithoutJobsInput!
 }
 
 input JobCreateWithoutSkillsInput {
@@ -1710,6 +1830,7 @@ input JobCreateWithoutSkillsInput {
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
+  company: CompanyCreateOneWithoutJobsInput!
 }
 
 """An edge in a connection."""
@@ -2205,6 +2326,7 @@ input JobUpdateInput {
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
+  company: CompanyUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateManyDataInput {
@@ -2253,6 +2375,18 @@ input JobUpdateManyWithoutCategoriesInput {
   updateMany: [JobUpdateManyWithWhereNestedInput!]
   deleteMany: [JobScalarWhereInput!]
   upsert: [JobUpsertWithWhereUniqueWithoutCategoriesInput!]
+}
+
+input JobUpdateManyWithoutCompanyInput {
+  create: [JobCreateWithoutCompanyInput!]
+  connect: [JobWhereUniqueInput!]
+  set: [JobWhereUniqueInput!]
+  disconnect: [JobWhereUniqueInput!]
+  delete: [JobWhereUniqueInput!]
+  update: [JobUpdateWithWhereUniqueWithoutCompanyInput!]
+  updateMany: [JobUpdateManyWithWhereNestedInput!]
+  deleteMany: [JobScalarWhereInput!]
+  upsert: [JobUpsertWithWhereUniqueWithoutCompanyInput!]
 }
 
 input JobUpdateManyWithoutLocationInput {
@@ -2313,6 +2447,7 @@ input JobUpdateWithoutApplicationsDataInput {
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
+  company: CompanyUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateWithoutAuthorDataInput {
@@ -2330,6 +2465,7 @@ input JobUpdateWithoutAuthorDataInput {
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
+  company: CompanyUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateWithoutCategoriesDataInput {
@@ -2345,6 +2481,25 @@ input JobUpdateWithoutCategoriesDataInput {
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
+  skills: SkillUpdateManyWithoutJobsInput
+  favorites: FavoriteUpdateManyWithoutJobInput
+  company: CompanyUpdateOneRequiredWithoutJobsInput
+}
+
+input JobUpdateWithoutCompanyDataInput {
+  title: String
+  compensationType: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+  status: Status
+  author: UserUpdateOneRequiredWithoutJobsInput
+  location: LocationUpdateOneRequiredWithoutJobsInput
+  applications: ApplicationUpdateManyWithoutJobInput
+  categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
 }
@@ -2364,6 +2519,7 @@ input JobUpdateWithoutFavoritesDataInput {
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
+  company: CompanyUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateWithoutLocationDataInput {
@@ -2381,6 +2537,7 @@ input JobUpdateWithoutLocationDataInput {
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
+  company: CompanyUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateWithoutSkillsDataInput {
@@ -2398,6 +2555,7 @@ input JobUpdateWithoutSkillsDataInput {
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
+  company: CompanyUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateWithWhereUniqueWithoutAuthorInput {
@@ -2408,6 +2566,11 @@ input JobUpdateWithWhereUniqueWithoutAuthorInput {
 input JobUpdateWithWhereUniqueWithoutCategoriesInput {
   where: JobWhereUniqueInput!
   data: JobUpdateWithoutCategoriesDataInput!
+}
+
+input JobUpdateWithWhereUniqueWithoutCompanyInput {
+  where: JobWhereUniqueInput!
+  data: JobUpdateWithoutCompanyDataInput!
 }
 
 input JobUpdateWithWhereUniqueWithoutLocationInput {
@@ -2440,6 +2603,12 @@ input JobUpsertWithWhereUniqueWithoutCategoriesInput {
   where: JobWhereUniqueInput!
   update: JobUpdateWithoutCategoriesDataInput!
   create: JobCreateWithoutCategoriesInput!
+}
+
+input JobUpsertWithWhereUniqueWithoutCompanyInput {
+  where: JobWhereUniqueInput!
+  update: JobUpdateWithoutCompanyDataInput!
+  create: JobCreateWithoutCompanyInput!
 }
 
 input JobUpsertWithWhereUniqueWithoutLocationInput {
@@ -2855,6 +3024,7 @@ input JobWhereInput {
   favorites_every: FavoriteWhereInput
   favorites_some: FavoriteWhereInput
   favorites_none: FavoriteWhereInput
+  company: CompanyWhereInput
 }
 
 input JobWhereUniqueInput {
