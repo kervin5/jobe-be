@@ -99,7 +99,19 @@ const Mutations = {
     },
 
     async createJob(parent, args, ctx, info) {
+        if (!ctx.request.user.userId) {
+            throw new Error(`You are not authorized to perform this action`);
+        }
+
+        const user = await ctx.db.query.user({where: {id: user.userId}});
+
+        if(user.permissions.includes('USER') && user.permissions.length === 1) {
+            throw new Error(`You are not authorized to perform this action`);
+        }
+
+        args.author = { connect: {id: ctx.request.user.userId}};
         const jobLocation = args.location.create;
+
         const locationExists =  await prisma.exists.Location({
             ...jobLocation
         });
@@ -115,15 +127,12 @@ const Mutations = {
             args.location.connect = {id: existingLocations[0].id};
         }
 
-        //Connect User to job
-        args.author = { connect: {id: ctx.request.user.userId}};
-        args.categories = {connect : args.categories.map(category => ({name: category}))};
-        args.skills = {connect : args.skills.map(skill => ({name: skill}))};
-        args.status = 'DRAFT';
-
         const job = await ctx.db.mutation.createJob({
             data: {
-                ...args
+                ...args,
+                categories:  {connect : args.categories.map(category => ({name: category}))},
+                skill: {connect : args.skills.map(skill => ({name: skill}))},
+                status: 'DRAFT'
             }
         }, info);
         
