@@ -108,6 +108,7 @@ type File {
 
 type Resume {
   id: ID! @id
+  title: String!
   file: File!
   user: User!
   skills: [Skill]

@@ -1,5 +1,5 @@
 # source: https://myexactjobsstaging-417309a1d8.herokuapp.com/myexactjobs-staging/prod
-# timestamp: Wed Sep 04 2019 12:58:21 GMT-0700 (Pacific Daylight Time)
+# timestamp: Wed Sep 04 2019 15:34:11 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -3259,6 +3259,7 @@ type Mutation {
   updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
   updateManySkills(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
   updateManyLocations(data: LocationUpdateManyMutationInput!, where: LocationWhereInput): BatchPayload!
+  updateManyResumes(data: ResumeUpdateManyMutationInput!, where: ResumeWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyJobs(where: JobWhereInput): BatchPayload!
   deleteManyApplications(where: ApplicationWhereInput): BatchPayload!
@@ -3349,6 +3350,7 @@ type Query {
 
 type Resume implements Node {
   id: ID!
+  title: String!
   file: File!
   user: User!
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
@@ -3368,6 +3370,7 @@ type ResumeConnection {
 
 input ResumeCreateInput {
   id: ID
+  title: String!
   file: FileCreateOneInput!
   user: UserCreateOneWithoutResumesInput!
   skills: SkillCreateManyInput
@@ -3385,6 +3388,7 @@ input ResumeCreateOneInput {
 
 input ResumeCreateWithoutUserInput {
   id: ID
+  title: String!
   file: FileCreateOneInput!
   skills: SkillCreateManyInput
 }
@@ -3401,6 +3405,8 @@ type ResumeEdge {
 enum ResumeOrderByInput {
   id_ASC
   id_DESC
+  title_ASC
+  title_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -3409,6 +3415,7 @@ enum ResumeOrderByInput {
 
 type ResumePreviousValues {
   id: ID!
+  title: String!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -3462,6 +3469,46 @@ input ResumeScalarWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
   createdAt: DateTime
 
   """All values that are not equal to given value."""
@@ -3546,15 +3593,25 @@ input ResumeSubscriptionWhereInput {
 }
 
 input ResumeUpdateDataInput {
+  title: String
   file: FileUpdateOneRequiredInput
   user: UserUpdateOneRequiredWithoutResumesInput
   skills: SkillUpdateManyInput
 }
 
 input ResumeUpdateInput {
+  title: String
   file: FileUpdateOneRequiredInput
   user: UserUpdateOneRequiredWithoutResumesInput
   skills: SkillUpdateManyInput
+}
+
+input ResumeUpdateManyDataInput {
+  title: String
+}
+
+input ResumeUpdateManyMutationInput {
+  title: String
 }
 
 input ResumeUpdateManyWithoutUserInput {
@@ -3564,8 +3621,14 @@ input ResumeUpdateManyWithoutUserInput {
   disconnect: [ResumeWhereUniqueInput!]
   delete: [ResumeWhereUniqueInput!]
   update: [ResumeUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [ResumeUpdateManyWithWhereNestedInput!]
   deleteMany: [ResumeScalarWhereInput!]
   upsert: [ResumeUpsertWithWhereUniqueWithoutUserInput!]
+}
+
+input ResumeUpdateManyWithWhereNestedInput {
+  where: ResumeScalarWhereInput!
+  data: ResumeUpdateManyDataInput!
 }
 
 input ResumeUpdateOneInput {
@@ -3578,6 +3641,7 @@ input ResumeUpdateOneInput {
 }
 
 input ResumeUpdateWithoutUserDataInput {
+  title: String
   file: FileUpdateOneRequiredInput
   skills: SkillUpdateManyInput
 }
@@ -3647,6 +3711,46 @@ input ResumeWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
+  title: String
+
+  """All values that are not equal to given value."""
+  title_not: String
+
+  """All values that are contained in given list."""
+  title_in: [String!]
+
+  """All values that are not contained in given list."""
+  title_not_in: [String!]
+
+  """All values less than the given value."""
+  title_lt: String
+
+  """All values less than or equal the given value."""
+  title_lte: String
+
+  """All values greater than the given value."""
+  title_gt: String
+
+  """All values greater than or equal the given value."""
+  title_gte: String
+
+  """All values containing the given string."""
+  title_contains: String
+
+  """All values not containing the given string."""
+  title_not_contains: String
+
+  """All values starting with the given string."""
+  title_starts_with: String
+
+  """All values not starting with the given string."""
+  title_not_starts_with: String
+
+  """All values ending with the given string."""
+  title_ends_with: String
+
+  """All values not ending with the given string."""
+  title_not_ends_with: String
   createdAt: DateTime
 
   """All values that are not equal to given value."""

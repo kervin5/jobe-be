@@ -72,7 +72,7 @@ type Mutation {
         where: FavoriteWhereUniqueInput!
     ): Favorite
     signFileUpload(fileName: String! fileType: String!): SignedFileUploadRequest
-    createResume(path: String! type: String!): Resume!
+    createResume(path: String! type: String! title: String!): Resume!
     login(email: String! password: String!): String!
     signup(name: String! password: String! email: String!): String!
     logout:String
