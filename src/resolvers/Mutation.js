@@ -103,7 +103,7 @@ const Mutations = {
             throw new Error(`You are not authorized to perform this action`);
         }
 
-        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}},info);
+        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}});
 
         console.log(user);
         if(user.permissions ==='USER')  {
