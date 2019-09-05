@@ -132,7 +132,7 @@ const Mutations = {
             data: {
                 ...args,
                 categories:  {connect : args.categories.map(category => ({name: category}))},
-                skill: {connect : args.skills.map(skill => ({name: skill}))},
+                skills: {connect : args.skills.map(skill => ({name: skill}))},
                 status: 'DRAFT'
             }
         }, info);
