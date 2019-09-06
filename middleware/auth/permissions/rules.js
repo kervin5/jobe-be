@@ -15,10 +15,31 @@ const isCustomer = rule()(
   },
 )
 
-const CreateJob = rule()(async (parent, args, ctx, info)=>{
+const can = (action, object) => rule()(async (parent, args, ctx, info)=>{
+ 
+  try {
+  const user = await ctx.db.query.user({where: {id:  ctx.request.user.userId}},`{
+    id
+    email
+    role {
+      id
+      permissions {
+        id
+        object
+        actions
+      }
+    }
+  }`);
 
+  return user.role.permissions.some( permission => (permission.object === object && permission.actions.includes(action) ) );
+  }
+  
+  catch(ex) {
+    console.log(ex);
+    return false;
+  }
 });
 
 const isAuthenticated = or(isCustomer, isGrocer);
 
-module.exports = {isGrocer, isCustomer, isAuthenticated};
+module.exports = {isGrocer, isCustomer, isAuthenticated, can};

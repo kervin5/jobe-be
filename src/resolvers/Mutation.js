@@ -31,7 +31,7 @@ const Mutations = {
                         create: [
                             {
                                 object: "JOB",
-                                actions: ["READ"]
+                                actions: {set: ["READ"]}
                             }
                         ]
                     }
@@ -202,7 +202,7 @@ const Mutations = {
     }
     ,
     async createApplication(parent, args, ctx, info) {
-        if (!ctx.request.user.userId) {
+        if (!userExists(ctx)) {
             return null;
         }
 

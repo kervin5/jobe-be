@@ -14,6 +14,9 @@ const permissions = shield({
 //   Job: {
 //     author: rules.isAuthenticated,
 //   },
+    Mutation: {
+        createJob: rules.can("CREATE","JOB")
+    }
 });
 
 module.exports = permissions;
