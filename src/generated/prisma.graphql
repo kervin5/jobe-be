@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Fri Sep 06 2019 10:37:11 GMT-0700 (Pacific Daylight Time)
+# timestamp: Fri Sep 06 2019 14:36:22 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -56,7 +56,7 @@ type AggregateUser {
 type Application implements Node {
   id: ID!
   user: User!
-  resume: Resume
+  resume: Resume!
   job: Job!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -75,7 +75,7 @@ type ApplicationConnection {
 input ApplicationCreateInput {
   id: ID
   user: UserCreateOneWithoutApplicationsInput!
-  resume: ResumeCreateOneWithoutApplicationsInput
+  resume: ResumeCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
 }
 
@@ -97,7 +97,7 @@ input ApplicationCreateManyWithoutUserInput {
 input ApplicationCreateWithoutJobInput {
   id: ID
   user: UserCreateOneWithoutApplicationsInput!
-  resume: ResumeCreateOneWithoutApplicationsInput
+  resume: ResumeCreateOneWithoutApplicationsInput!
 }
 
 input ApplicationCreateWithoutResumeInput {
@@ -108,7 +108,7 @@ input ApplicationCreateWithoutResumeInput {
 
 input ApplicationCreateWithoutUserInput {
   id: ID
-  resume: ResumeCreateOneWithoutApplicationsInput
+  resume: ResumeCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
 }
 
@@ -270,7 +270,7 @@ input ApplicationSubscriptionWhereInput {
 
 input ApplicationUpdateInput {
   user: UserUpdateOneRequiredWithoutApplicationsInput
-  resume: ResumeUpdateOneWithoutApplicationsInput
+  resume: ResumeUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
 }
 
@@ -309,7 +309,7 @@ input ApplicationUpdateManyWithoutUserInput {
 
 input ApplicationUpdateWithoutJobDataInput {
   user: UserUpdateOneRequiredWithoutApplicationsInput
-  resume: ResumeUpdateOneWithoutApplicationsInput
+  resume: ResumeUpdateOneRequiredWithoutApplicationsInput
 }
 
 input ApplicationUpdateWithoutResumeDataInput {
@@ -318,7 +318,7 @@ input ApplicationUpdateWithoutResumeDataInput {
 }
 
 input ApplicationUpdateWithoutUserDataInput {
-  resume: ResumeUpdateOneWithoutApplicationsInput
+  resume: ResumeUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
 }
 
@@ -4673,11 +4673,9 @@ input ResumeUpdateManyWithWhereNestedInput {
   data: ResumeUpdateManyDataInput!
 }
 
-input ResumeUpdateOneWithoutApplicationsInput {
+input ResumeUpdateOneRequiredWithoutApplicationsInput {
   create: ResumeCreateWithoutApplicationsInput
   connect: ResumeWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
   update: ResumeUpdateWithoutApplicationsDataInput
   upsert: ResumeUpsertWithoutApplicationsInput
 }

@@ -69,7 +69,7 @@ type Job {
 type Application {
   id: ID! @id
   user: User!
-  resume: Resume
+  resume: Resume!
   job: Job!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt

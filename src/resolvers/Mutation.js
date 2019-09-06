@@ -221,11 +221,22 @@ const Mutations = {
             return null;
         }
 
+        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId }},`{
+            id
+            resumes {
+                id
+            }
+        }`)
         args.user = { connect: { id: ctx.request.user.userId } };
 
         const application = await ctx.db.mutation.createApplication({
             data: {
-                ...args
+                ...args,
+                resume: {
+                    connect: {
+                        id: user.resumes[0].id
+                    } 
+                }
             }
         }, info);
 
