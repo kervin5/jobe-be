@@ -20,11 +20,30 @@ const Mutations = {
 
     async signup(parent, args, ctx, info) {
         const salt = await bcrypt.genSalt(10);
+
+        //A role must exist in the database
+        let defaultRole = await ctx.db.query.role({where: { label: "CANDIDATE" }});
+        if(!defaultRole) {
+           defaultRole =  await ctx.db.mutation.createRole({
+                data: {
+                    label: "CANDIDATE",
+                    permissions: {
+                        create: [ {
+                            object: "JOB"
+                        }]
+                    }
+                }
+            });
+        }
+
+
         const user = await ctx.db.mutation.createUser({
             data: {
                 ...args,
                 password: await bcrypt.hash(args.password, salt),
-                permissions: 'USER'
+                role: {
+                    connect: defaultRole
+                }
             }
         });
 

@@ -15,6 +15,10 @@ const isCustomer = rule()(
   },
 )
 
+const CreateJob = rule()(async (parent, args, ctx, info)=>{
+
+});
+
 const isAuthenticated = or(isCustomer, isGrocer);
 
 module.exports = {isGrocer, isCustomer, isAuthenticated};

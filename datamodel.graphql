@@ -6,17 +6,12 @@ enum Status {
   EXPIRED
 }
 
-enum Permission {
-  USER
-  ADMIN
-  SUDO
-  
- 
-  # JOBCREATE
-  # JOBUPDATE
-  # JOBDELETE
-  # PERMISSIONUPDATE
-}
+# enum Permission {
+#   JOBCREATE
+#   JOBUPDATE
+#   JOBDELETE
+#   # PERMISSIONUPDATE
+# }
 
 type User {
   id: ID! @id
@@ -30,9 +25,26 @@ type User {
   location: Location
   skills: [Skill]
   favorites: [Favorite]
-  permissions: Permission!
+  role: Role!
   company: Company
   resumes: [Resume]
+}
+
+type Role {
+  id: ID! @id
+  label: String! @unique
+  permissions: [Permission]
+  users: [User]
+}
+
+type Permission {
+  id: ID! @id
+  object: String!
+  role: Role!
+  read: Boolean  @default(value: false)
+  create: Boolean  @default(value: false)
+  update: Boolean  @default(value: false)
+  delete: Boolean  @default(value: false)
 }
 
 type Job {

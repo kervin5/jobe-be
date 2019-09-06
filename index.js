@@ -1,7 +1,7 @@
 require('dotenv').config();
 const createServer = require('./startup/createServer');
 const db = require('./startup/db');
-const auth = require('./middleware/auth');
+const auth = require('./middleware/auth/auth');
 const cookieParser = require('cookie-parser');
 
 const server = createServer();
