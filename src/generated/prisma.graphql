@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Fri Sep 06 2019 09:08:59 GMT-0700 (Pacific Daylight Time)
+# timestamp: Fri Sep 06 2019 09:37:49 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -3493,10 +3493,8 @@ type Permission implements Node {
   id: ID!
   object: String!
   role: Role!
-  read: Boolean
-  create: Boolean
-  update: Boolean
-  delete: Boolean
+  action: String!
+  value: Boolean
 }
 
 """A connection to a list of items."""
@@ -3512,10 +3510,8 @@ type PermissionConnection {
 input PermissionCreateInput {
   id: ID
   object: String!
-  read: Boolean
-  create: Boolean
-  update: Boolean
-  delete: Boolean
+  action: String!
+  value: Boolean
   role: RoleCreateOneWithoutPermissionsInput!
 }
 
@@ -3527,10 +3523,8 @@ input PermissionCreateManyWithoutRoleInput {
 input PermissionCreateWithoutRoleInput {
   id: ID
   object: String!
-  read: Boolean
-  create: Boolean
-  update: Boolean
-  delete: Boolean
+  action: String!
+  value: Boolean
 }
 
 """An edge in a connection."""
@@ -3547,23 +3541,17 @@ enum PermissionOrderByInput {
   id_DESC
   object_ASC
   object_DESC
-  read_ASC
-  read_DESC
-  create_ASC
-  create_DESC
-  update_ASC
-  update_DESC
-  delete_ASC
-  delete_DESC
+  action_ASC
+  action_DESC
+  value_ASC
+  value_DESC
 }
 
 type PermissionPreviousValues {
   id: ID!
   object: String!
-  read: Boolean
-  create: Boolean
-  update: Boolean
-  delete: Boolean
+  action: String!
+  value: Boolean
 }
 
 input PermissionScalarWhereInput {
@@ -3655,22 +3643,50 @@ input PermissionScalarWhereInput {
 
   """All values not ending with the given string."""
   object_not_ends_with: String
-  read: Boolean
+  action: String
 
   """All values that are not equal to given value."""
-  read_not: Boolean
-  create: Boolean
+  action_not: String
+
+  """All values that are contained in given list."""
+  action_in: [String!]
+
+  """All values that are not contained in given list."""
+  action_not_in: [String!]
+
+  """All values less than the given value."""
+  action_lt: String
+
+  """All values less than or equal the given value."""
+  action_lte: String
+
+  """All values greater than the given value."""
+  action_gt: String
+
+  """All values greater than or equal the given value."""
+  action_gte: String
+
+  """All values containing the given string."""
+  action_contains: String
+
+  """All values not containing the given string."""
+  action_not_contains: String
+
+  """All values starting with the given string."""
+  action_starts_with: String
+
+  """All values not starting with the given string."""
+  action_not_starts_with: String
+
+  """All values ending with the given string."""
+  action_ends_with: String
+
+  """All values not ending with the given string."""
+  action_not_ends_with: String
+  value: Boolean
 
   """All values that are not equal to given value."""
-  create_not: Boolean
-  update: Boolean
-
-  """All values that are not equal to given value."""
-  update_not: Boolean
-  delete: Boolean
-
-  """All values that are not equal to given value."""
-  delete_not: Boolean
+  value_not: Boolean
 }
 
 type PermissionSubscriptionPayload {
@@ -3712,27 +3728,21 @@ input PermissionSubscriptionWhereInput {
 
 input PermissionUpdateInput {
   object: String
-  read: Boolean
-  create: Boolean
-  update: Boolean
-  delete: Boolean
+  action: String
+  value: Boolean
   role: RoleUpdateOneRequiredWithoutPermissionsInput
 }
 
 input PermissionUpdateManyDataInput {
   object: String
-  read: Boolean
-  create: Boolean
-  update: Boolean
-  delete: Boolean
+  action: String
+  value: Boolean
 }
 
 input PermissionUpdateManyMutationInput {
   object: String
-  read: Boolean
-  create: Boolean
-  update: Boolean
-  delete: Boolean
+  action: String
+  value: Boolean
 }
 
 input PermissionUpdateManyWithoutRoleInput {
@@ -3754,10 +3764,8 @@ input PermissionUpdateManyWithWhereNestedInput {
 
 input PermissionUpdateWithoutRoleDataInput {
   object: String
-  read: Boolean
-  create: Boolean
-  update: Boolean
-  delete: Boolean
+  action: String
+  value: Boolean
 }
 
 input PermissionUpdateWithWhereUniqueWithoutRoleInput {
@@ -3860,22 +3868,50 @@ input PermissionWhereInput {
 
   """All values not ending with the given string."""
   object_not_ends_with: String
-  read: Boolean
+  action: String
 
   """All values that are not equal to given value."""
-  read_not: Boolean
-  create: Boolean
+  action_not: String
+
+  """All values that are contained in given list."""
+  action_in: [String!]
+
+  """All values that are not contained in given list."""
+  action_not_in: [String!]
+
+  """All values less than the given value."""
+  action_lt: String
+
+  """All values less than or equal the given value."""
+  action_lte: String
+
+  """All values greater than the given value."""
+  action_gt: String
+
+  """All values greater than or equal the given value."""
+  action_gte: String
+
+  """All values containing the given string."""
+  action_contains: String
+
+  """All values not containing the given string."""
+  action_not_contains: String
+
+  """All values starting with the given string."""
+  action_starts_with: String
+
+  """All values not starting with the given string."""
+  action_not_starts_with: String
+
+  """All values ending with the given string."""
+  action_ends_with: String
+
+  """All values not ending with the given string."""
+  action_not_ends_with: String
+  value: Boolean
 
   """All values that are not equal to given value."""
-  create_not: Boolean
-  update: Boolean
-
-  """All values that are not equal to given value."""
-  update_not: Boolean
-  delete: Boolean
-
-  """All values that are not equal to given value."""
-  delete_not: Boolean
+  value_not: Boolean
   role: RoleWhereInput
 }
 
@@ -4388,7 +4424,7 @@ input ResumeWhereUniqueInput {
 
 type Role implements Node {
   id: ID!
-  label: String!
+  name: String!
   permissions(where: PermissionWhereInput, orderBy: PermissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Permission!]
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
 }
@@ -4405,7 +4441,7 @@ type RoleConnection {
 
 input RoleCreateInput {
   id: ID
-  label: String!
+  name: String!
   permissions: PermissionCreateManyWithoutRoleInput
   users: UserCreateManyWithoutRoleInput
 }
@@ -4422,13 +4458,13 @@ input RoleCreateOneWithoutUsersInput {
 
 input RoleCreateWithoutPermissionsInput {
   id: ID
-  label: String!
+  name: String!
   users: UserCreateManyWithoutRoleInput
 }
 
 input RoleCreateWithoutUsersInput {
   id: ID
-  label: String!
+  name: String!
   permissions: PermissionCreateManyWithoutRoleInput
 }
 
@@ -4444,13 +4480,13 @@ type RoleEdge {
 enum RoleOrderByInput {
   id_ASC
   id_DESC
-  label_ASC
-  label_DESC
+  name_ASC
+  name_DESC
 }
 
 type RolePreviousValues {
   id: ID!
-  label: String!
+  name: String!
 }
 
 type RoleSubscriptionPayload {
@@ -4491,13 +4527,13 @@ input RoleSubscriptionWhereInput {
 }
 
 input RoleUpdateInput {
-  label: String
+  name: String
   permissions: PermissionUpdateManyWithoutRoleInput
   users: UserUpdateManyWithoutRoleInput
 }
 
 input RoleUpdateManyMutationInput {
-  label: String
+  name: String
 }
 
 input RoleUpdateOneRequiredWithoutPermissionsInput {
@@ -4515,12 +4551,12 @@ input RoleUpdateOneRequiredWithoutUsersInput {
 }
 
 input RoleUpdateWithoutPermissionsDataInput {
-  label: String
+  name: String
   users: UserUpdateManyWithoutRoleInput
 }
 
 input RoleUpdateWithoutUsersDataInput {
-  label: String
+  name: String
   permissions: PermissionUpdateManyWithoutRoleInput
 }
 
@@ -4583,46 +4619,46 @@ input RoleWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  label: String
+  name: String
 
   """All values that are not equal to given value."""
-  label_not: String
+  name_not: String
 
   """All values that are contained in given list."""
-  label_in: [String!]
+  name_in: [String!]
 
   """All values that are not contained in given list."""
-  label_not_in: [String!]
+  name_not_in: [String!]
 
   """All values less than the given value."""
-  label_lt: String
+  name_lt: String
 
   """All values less than or equal the given value."""
-  label_lte: String
+  name_lte: String
 
   """All values greater than the given value."""
-  label_gt: String
+  name_gt: String
 
   """All values greater than or equal the given value."""
-  label_gte: String
+  name_gte: String
 
   """All values containing the given string."""
-  label_contains: String
+  name_contains: String
 
   """All values not containing the given string."""
-  label_not_contains: String
+  name_not_contains: String
 
   """All values starting with the given string."""
-  label_starts_with: String
+  name_starts_with: String
 
   """All values not starting with the given string."""
-  label_not_starts_with: String
+  name_not_starts_with: String
 
   """All values ending with the given string."""
-  label_ends_with: String
+  name_ends_with: String
 
   """All values not ending with the given string."""
-  label_not_ends_with: String
+  name_not_ends_with: String
   permissions_every: PermissionWhereInput
   permissions_some: PermissionWhereInput
   permissions_none: PermissionWhereInput
@@ -4633,7 +4669,7 @@ input RoleWhereInput {
 
 input RoleWhereUniqueInput {
   id: ID
-  label: String
+  name: String
 }
 
 type Skill implements Node {

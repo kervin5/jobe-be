@@ -32,7 +32,7 @@ type User {
 
 type Role {
   id: ID! @id
-  label: String! @unique
+  name: String! @unique
   permissions: [Permission]
   users: [User]
 }
@@ -41,10 +41,8 @@ type Permission {
   id: ID! @id
   object: String!
   role: Role!
-  read: Boolean  @default(value: false)
-  create: Boolean  @default(value: false)
-  update: Boolean  @default(value: false)
-  delete: Boolean  @default(value: false)
+  action: String!
+  value: Boolean  @default(value: false)
 }
 
 type Job {
