@@ -74,9 +74,11 @@ const Mutations = {
         const user = await ctx.db.query.user({ where: { email } }, `{
             id
             name
+            password
             role {
                 id
                 name
+                
             }
           }`);
         if (!user) {
