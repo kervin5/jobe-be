@@ -36,9 +36,7 @@ const Query = {
             return null;
         }
 
-        args.where.user = {id: ctx.request.user.userId};
-
-        return await ctx.db.query.applicationsConnection(args,info);
+        return await ctx.db.query.applicationsConnection({where: { user: { id: ctx.request.user.userId} }},info);
     }
 };
 
