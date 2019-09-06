@@ -157,7 +157,7 @@ const Mutations = {
                 status: 'DRAFT',
                 author: { connect: {id: ctx.request.user.userId}},
                 // company: {connect: {id: user.company.id}}
-                company: {connect: {id: "ck07662xhamqt0b09v3r9eba5"}}
+                branch: {connect: {id: "ck08cxz4fdhic0b09po9w2j7r"}}
             }
         }, info);
 
