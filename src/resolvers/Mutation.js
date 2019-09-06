@@ -28,11 +28,12 @@ const Mutations = {
                 data: {
                     name: "CANDIDATE",
                     permissions: {
-                        create: [ {
-                            object: "JOB",
-                            action: "READ",
-                            value: true
-                        }]
+                        create: [
+                            {
+                                object: "JOB",
+                                actions: ["READ"]
+                            }
+                        ]
                     }
                 }
             });

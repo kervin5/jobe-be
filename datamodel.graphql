@@ -41,8 +41,7 @@ type Permission {
   id: ID! @id
   object: String!
   role: Role!
-  action: String!
-  value: Boolean  @default(value: false)
+  actions: [String] @scalarList(strategy: RELATION)
 }
 
 type Job {
@@ -87,6 +86,7 @@ type Company {
   name: String!
   location: Location
   description: String!
+  branches: [Branch]
 }
 
 type Branch {
@@ -135,6 +135,7 @@ type Resume {
   file: File!
   user: User!
   skills: [Skill]
+  applications: [Application]
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
