@@ -124,7 +124,7 @@ const Mutations = {
             throw new Error(`You are not authorized to perform this action`);
         }
 
-        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}},`{ id email permissions company { id }}`);
+        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}});
 
         // console.log(user);
         // if (user.permissions === 'USER') {
@@ -156,7 +156,8 @@ const Mutations = {
                 skills: {connect : args.skills.map(skill => ({name: skill}))},
                 status: 'DRAFT',
                 author: { connect: {id: ctx.request.user.userId}},
-                company: {connect: {id: user.company.id}}
+                // company: {connect: {id: user.company.id}}
+                company: {connect: {id: "ck07662xhamqt0b09v3r9eba5"}}
             }
         }, info);
 
