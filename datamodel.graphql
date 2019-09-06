@@ -26,7 +26,7 @@ type User {
   skills: [Skill]
   favorites: [Favorite]
   role: Role!
-  company: Company
+  branch: Branch
   resumes: [Resume]
 }
 
@@ -64,7 +64,7 @@ type Job {
   skills: [Skill!]!
   status(jobStatus: Status = DRAFT): Status
   favorites: [Favorite]
-  company: Company!
+  branch: Branch!
 }
 
 type Application {
@@ -87,8 +87,16 @@ type Company {
   name: String!
   location: Location
   description: String!
-  users: [User]
+}
+
+type Branch {
+  id: ID! @id
+  name: String!
+  company: Company!
+  location: Location
+  description: String
   jobs: [Job]
+  users: [User]
 }
 
 type Location {

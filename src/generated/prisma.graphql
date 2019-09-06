@@ -1,7 +1,11 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Fri Sep 06 2019 09:37:49 GMT-0700 (Pacific Daylight Time)
+# timestamp: Fri Sep 06 2019 09:49:38 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
+  count: Int!
+}
+
+type AggregateBranch {
   count: Int!
 }
 
@@ -420,6 +424,324 @@ type BatchPayload {
   count: Long!
 }
 
+type Branch implements Node {
+  id: ID!
+  name: String!
+  company: Company!
+  location: Location
+  description: String
+  jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+}
+
+"""A connection to a list of items."""
+type BranchConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [BranchEdge]!
+  aggregate: AggregateBranch!
+}
+
+input BranchCreateInput {
+  id: ID
+  name: String!
+  description: String
+  company: CompanyCreateOneInput!
+  location: LocationCreateOneInput
+  jobs: JobCreateManyWithoutBranchInput
+  users: UserCreateManyWithoutBranchInput
+}
+
+input BranchCreateOneWithoutJobsInput {
+  create: BranchCreateWithoutJobsInput
+  connect: BranchWhereUniqueInput
+}
+
+input BranchCreateOneWithoutUsersInput {
+  create: BranchCreateWithoutUsersInput
+  connect: BranchWhereUniqueInput
+}
+
+input BranchCreateWithoutJobsInput {
+  id: ID
+  name: String!
+  description: String
+  company: CompanyCreateOneInput!
+  location: LocationCreateOneInput
+  users: UserCreateManyWithoutBranchInput
+}
+
+input BranchCreateWithoutUsersInput {
+  id: ID
+  name: String!
+  description: String
+  company: CompanyCreateOneInput!
+  location: LocationCreateOneInput
+  jobs: JobCreateManyWithoutBranchInput
+}
+
+"""An edge in a connection."""
+type BranchEdge {
+  """The item at the end of the edge."""
+  node: Branch!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum BranchOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+}
+
+type BranchPreviousValues {
+  id: ID!
+  name: String!
+  description: String
+}
+
+type BranchSubscriptionPayload {
+  mutation: MutationType!
+  node: Branch
+  updatedFields: [String!]
+  previousValues: BranchPreviousValues
+}
+
+input BranchSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BranchSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BranchSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BranchSubscriptionWhereInput!]
+
+  """The subscription event gets dispatched when it's listed in mutation_in"""
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: BranchWhereInput
+}
+
+input BranchUpdateInput {
+  name: String
+  description: String
+  company: CompanyUpdateOneRequiredInput
+  location: LocationUpdateOneInput
+  jobs: JobUpdateManyWithoutBranchInput
+  users: UserUpdateManyWithoutBranchInput
+}
+
+input BranchUpdateManyMutationInput {
+  name: String
+  description: String
+}
+
+input BranchUpdateOneRequiredWithoutJobsInput {
+  create: BranchCreateWithoutJobsInput
+  connect: BranchWhereUniqueInput
+  update: BranchUpdateWithoutJobsDataInput
+  upsert: BranchUpsertWithoutJobsInput
+}
+
+input BranchUpdateOneWithoutUsersInput {
+  create: BranchCreateWithoutUsersInput
+  connect: BranchWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: BranchUpdateWithoutUsersDataInput
+  upsert: BranchUpsertWithoutUsersInput
+}
+
+input BranchUpdateWithoutJobsDataInput {
+  name: String
+  description: String
+  company: CompanyUpdateOneRequiredInput
+  location: LocationUpdateOneInput
+  users: UserUpdateManyWithoutBranchInput
+}
+
+input BranchUpdateWithoutUsersDataInput {
+  name: String
+  description: String
+  company: CompanyUpdateOneRequiredInput
+  location: LocationUpdateOneInput
+  jobs: JobUpdateManyWithoutBranchInput
+}
+
+input BranchUpsertWithoutJobsInput {
+  update: BranchUpdateWithoutJobsDataInput!
+  create: BranchCreateWithoutJobsInput!
+}
+
+input BranchUpsertWithoutUsersInput {
+  update: BranchUpdateWithoutUsersDataInput!
+  create: BranchCreateWithoutUsersInput!
+}
+
+input BranchWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BranchWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BranchWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BranchWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  description: String
+
+  """All values that are not equal to given value."""
+  description_not: String
+
+  """All values that are contained in given list."""
+  description_in: [String!]
+
+  """All values that are not contained in given list."""
+  description_not_in: [String!]
+
+  """All values less than the given value."""
+  description_lt: String
+
+  """All values less than or equal the given value."""
+  description_lte: String
+
+  """All values greater than the given value."""
+  description_gt: String
+
+  """All values greater than or equal the given value."""
+  description_gte: String
+
+  """All values containing the given string."""
+  description_contains: String
+
+  """All values not containing the given string."""
+  description_not_contains: String
+
+  """All values starting with the given string."""
+  description_starts_with: String
+
+  """All values not starting with the given string."""
+  description_not_starts_with: String
+
+  """All values ending with the given string."""
+  description_ends_with: String
+
+  """All values not ending with the given string."""
+  description_not_ends_with: String
+  company: CompanyWhereInput
+  location: LocationWhereInput
+  jobs_every: JobWhereInput
+  jobs_some: JobWhereInput
+  jobs_none: JobWhereInput
+  users_every: UserWhereInput
+  users_some: UserWhereInput
+  users_none: UserWhereInput
+}
+
+input BranchWhereUniqueInput {
+  id: ID
+}
+
 type Category implements Node {
   id: ID!
   name: String!
@@ -750,8 +1072,6 @@ type Company implements Node {
   name: String!
   location: Location
   description: String!
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
-  jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
 }
 
 """A connection to a list of items."""
@@ -769,34 +1089,11 @@ input CompanyCreateInput {
   name: String!
   description: String!
   location: LocationCreateOneInput
-  users: UserCreateManyWithoutCompanyInput
-  jobs: JobCreateManyWithoutCompanyInput
 }
 
-input CompanyCreateOneWithoutJobsInput {
-  create: CompanyCreateWithoutJobsInput
+input CompanyCreateOneInput {
+  create: CompanyCreateInput
   connect: CompanyWhereUniqueInput
-}
-
-input CompanyCreateOneWithoutUsersInput {
-  create: CompanyCreateWithoutUsersInput
-  connect: CompanyWhereUniqueInput
-}
-
-input CompanyCreateWithoutJobsInput {
-  id: ID
-  name: String!
-  description: String!
-  location: LocationCreateOneInput
-  users: UserCreateManyWithoutCompanyInput
-}
-
-input CompanyCreateWithoutUsersInput {
-  id: ID
-  name: String!
-  description: String!
-  location: LocationCreateOneInput
-  jobs: JobCreateManyWithoutCompanyInput
 }
 
 """An edge in a connection."""
@@ -860,12 +1157,16 @@ input CompanySubscriptionWhereInput {
   node: CompanyWhereInput
 }
 
+input CompanyUpdateDataInput {
+  name: String
+  description: String
+  location: LocationUpdateOneInput
+}
+
 input CompanyUpdateInput {
   name: String
   description: String
   location: LocationUpdateOneInput
-  users: UserUpdateManyWithoutCompanyInput
-  jobs: JobUpdateManyWithoutCompanyInput
 }
 
 input CompanyUpdateManyMutationInput {
@@ -873,44 +1174,16 @@ input CompanyUpdateManyMutationInput {
   description: String
 }
 
-input CompanyUpdateOneRequiredWithoutJobsInput {
-  create: CompanyCreateWithoutJobsInput
+input CompanyUpdateOneRequiredInput {
+  create: CompanyCreateInput
   connect: CompanyWhereUniqueInput
-  update: CompanyUpdateWithoutJobsDataInput
-  upsert: CompanyUpsertWithoutJobsInput
+  update: CompanyUpdateDataInput
+  upsert: CompanyUpsertNestedInput
 }
 
-input CompanyUpdateOneWithoutUsersInput {
-  create: CompanyCreateWithoutUsersInput
-  connect: CompanyWhereUniqueInput
-  disconnect: Boolean
-  delete: Boolean
-  update: CompanyUpdateWithoutUsersDataInput
-  upsert: CompanyUpsertWithoutUsersInput
-}
-
-input CompanyUpdateWithoutJobsDataInput {
-  name: String
-  description: String
-  location: LocationUpdateOneInput
-  users: UserUpdateManyWithoutCompanyInput
-}
-
-input CompanyUpdateWithoutUsersDataInput {
-  name: String
-  description: String
-  location: LocationUpdateOneInput
-  jobs: JobUpdateManyWithoutCompanyInput
-}
-
-input CompanyUpsertWithoutJobsInput {
-  update: CompanyUpdateWithoutJobsDataInput!
-  create: CompanyCreateWithoutJobsInput!
-}
-
-input CompanyUpsertWithoutUsersInput {
-  update: CompanyUpdateWithoutUsersDataInput!
-  create: CompanyCreateWithoutUsersInput!
+input CompanyUpsertNestedInput {
+  update: CompanyUpdateDataInput!
+  create: CompanyCreateInput!
 }
 
 input CompanyWhereInput {
@@ -1043,12 +1316,6 @@ input CompanyWhereInput {
   """All values not ending with the given string."""
   description_not_ends_with: String
   location: LocationWhereInput
-  users_every: UserWhereInput
-  users_some: UserWhereInput
-  users_none: UserWhereInput
-  jobs_every: JobWhereInput
-  jobs_some: JobWhereInput
-  jobs_none: JobWhereInput
 }
 
 input CompanyWhereUniqueInput {
@@ -1640,7 +1907,7 @@ type Job implements Node {
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
   status: Status
   favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite!]
-  company: Company!
+  branch: Branch!
 }
 
 """A connection to a list of items."""
@@ -1670,7 +1937,7 @@ input JobCreateInput {
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
-  company: CompanyCreateOneWithoutJobsInput!
+  branch: BranchCreateOneWithoutJobsInput!
 }
 
 input JobCreateManyWithoutAuthorInput {
@@ -1678,13 +1945,13 @@ input JobCreateManyWithoutAuthorInput {
   connect: [JobWhereUniqueInput!]
 }
 
-input JobCreateManyWithoutCategoriesInput {
-  create: [JobCreateWithoutCategoriesInput!]
+input JobCreateManyWithoutBranchInput {
+  create: [JobCreateWithoutBranchInput!]
   connect: [JobWhereUniqueInput!]
 }
 
-input JobCreateManyWithoutCompanyInput {
-  create: [JobCreateWithoutCompanyInput!]
+input JobCreateManyWithoutCategoriesInput {
+  create: [JobCreateWithoutCategoriesInput!]
   connect: [JobWhereUniqueInput!]
 }
 
@@ -1724,7 +1991,7 @@ input JobCreateWithoutApplicationsInput {
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
-  company: CompanyCreateOneWithoutJobsInput!
+  branch: BranchCreateOneWithoutJobsInput!
 }
 
 input JobCreateWithoutAuthorInput {
@@ -1743,7 +2010,26 @@ input JobCreateWithoutAuthorInput {
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
-  company: CompanyCreateOneWithoutJobsInput!
+  branch: BranchCreateOneWithoutJobsInput!
+}
+
+input JobCreateWithoutBranchInput {
+  id: ID
+  title: String!
+  compensationType: String
+  description: String!
+  type: String!
+  maxCompensation: Float!
+  minCompensation: Float!
+  qualifications: String!
+  requirements: String!
+  status: Status
+  author: UserCreateOneWithoutJobsInput!
+  location: LocationCreateOneWithoutJobsInput!
+  applications: ApplicationCreateManyWithoutJobInput
+  categories: CategoryCreateManyWithoutJobsInput
+  skills: SkillCreateManyWithoutJobsInput
+  favorites: FavoriteCreateManyWithoutJobInput
 }
 
 input JobCreateWithoutCategoriesInput {
@@ -1762,26 +2048,7 @@ input JobCreateWithoutCategoriesInput {
   applications: ApplicationCreateManyWithoutJobInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
-  company: CompanyCreateOneWithoutJobsInput!
-}
-
-input JobCreateWithoutCompanyInput {
-  id: ID
-  title: String!
-  compensationType: String
-  description: String!
-  type: String!
-  maxCompensation: Float!
-  minCompensation: Float!
-  qualifications: String!
-  requirements: String!
-  status: Status
-  author: UserCreateOneWithoutJobsInput!
-  location: LocationCreateOneWithoutJobsInput!
-  applications: ApplicationCreateManyWithoutJobInput
-  categories: CategoryCreateManyWithoutJobsInput
-  skills: SkillCreateManyWithoutJobsInput
-  favorites: FavoriteCreateManyWithoutJobInput
+  branch: BranchCreateOneWithoutJobsInput!
 }
 
 input JobCreateWithoutFavoritesInput {
@@ -1800,7 +2067,7 @@ input JobCreateWithoutFavoritesInput {
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
-  company: CompanyCreateOneWithoutJobsInput!
+  branch: BranchCreateOneWithoutJobsInput!
 }
 
 input JobCreateWithoutLocationInput {
@@ -1819,7 +2086,7 @@ input JobCreateWithoutLocationInput {
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
-  company: CompanyCreateOneWithoutJobsInput!
+  branch: BranchCreateOneWithoutJobsInput!
 }
 
 input JobCreateWithoutSkillsInput {
@@ -1838,7 +2105,7 @@ input JobCreateWithoutSkillsInput {
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
-  company: CompanyCreateOneWithoutJobsInput!
+  branch: BranchCreateOneWithoutJobsInput!
 }
 
 """An edge in a connection."""
@@ -2334,7 +2601,7 @@ input JobUpdateInput {
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
-  company: CompanyUpdateOneRequiredWithoutJobsInput
+  branch: BranchUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateManyDataInput {
@@ -2373,6 +2640,18 @@ input JobUpdateManyWithoutAuthorInput {
   upsert: [JobUpsertWithWhereUniqueWithoutAuthorInput!]
 }
 
+input JobUpdateManyWithoutBranchInput {
+  create: [JobCreateWithoutBranchInput!]
+  connect: [JobWhereUniqueInput!]
+  set: [JobWhereUniqueInput!]
+  disconnect: [JobWhereUniqueInput!]
+  delete: [JobWhereUniqueInput!]
+  update: [JobUpdateWithWhereUniqueWithoutBranchInput!]
+  updateMany: [JobUpdateManyWithWhereNestedInput!]
+  deleteMany: [JobScalarWhereInput!]
+  upsert: [JobUpsertWithWhereUniqueWithoutBranchInput!]
+}
+
 input JobUpdateManyWithoutCategoriesInput {
   create: [JobCreateWithoutCategoriesInput!]
   connect: [JobWhereUniqueInput!]
@@ -2383,18 +2662,6 @@ input JobUpdateManyWithoutCategoriesInput {
   updateMany: [JobUpdateManyWithWhereNestedInput!]
   deleteMany: [JobScalarWhereInput!]
   upsert: [JobUpsertWithWhereUniqueWithoutCategoriesInput!]
-}
-
-input JobUpdateManyWithoutCompanyInput {
-  create: [JobCreateWithoutCompanyInput!]
-  connect: [JobWhereUniqueInput!]
-  set: [JobWhereUniqueInput!]
-  disconnect: [JobWhereUniqueInput!]
-  delete: [JobWhereUniqueInput!]
-  update: [JobUpdateWithWhereUniqueWithoutCompanyInput!]
-  updateMany: [JobUpdateManyWithWhereNestedInput!]
-  deleteMany: [JobScalarWhereInput!]
-  upsert: [JobUpsertWithWhereUniqueWithoutCompanyInput!]
 }
 
 input JobUpdateManyWithoutLocationInput {
@@ -2455,7 +2722,7 @@ input JobUpdateWithoutApplicationsDataInput {
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
-  company: CompanyUpdateOneRequiredWithoutJobsInput
+  branch: BranchUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateWithoutAuthorDataInput {
@@ -2473,7 +2740,25 @@ input JobUpdateWithoutAuthorDataInput {
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
-  company: CompanyUpdateOneRequiredWithoutJobsInput
+  branch: BranchUpdateOneRequiredWithoutJobsInput
+}
+
+input JobUpdateWithoutBranchDataInput {
+  title: String
+  compensationType: String
+  description: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  qualifications: String
+  requirements: String
+  status: Status
+  author: UserUpdateOneRequiredWithoutJobsInput
+  location: LocationUpdateOneRequiredWithoutJobsInput
+  applications: ApplicationUpdateManyWithoutJobInput
+  categories: CategoryUpdateManyWithoutJobsInput
+  skills: SkillUpdateManyWithoutJobsInput
+  favorites: FavoriteUpdateManyWithoutJobInput
 }
 
 input JobUpdateWithoutCategoriesDataInput {
@@ -2491,25 +2776,7 @@ input JobUpdateWithoutCategoriesDataInput {
   applications: ApplicationUpdateManyWithoutJobInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
-  company: CompanyUpdateOneRequiredWithoutJobsInput
-}
-
-input JobUpdateWithoutCompanyDataInput {
-  title: String
-  compensationType: String
-  description: String
-  type: String
-  maxCompensation: Float
-  minCompensation: Float
-  qualifications: String
-  requirements: String
-  status: Status
-  author: UserUpdateOneRequiredWithoutJobsInput
-  location: LocationUpdateOneRequiredWithoutJobsInput
-  applications: ApplicationUpdateManyWithoutJobInput
-  categories: CategoryUpdateManyWithoutJobsInput
-  skills: SkillUpdateManyWithoutJobsInput
-  favorites: FavoriteUpdateManyWithoutJobInput
+  branch: BranchUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateWithoutFavoritesDataInput {
@@ -2527,7 +2794,7 @@ input JobUpdateWithoutFavoritesDataInput {
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
-  company: CompanyUpdateOneRequiredWithoutJobsInput
+  branch: BranchUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateWithoutLocationDataInput {
@@ -2545,7 +2812,7 @@ input JobUpdateWithoutLocationDataInput {
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
-  company: CompanyUpdateOneRequiredWithoutJobsInput
+  branch: BranchUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateWithoutSkillsDataInput {
@@ -2563,7 +2830,7 @@ input JobUpdateWithoutSkillsDataInput {
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
-  company: CompanyUpdateOneRequiredWithoutJobsInput
+  branch: BranchUpdateOneRequiredWithoutJobsInput
 }
 
 input JobUpdateWithWhereUniqueWithoutAuthorInput {
@@ -2571,14 +2838,14 @@ input JobUpdateWithWhereUniqueWithoutAuthorInput {
   data: JobUpdateWithoutAuthorDataInput!
 }
 
+input JobUpdateWithWhereUniqueWithoutBranchInput {
+  where: JobWhereUniqueInput!
+  data: JobUpdateWithoutBranchDataInput!
+}
+
 input JobUpdateWithWhereUniqueWithoutCategoriesInput {
   where: JobWhereUniqueInput!
   data: JobUpdateWithoutCategoriesDataInput!
-}
-
-input JobUpdateWithWhereUniqueWithoutCompanyInput {
-  where: JobWhereUniqueInput!
-  data: JobUpdateWithoutCompanyDataInput!
 }
 
 input JobUpdateWithWhereUniqueWithoutLocationInput {
@@ -2607,16 +2874,16 @@ input JobUpsertWithWhereUniqueWithoutAuthorInput {
   create: JobCreateWithoutAuthorInput!
 }
 
+input JobUpsertWithWhereUniqueWithoutBranchInput {
+  where: JobWhereUniqueInput!
+  update: JobUpdateWithoutBranchDataInput!
+  create: JobCreateWithoutBranchInput!
+}
+
 input JobUpsertWithWhereUniqueWithoutCategoriesInput {
   where: JobWhereUniqueInput!
   update: JobUpdateWithoutCategoriesDataInput!
   create: JobCreateWithoutCategoriesInput!
-}
-
-input JobUpsertWithWhereUniqueWithoutCompanyInput {
-  where: JobWhereUniqueInput!
-  update: JobUpdateWithoutCompanyDataInput!
-  create: JobCreateWithoutCompanyInput!
 }
 
 input JobUpsertWithWhereUniqueWithoutLocationInput {
@@ -3032,7 +3299,7 @@ input JobWhereInput {
   favorites_every: FavoriteWhereInput
   favorites_some: FavoriteWhereInput
   favorites_none: FavoriteWhereInput
-  company: CompanyWhereInput
+  branch: BranchWhereInput
 }
 
 input JobWhereUniqueInput {
@@ -3396,70 +3663,76 @@ type Mutation {
   createJob(data: JobCreateInput!): Job!
   createApplication(data: ApplicationCreateInput!): Application!
   createFavorite(data: FavoriteCreateInput!): Favorite!
-  createCompany(data: CompanyCreateInput!): Company!
+  createBranch(data: BranchCreateInput!): Branch!
   createCategory(data: CategoryCreateInput!): Category!
   createFile(data: FileCreateInput!): File!
+  createCompany(data: CompanyCreateInput!): Company!
   createSkill(data: SkillCreateInput!): Skill!
-  createLocation(data: LocationCreateInput!): Location!
   createResume(data: ResumeCreateInput!): Resume!
+  createLocation(data: LocationCreateInput!): Location!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateRole(data: RoleUpdateInput!, where: RoleWhereUniqueInput!): Role
   updatePermission(data: PermissionUpdateInput!, where: PermissionWhereUniqueInput!): Permission
   updateJob(data: JobUpdateInput!, where: JobWhereUniqueInput!): Job
   updateApplication(data: ApplicationUpdateInput!, where: ApplicationWhereUniqueInput!): Application
   updateFavorite(data: FavoriteUpdateInput!, where: FavoriteWhereUniqueInput!): Favorite
-  updateCompany(data: CompanyUpdateInput!, where: CompanyWhereUniqueInput!): Company
+  updateBranch(data: BranchUpdateInput!, where: BranchWhereUniqueInput!): Branch
   updateCategory(data: CategoryUpdateInput!, where: CategoryWhereUniqueInput!): Category
   updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
+  updateCompany(data: CompanyUpdateInput!, where: CompanyWhereUniqueInput!): Company
   updateSkill(data: SkillUpdateInput!, where: SkillWhereUniqueInput!): Skill
-  updateLocation(data: LocationUpdateInput!, where: LocationWhereUniqueInput!): Location
   updateResume(data: ResumeUpdateInput!, where: ResumeWhereUniqueInput!): Resume
+  updateLocation(data: LocationUpdateInput!, where: LocationWhereUniqueInput!): Location
   deleteUser(where: UserWhereUniqueInput!): User
   deleteRole(where: RoleWhereUniqueInput!): Role
   deletePermission(where: PermissionWhereUniqueInput!): Permission
   deleteJob(where: JobWhereUniqueInput!): Job
   deleteApplication(where: ApplicationWhereUniqueInput!): Application
   deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
-  deleteCompany(where: CompanyWhereUniqueInput!): Company
+  deleteBranch(where: BranchWhereUniqueInput!): Branch
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteFile(where: FileWhereUniqueInput!): File
+  deleteCompany(where: CompanyWhereUniqueInput!): Company
   deleteSkill(where: SkillWhereUniqueInput!): Skill
-  deleteLocation(where: LocationWhereUniqueInput!): Location
   deleteResume(where: ResumeWhereUniqueInput!): Resume
+  deleteLocation(where: LocationWhereUniqueInput!): Location
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertRole(where: RoleWhereUniqueInput!, create: RoleCreateInput!, update: RoleUpdateInput!): Role!
   upsertPermission(where: PermissionWhereUniqueInput!, create: PermissionCreateInput!, update: PermissionUpdateInput!): Permission!
   upsertJob(where: JobWhereUniqueInput!, create: JobCreateInput!, update: JobUpdateInput!): Job!
   upsertApplication(where: ApplicationWhereUniqueInput!, create: ApplicationCreateInput!, update: ApplicationUpdateInput!): Application!
   upsertFavorite(where: FavoriteWhereUniqueInput!, create: FavoriteCreateInput!, update: FavoriteUpdateInput!): Favorite!
-  upsertCompany(where: CompanyWhereUniqueInput!, create: CompanyCreateInput!, update: CompanyUpdateInput!): Company!
+  upsertBranch(where: BranchWhereUniqueInput!, create: BranchCreateInput!, update: BranchUpdateInput!): Branch!
   upsertCategory(where: CategoryWhereUniqueInput!, create: CategoryCreateInput!, update: CategoryUpdateInput!): Category!
   upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
+  upsertCompany(where: CompanyWhereUniqueInput!, create: CompanyCreateInput!, update: CompanyUpdateInput!): Company!
   upsertSkill(where: SkillWhereUniqueInput!, create: SkillCreateInput!, update: SkillUpdateInput!): Skill!
-  upsertLocation(where: LocationWhereUniqueInput!, create: LocationCreateInput!, update: LocationUpdateInput!): Location!
   upsertResume(where: ResumeWhereUniqueInput!, create: ResumeCreateInput!, update: ResumeUpdateInput!): Resume!
+  upsertLocation(where: LocationWhereUniqueInput!, create: LocationCreateInput!, update: LocationUpdateInput!): Location!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyRoles(data: RoleUpdateManyMutationInput!, where: RoleWhereInput): BatchPayload!
   updateManyPermissions(data: PermissionUpdateManyMutationInput!, where: PermissionWhereInput): BatchPayload!
   updateManyJobs(data: JobUpdateManyMutationInput!, where: JobWhereInput): BatchPayload!
-  updateManyCompanies(data: CompanyUpdateManyMutationInput!, where: CompanyWhereInput): BatchPayload!
+  updateManyBranches(data: BranchUpdateManyMutationInput!, where: BranchWhereInput): BatchPayload!
   updateManyCategories(data: CategoryUpdateManyMutationInput!, where: CategoryWhereInput): BatchPayload!
   updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
+  updateManyCompanies(data: CompanyUpdateManyMutationInput!, where: CompanyWhereInput): BatchPayload!
   updateManySkills(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
-  updateManyLocations(data: LocationUpdateManyMutationInput!, where: LocationWhereInput): BatchPayload!
   updateManyResumes(data: ResumeUpdateManyMutationInput!, where: ResumeWhereInput): BatchPayload!
+  updateManyLocations(data: LocationUpdateManyMutationInput!, where: LocationWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyRoles(where: RoleWhereInput): BatchPayload!
   deleteManyPermissions(where: PermissionWhereInput): BatchPayload!
   deleteManyJobs(where: JobWhereInput): BatchPayload!
   deleteManyApplications(where: ApplicationWhereInput): BatchPayload!
   deleteManyFavorites(where: FavoriteWhereInput): BatchPayload!
-  deleteManyCompanies(where: CompanyWhereInput): BatchPayload!
+  deleteManyBranches(where: BranchWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
   deleteManyFiles(where: FileWhereInput): BatchPayload!
+  deleteManyCompanies(where: CompanyWhereInput): BatchPayload!
   deleteManySkills(where: SkillWhereInput): BatchPayload!
-  deleteManyLocations(where: LocationWhereInput): BatchPayload!
   deleteManyResumes(where: ResumeWhereInput): BatchPayload!
+  deleteManyLocations(where: LocationWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -3926,36 +4199,39 @@ type Query {
   jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job]!
   applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application]!
   favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite]!
-  companies(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Company]!
+  branches(where: BranchWhereInput, orderBy: BranchOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Branch]!
   categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
   files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File]!
+  companies(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Company]!
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
-  locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
   resumes(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Resume]!
+  locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
   user(where: UserWhereUniqueInput!): User
   role(where: RoleWhereUniqueInput!): Role
   permission(where: PermissionWhereUniqueInput!): Permission
   job(where: JobWhereUniqueInput!): Job
   application(where: ApplicationWhereUniqueInput!): Application
   favorite(where: FavoriteWhereUniqueInput!): Favorite
-  company(where: CompanyWhereUniqueInput!): Company
+  branch(where: BranchWhereUniqueInput!): Branch
   category(where: CategoryWhereUniqueInput!): Category
   file(where: FileWhereUniqueInput!): File
+  company(where: CompanyWhereUniqueInput!): Company
   skill(where: SkillWhereUniqueInput!): Skill
-  location(where: LocationWhereUniqueInput!): Location
   resume(where: ResumeWhereUniqueInput!): Resume
+  location(where: LocationWhereUniqueInput!): Location
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   rolesConnection(where: RoleWhereInput, orderBy: RoleOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): RoleConnection!
   permissionsConnection(where: PermissionWhereInput, orderBy: PermissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PermissionConnection!
   jobsConnection(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): JobConnection!
   applicationsConnection(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ApplicationConnection!
   favoritesConnection(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FavoriteConnection!
-  companiesConnection(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CompanyConnection!
+  branchesConnection(where: BranchWhereInput, orderBy: BranchOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BranchConnection!
   categoriesConnection(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CategoryConnection!
   filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
+  companiesConnection(where: CompanyWhereInput, orderBy: CompanyOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CompanyConnection!
   skillsConnection(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SkillConnection!
-  locationsConnection(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocationConnection!
   resumesConnection(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ResumeConnection!
+  locationsConnection(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LocationConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -5093,12 +5369,13 @@ type Subscription {
   job(where: JobSubscriptionWhereInput): JobSubscriptionPayload
   application(where: ApplicationSubscriptionWhereInput): ApplicationSubscriptionPayload
   favorite(where: FavoriteSubscriptionWhereInput): FavoriteSubscriptionPayload
-  company(where: CompanySubscriptionWhereInput): CompanySubscriptionPayload
+  branch(where: BranchSubscriptionWhereInput): BranchSubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
   file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
+  company(where: CompanySubscriptionWhereInput): CompanySubscriptionPayload
   skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
-  location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
   resume(where: ResumeSubscriptionWhereInput): ResumeSubscriptionPayload
+  location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
 }
 
 type User implements Node {
@@ -5114,7 +5391,7 @@ type User implements Node {
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill!]
   favorites(where: FavoriteWhereInput, orderBy: FavoriteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Favorite!]
   role: Role!
-  company: Company
+  branch: Branch
   resumes(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Resume!]
 }
 
@@ -5139,12 +5416,12 @@ input UserCreateInput {
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   role: RoleCreateOneWithoutUsersInput!
-  company: CompanyCreateOneWithoutUsersInput
+  branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
 
-input UserCreateManyWithoutCompanyInput {
-  create: [UserCreateWithoutCompanyInput!]
+input UserCreateManyWithoutBranchInput {
+  create: [UserCreateWithoutBranchInput!]
   connect: [UserWhereUniqueInput!]
 }
 
@@ -5193,11 +5470,11 @@ input UserCreateWithoutApplicationsInput {
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   role: RoleCreateOneWithoutUsersInput!
-  company: CompanyCreateOneWithoutUsersInput
+  branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
 
-input UserCreateWithoutCompanyInput {
+input UserCreateWithoutBranchInput {
   id: ID
   name: String!
   email: String!
@@ -5221,7 +5498,7 @@ input UserCreateWithoutFavoritesInput {
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   role: RoleCreateOneWithoutUsersInput!
-  company: CompanyCreateOneWithoutUsersInput
+  branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
 
@@ -5235,7 +5512,7 @@ input UserCreateWithoutJobsInput {
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   role: RoleCreateOneWithoutUsersInput!
-  company: CompanyCreateOneWithoutUsersInput
+  branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
 
@@ -5249,7 +5526,7 @@ input UserCreateWithoutLocationInput {
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   role: RoleCreateOneWithoutUsersInput!
-  company: CompanyCreateOneWithoutUsersInput
+  branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
 
@@ -5264,7 +5541,7 @@ input UserCreateWithoutResumesInput {
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   role: RoleCreateOneWithoutUsersInput!
-  company: CompanyCreateOneWithoutUsersInput
+  branch: BranchCreateOneWithoutUsersInput
 }
 
 input UserCreateWithoutRoleInput {
@@ -5277,7 +5554,7 @@ input UserCreateWithoutRoleInput {
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
-  company: CompanyCreateOneWithoutUsersInput
+  branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
 
@@ -5291,7 +5568,7 @@ input UserCreateWithoutSkillsInput {
   location: LocationCreateOneWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
   role: RoleCreateOneWithoutUsersInput!
-  company: CompanyCreateOneWithoutUsersInput
+  branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
 
@@ -5590,7 +5867,7 @@ input UserUpdateInput {
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   role: RoleUpdateOneRequiredWithoutUsersInput
-  company: CompanyUpdateOneWithoutUsersInput
+  branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
 
@@ -5606,16 +5883,16 @@ input UserUpdateManyMutationInput {
   password: String
 }
 
-input UserUpdateManyWithoutCompanyInput {
-  create: [UserCreateWithoutCompanyInput!]
+input UserUpdateManyWithoutBranchInput {
+  create: [UserCreateWithoutBranchInput!]
   connect: [UserWhereUniqueInput!]
   set: [UserWhereUniqueInput!]
   disconnect: [UserWhereUniqueInput!]
   delete: [UserWhereUniqueInput!]
-  update: [UserUpdateWithWhereUniqueWithoutCompanyInput!]
+  update: [UserUpdateWithWhereUniqueWithoutBranchInput!]
   updateMany: [UserUpdateManyWithWhereNestedInput!]
   deleteMany: [UserScalarWhereInput!]
-  upsert: [UserUpsertWithWhereUniqueWithoutCompanyInput!]
+  upsert: [UserUpsertWithWhereUniqueWithoutBranchInput!]
 }
 
 input UserUpdateManyWithoutLocationInput {
@@ -5696,11 +5973,11 @@ input UserUpdateWithoutApplicationsDataInput {
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   role: RoleUpdateOneRequiredWithoutUsersInput
-  company: CompanyUpdateOneWithoutUsersInput
+  branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
 
-input UserUpdateWithoutCompanyDataInput {
+input UserUpdateWithoutBranchDataInput {
   name: String
   email: String
   password: String
@@ -5722,7 +5999,7 @@ input UserUpdateWithoutFavoritesDataInput {
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   role: RoleUpdateOneRequiredWithoutUsersInput
-  company: CompanyUpdateOneWithoutUsersInput
+  branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
 
@@ -5735,7 +6012,7 @@ input UserUpdateWithoutJobsDataInput {
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   role: RoleUpdateOneRequiredWithoutUsersInput
-  company: CompanyUpdateOneWithoutUsersInput
+  branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
 
@@ -5748,7 +6025,7 @@ input UserUpdateWithoutLocationDataInput {
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   role: RoleUpdateOneRequiredWithoutUsersInput
-  company: CompanyUpdateOneWithoutUsersInput
+  branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
 
@@ -5762,7 +6039,7 @@ input UserUpdateWithoutResumesDataInput {
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   role: RoleUpdateOneRequiredWithoutUsersInput
-  company: CompanyUpdateOneWithoutUsersInput
+  branch: BranchUpdateOneWithoutUsersInput
 }
 
 input UserUpdateWithoutRoleDataInput {
@@ -5774,7 +6051,7 @@ input UserUpdateWithoutRoleDataInput {
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
-  company: CompanyUpdateOneWithoutUsersInput
+  branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
 
@@ -5787,13 +6064,13 @@ input UserUpdateWithoutSkillsDataInput {
   location: LocationUpdateOneWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
   role: RoleUpdateOneRequiredWithoutUsersInput
-  company: CompanyUpdateOneWithoutUsersInput
+  branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
 
-input UserUpdateWithWhereUniqueWithoutCompanyInput {
+input UserUpdateWithWhereUniqueWithoutBranchInput {
   where: UserWhereUniqueInput!
-  data: UserUpdateWithoutCompanyDataInput!
+  data: UserUpdateWithoutBranchDataInput!
 }
 
 input UserUpdateWithWhereUniqueWithoutLocationInput {
@@ -5831,10 +6108,10 @@ input UserUpsertWithoutResumesInput {
   create: UserCreateWithoutResumesInput!
 }
 
-input UserUpsertWithWhereUniqueWithoutCompanyInput {
+input UserUpsertWithWhereUniqueWithoutBranchInput {
   where: UserWhereUniqueInput!
-  update: UserUpdateWithoutCompanyDataInput!
-  create: UserCreateWithoutCompanyInput!
+  update: UserUpdateWithoutBranchDataInput!
+  create: UserCreateWithoutBranchInput!
 }
 
 input UserUpsertWithWhereUniqueWithoutLocationInput {
@@ -6082,7 +6359,7 @@ input UserWhereInput {
   favorites_some: FavoriteWhereInput
   favorites_none: FavoriteWhereInput
   role: RoleWhereInput
-  company: CompanyWhereInput
+  branch: BranchWhereInput
   resumes_every: ResumeWhereInput
   resumes_some: ResumeWhereInput
   resumes_none: ResumeWhereInput
