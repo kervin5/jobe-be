@@ -48,7 +48,14 @@ const Mutations = {
                     connect: defaultRole
                 }
             }
-        });
+        },`{
+            id
+            name
+            role {
+                id
+                name
+            }
+        }`);
 
         const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
 
@@ -59,15 +66,23 @@ const Mutations = {
             maxAge: 1000 * 60 * 60 * 24 * 365,
         });
         // console.log(user);
-        return token;
+        return user;
     },
 
     async login(parent, { email, password }, ctx, info) {
         // 1. check if there is a user with that email
-        const user = await ctx.db.query.user({ where: { email } });
+        const user = await ctx.db.query.user({ where: { email } }, `{
+            id
+            name
+            role {
+                id
+                name
+            }
+          }`);
         if (!user) {
             throw new Error(`No such user found for email ${email}`);
         }
+       
         // 2. Check if their password is correct
         const valid = await bcrypt.compare(password, user.password);
         if (!valid) {
@@ -84,7 +99,7 @@ const Mutations = {
             path: "/"
         });
         // 5. Return the user
-        return token;
+        return user;
     },
     logout(parent, args, ctx, info) {
         ctx.response.clearCookie("token");
