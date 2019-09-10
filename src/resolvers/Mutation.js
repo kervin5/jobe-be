@@ -142,12 +142,15 @@ const Mutations = {
             throw new Error(`You are not authorized to perform this action`);
         }
 
-        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}});
-
-        // console.log(user);
-        // if (user.permissions === 'USER') {
-        //     throw new Error(`You are not authorized to perform this action`);
-        // }
+        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}},`{
+            id
+            branch {
+                id
+                company {
+                    id
+                }
+            }
+          }`);
 
         const jobLocation = args.location.create;
 
@@ -175,7 +178,7 @@ const Mutations = {
                 status: 'DRAFT',
                 author: { connect: {id: ctx.request.user.userId}},
                 // company: {connect: {id: user.company.id}}
-                branch: {connect: {id: "ck08cxz4fdhic0b09po9w2j7r"}}
+                branch: {connect: {id: user.branch.id}}
             }
         }, info);
 
