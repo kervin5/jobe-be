@@ -45,7 +45,7 @@ const Mutations = {
                 ...args,
                 password: await bcrypt.hash(args.password, salt),
                 role: {
-                    connect: defaultRole
+                    connect: { id: defaultRole.id}
                 }
             }
         },`{
