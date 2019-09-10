@@ -210,7 +210,7 @@ const Mutations = {
         }
 
         if (!args.data.status) {
-            args.data.status = "EDITING";
+            args.data.status = "DRAFT";
         }
 
         const job = await ctx.db.mutation.updateJob(args, info);
