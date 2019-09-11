@@ -17,6 +17,44 @@ const Mutations = {
         return user;
     },
 
+    async createRole(parent, args, ctx, info) {
+      
+            return await ctx.db.mutation.createRole({
+                 data: {
+                     name: args.name,
+                     permissions: {
+                         create: args.permissions.map(permission => ({ object: permission.object , actions: { set: permission.actions }}))
+                     }
+                 }
+             }, info);
+         
+    },
+
+    async updateRole(parent, args, ctx, info) {
+        if (!userExists(ctx)) {
+            return null;
+        }
+
+        const role = await ctx.db.query.role({where: {id: args.id}},`{
+            id
+            name
+            permissions {
+                id
+            }
+        }`);
+
+        return await ctx.db.mutation.updateRole({data:{
+            name: args.name || role.name,
+            permissions: {
+                delete: role.permissions.map( permission => ({ id: permission.id})),
+                create: args.permissions.map(permission => ({ object: permission.object, actions: { set: permission.actions } }))
+                // create: args.permissions
+            }
+        }, where: {id: args.id}}, info);
+
+        
+    },
+
 
     async signup(parent, args, ctx, info) {
         const salt = await bcrypt.genSalt(10);
@@ -57,7 +95,7 @@ const Mutations = {
             }
         }`);
 
-        const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+        const token = jwt.sign({ id: user.id }, process.env.APP_SECRET);
 
         // 4. Set the cookie with the token
         ctx.response.header('token', token);
@@ -91,7 +129,7 @@ const Mutations = {
             throw new Error('Invalid Password!');
         }
         // 3. generate the JWT Token
-        const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+        const token = jwt.sign({id: user.id}, process.env.APP_SECRET);
         // 4. Set the cookie with the token
         ctx.response.header('token', token);
 
@@ -138,11 +176,11 @@ const Mutations = {
     },
 
     async createJob(parent, args, ctx, info) {
-        if (!ctx.request.user.userId) {
+        if (!ctx.request.user.id) {
             throw new Error(`You are not authorized to perform this action`);
         }
 
-        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId}},`{
+        const user = await ctx.db.query.user({where: {id: ctx.request.user.id}},`{
             id
             branch {
                 id
@@ -176,7 +214,7 @@ const Mutations = {
                 categories:  {connect : args.categories.map(category => ({name: category}))},
                 skills: {connect : args.skills.map(skill => ({name: skill}))},
                 status: 'DRAFT',
-                author: { connect: {id: ctx.request.user.userId}},
+                author: { connect: {id: ctx.request.user.id}},
                 // company: {connect: {id: user.company.id}}
                 branch: {connect: {id: user.branch.id}}
             }
@@ -216,8 +254,9 @@ const Mutations = {
             args.data.status = "DRAFT";
         }
 
+        
         const job = await ctx.db.mutation.updateJob(args, info);
-
+        console.log(job);
         return job;
     }
     ,
@@ -226,13 +265,13 @@ const Mutations = {
             return null;
         }
 
-        const user = await ctx.db.query.user({where: {id: ctx.request.user.userId }},`{
+        const user = await ctx.db.query.user({where: {id: ctx.request.user.id }},`{
             id
             resumes {
                 id
             }
         }`)
-        args.user = { connect: { id: ctx.request.user.userId } };
+        args.user = { connect: { id: ctx.request.user.id } };
 
         const application = await ctx.db.mutation.createApplication({
             data: {
@@ -253,7 +292,7 @@ const Mutations = {
             return null;
         }
 
-        args.user = { connect: { id: ctx.request.user.userId } };
+        args.user = { connect: { id: ctx.request.user.id } };
 
         const result = await ctx.db.mutation.createFavorite({
             data: {
@@ -296,7 +335,7 @@ const Mutations = {
                 },
 
                 user: {
-                    connect: { id: ctx.request.user.userId }
+                    connect: { id: ctx.request.user.id }
                 },
 
                 title: args.title

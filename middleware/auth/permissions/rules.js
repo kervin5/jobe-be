@@ -18,7 +18,7 @@ const isCustomer = rule()(
 const can = (action, object) => rule()(async (parent, args, ctx, info)=>{
  
   try {
-  const user = await ctx.db.query.user({where: {id:  ctx.request.user.userId}},`{
+  const user = await ctx.db.query.user({where: {id:  ctx.request.user.id}},`{
     id
     email
     role {

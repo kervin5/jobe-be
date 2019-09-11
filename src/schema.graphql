@@ -16,6 +16,11 @@ input UpdateJobCustomInput {
     status: Status
 }
 
+input RolePermissionsInput {
+    object: String!
+    actions: [String]
+}
+
 type SignedFileUploadRequest {
     signedRequest: String!
     url: String!
@@ -28,6 +33,17 @@ type Mutation {
         email: String
         password: String
     ): User!
+
+    createRole (
+        name: String!
+        permissions: [RolePermissionsInput]
+    ): Role!
+
+    updateRole(
+        id: ID!
+        name: String
+        permissions: [RolePermissionsInput]
+    ): Role
 
     createJob(
         title: String!
@@ -84,7 +100,7 @@ type Query {
     me: User
     jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job]!
     job(where: JobWhereUniqueInput!): Job
-    jobsConnectionPerUser(where: UserWhereUniqueInput): JobConnection
+    jobsConnection(where: UserWhereUniqueInput): JobConnection
     locations(where: LocationWhereInput, orderBy: LocationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Location]!
     location(where: LocationWhereUniqueInput!): Location
     categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
