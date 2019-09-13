@@ -256,7 +256,7 @@ const Mutations = {
 
         
         const job = await ctx.db.mutation.updateJob(args, info);
-        console.log(job);
+  
         return job;
     }
     ,

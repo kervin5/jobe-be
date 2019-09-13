@@ -33,6 +33,7 @@ const Query = {
     users: forwardTo('db'),
     async me(parent, args, ctx, info) {
         if (!userExists(ctx)) {
+            console.log(userExists(ctx));
             return null;
         }
 
