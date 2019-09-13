@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Fri Sep 06 2019 14:36:22 GMT-0700 (Pacific Daylight Time)
+# timestamp: Fri Sep 13 2019 09:56:06 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -2135,8 +2135,6 @@ type Job implements Node {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   author: User!
   location: Location!
   applications(where: ApplicationWhereInput, orderBy: ApplicationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Application!]
@@ -2165,8 +2163,6 @@ input JobCreateInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   status: Status
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
@@ -2220,8 +2216,6 @@ input JobCreateWithoutApplicationsInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   status: Status
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
@@ -2239,8 +2233,6 @@ input JobCreateWithoutAuthorInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   status: Status
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -2258,8 +2250,6 @@ input JobCreateWithoutBranchInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   status: Status
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
@@ -2277,8 +2267,6 @@ input JobCreateWithoutCategoriesInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   status: Status
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
@@ -2296,8 +2284,6 @@ input JobCreateWithoutFavoritesInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   status: Status
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
@@ -2315,8 +2301,6 @@ input JobCreateWithoutLocationInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   status: Status
   author: UserCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -2334,8 +2318,6 @@ input JobCreateWithoutSkillsInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   status: Status
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
@@ -2373,10 +2355,6 @@ enum JobOrderByInput {
   maxCompensation_DESC
   minCompensation_ASC
   minCompensation_DESC
-  qualifications_ASC
-  qualifications_DESC
-  requirements_ASC
-  requirements_DESC
   status_ASC
   status_DESC
 }
@@ -2391,8 +2369,6 @@ type JobPreviousValues {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   status: Status
 }
 
@@ -2693,86 +2669,6 @@ input JobScalarWhereInput {
 
   """All values greater than or equal the given value."""
   minCompensation_gte: Float
-  qualifications: String
-
-  """All values that are not equal to given value."""
-  qualifications_not: String
-
-  """All values that are contained in given list."""
-  qualifications_in: [String!]
-
-  """All values that are not contained in given list."""
-  qualifications_not_in: [String!]
-
-  """All values less than the given value."""
-  qualifications_lt: String
-
-  """All values less than or equal the given value."""
-  qualifications_lte: String
-
-  """All values greater than the given value."""
-  qualifications_gt: String
-
-  """All values greater than or equal the given value."""
-  qualifications_gte: String
-
-  """All values containing the given string."""
-  qualifications_contains: String
-
-  """All values not containing the given string."""
-  qualifications_not_contains: String
-
-  """All values starting with the given string."""
-  qualifications_starts_with: String
-
-  """All values not starting with the given string."""
-  qualifications_not_starts_with: String
-
-  """All values ending with the given string."""
-  qualifications_ends_with: String
-
-  """All values not ending with the given string."""
-  qualifications_not_ends_with: String
-  requirements: String
-
-  """All values that are not equal to given value."""
-  requirements_not: String
-
-  """All values that are contained in given list."""
-  requirements_in: [String!]
-
-  """All values that are not contained in given list."""
-  requirements_not_in: [String!]
-
-  """All values less than the given value."""
-  requirements_lt: String
-
-  """All values less than or equal the given value."""
-  requirements_lte: String
-
-  """All values greater than the given value."""
-  requirements_gt: String
-
-  """All values greater than or equal the given value."""
-  requirements_gte: String
-
-  """All values containing the given string."""
-  requirements_contains: String
-
-  """All values not containing the given string."""
-  requirements_not_contains: String
-
-  """All values starting with the given string."""
-  requirements_starts_with: String
-
-  """All values not starting with the given string."""
-  requirements_not_starts_with: String
-
-  """All values ending with the given string."""
-  requirements_ends_with: String
-
-  """All values not ending with the given string."""
-  requirements_not_ends_with: String
   status: Status
 
   """All values that are not equal to given value."""
@@ -2829,8 +2725,6 @@ input JobUpdateInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  qualifications: String
-  requirements: String
   status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
@@ -2848,8 +2742,6 @@ input JobUpdateManyDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  qualifications: String
-  requirements: String
   status: Status
 }
 
@@ -2860,8 +2752,6 @@ input JobUpdateManyMutationInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  qualifications: String
-  requirements: String
   status: Status
 }
 
@@ -2951,8 +2841,6 @@ input JobUpdateWithoutApplicationsDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  qualifications: String
-  requirements: String
   status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
@@ -2969,8 +2857,6 @@ input JobUpdateWithoutAuthorDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  qualifications: String
-  requirements: String
   status: Status
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -2987,8 +2873,6 @@ input JobUpdateWithoutBranchDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  qualifications: String
-  requirements: String
   status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
@@ -3005,8 +2889,6 @@ input JobUpdateWithoutCategoriesDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  qualifications: String
-  requirements: String
   status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
@@ -3023,8 +2905,6 @@ input JobUpdateWithoutFavoritesDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  qualifications: String
-  requirements: String
   status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
@@ -3041,8 +2921,6 @@ input JobUpdateWithoutLocationDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  qualifications: String
-  requirements: String
   status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -3059,8 +2937,6 @@ input JobUpdateWithoutSkillsDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  qualifications: String
-  requirements: String
   status: Status
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
@@ -3432,86 +3308,6 @@ input JobWhereInput {
 
   """All values greater than or equal the given value."""
   minCompensation_gte: Float
-  qualifications: String
-
-  """All values that are not equal to given value."""
-  qualifications_not: String
-
-  """All values that are contained in given list."""
-  qualifications_in: [String!]
-
-  """All values that are not contained in given list."""
-  qualifications_not_in: [String!]
-
-  """All values less than the given value."""
-  qualifications_lt: String
-
-  """All values less than or equal the given value."""
-  qualifications_lte: String
-
-  """All values greater than the given value."""
-  qualifications_gt: String
-
-  """All values greater than or equal the given value."""
-  qualifications_gte: String
-
-  """All values containing the given string."""
-  qualifications_contains: String
-
-  """All values not containing the given string."""
-  qualifications_not_contains: String
-
-  """All values starting with the given string."""
-  qualifications_starts_with: String
-
-  """All values not starting with the given string."""
-  qualifications_not_starts_with: String
-
-  """All values ending with the given string."""
-  qualifications_ends_with: String
-
-  """All values not ending with the given string."""
-  qualifications_not_ends_with: String
-  requirements: String
-
-  """All values that are not equal to given value."""
-  requirements_not: String
-
-  """All values that are contained in given list."""
-  requirements_in: [String!]
-
-  """All values that are not contained in given list."""
-  requirements_not_in: [String!]
-
-  """All values less than the given value."""
-  requirements_lt: String
-
-  """All values less than or equal the given value."""
-  requirements_lte: String
-
-  """All values greater than the given value."""
-  requirements_gt: String
-
-  """All values greater than or equal the given value."""
-  requirements_gte: String
-
-  """All values containing the given string."""
-  requirements_contains: String
-
-  """All values not containing the given string."""
-  requirements_not_contains: String
-
-  """All values starting with the given string."""
-  requirements_starts_with: String
-
-  """All values not starting with the given string."""
-  requirements_not_starts_with: String
-
-  """All values ending with the given string."""
-  requirements_ends_with: String
-
-  """All values not ending with the given string."""
-  requirements_not_ends_with: String
   status: Status
 
   """All values that are not equal to given value."""

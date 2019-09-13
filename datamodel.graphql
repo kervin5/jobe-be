@@ -54,8 +54,6 @@ type Job {
   type:  String!
   maxCompensation: Float!
   minCompensation: Float!
-  qualifications: String!
-  requirements: String!
   author: User!
   location: Location!
   applications: [Application!]

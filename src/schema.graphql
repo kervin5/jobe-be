@@ -8,8 +8,6 @@ input UpdateJobCustomInput {
     type: String
     maxCompensation: Float
     minCompensation: Float
-    qualifications: String
-    requirements: String
     location: LocationCreateOneWithoutJobsInput
     categories: [String!]
     skills: [String!]
@@ -53,8 +51,6 @@ type Mutation {
         type: String!
         maxCompensation: Float!
         minCompensation: Float!
-        qualifications: String!
-        requirements: String!
         location: LocationCreateOneWithoutJobsInput!
         categories: [String!]!
         skills: [String!]!
