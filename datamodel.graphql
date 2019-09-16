@@ -137,3 +137,4 @@ type Resume {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
+

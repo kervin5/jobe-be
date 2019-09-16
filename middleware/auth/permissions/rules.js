@@ -35,7 +35,7 @@ const can = (action, object) => rule()(async (parent, args, ctx, info)=>{
   }
   
   catch(ex) {
-    console.log(ex);
+  
     return false;
   }
 });

@@ -14,6 +14,8 @@ const Query = {
             return null;
         }
 
+
+
         const user = await ctx.db.query.user({where: {id: ctx.request.user.id }},`{
             id
             role {
@@ -28,12 +30,11 @@ const Query = {
             }
         }`);
 
-        return await ctx.db.query.jobsConnection({where: { branch: {id: user.branch.id } , ...(user.role.permissions.length > 0 && user.role.permissions[0].actions.includes("READ") ? {} :{author: {id: user.id}}) }}, info)
+        return await ctx.db.query.jobsConnection({where: { branch: {id: user.branch.id }, ...(args.status ? {status: args.status} : {}) , ...(user.role.permissions.length > 0 && user.role.permissions[0].actions.includes("READ") ? {} :{author: {id: user.id}}) }}, info)
     },
     users: forwardTo('db'),
     async me(parent, args, ctx, info) {
         if (!userExists(ctx)) {
-            console.log(userExists(ctx));
             return null;
         }
 
@@ -56,6 +57,21 @@ const Query = {
         }
 
         return await ctx.db.query.applicationsConnection({where: { job: { author: {id: ctx.request.user.id}} }},info);
+    },
+    async popularTerms(parent, args, ctx, info) {
+
+
+        let categories = await ctx.db.query.categories({},`{
+            id
+            name
+            jobs {
+                id
+            }
+        }`);
+
+        categories.sort((a, b) => (a.jobs.length > b.jobs.length) ? 1 : -1);
+
+        return categories.map(category => ({label: category.name, type: "category", id: category.id}));
     }
 };
 
