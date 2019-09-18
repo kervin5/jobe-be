@@ -31,6 +31,7 @@ type PopularTerm {
     type: String!
 }
 
+
 type Mutation {
     createUser(
         name: String
@@ -94,6 +95,7 @@ type Mutation {
     login(email: String! password: String!): User
     signup(name: String! password: String! email: String!): User
     logout:String
+    requestReset(email: String!): String
     createCompany(name: String! description: String!): Company!
 }
 

@@ -1,9 +1,12 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const prisma = require('../../startup/db');
+const { randomBytes } = require('crypto');
+const {promisify} = require('util');
 const { forwardTo } = require('prisma-binding');
 const { userExists } = require('../lib/utils');
 const { sign_s3 } = require('../lib/aws');
+const { transport, makeANiceEmail } = require('../lib/mail');
 
 const Mutations = {
     async createUser(parent, args, ctx, info) {
@@ -353,6 +356,30 @@ const Mutations = {
             }
         }, info)
         return company;
+    },
+
+    async requestReset(parent, args, ctx, info) {
+        const user = await ctx.db.query.user({where: {email: args.email}});
+        if(!user) throw new Error("Invalid user");
+
+        const randomBytesPromisified = promisify(randomBytes);
+        const resetToken = (await randomBytesPromisified(20)).toString('hex');
+        const resetTokenExpiry = Date.now() + 3600000; // 1 hour from now
+
+        const res = await ctx.db.mutation.updateUser({
+            where: { email: args.email },
+            data: { resetToken, resetTokenExpiry }
+        });
+
+
+        const mailRes = await transport.sendMail({
+            from: 'noreply@myexactjobs.com',
+            to: user.email,
+            subject: 'Your Password Reset Token',
+            html: makeANiceEmail(`Your password Reset Token is here! \n\n <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}">Click Here to Reset</a>`) 
+         });
+
+         return args.email;
     }
 };
 
