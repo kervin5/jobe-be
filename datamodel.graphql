@@ -28,6 +28,8 @@ type User {
   role: Role!
   branch: Branch
   resumes: [Resume]
+  resetToken: String
+  resetTokenExpiry: Float
 }
 
 type Role {

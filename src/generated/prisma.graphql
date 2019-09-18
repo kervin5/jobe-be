@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Fri Sep 13 2019 09:56:06 GMT-0700 (Pacific Daylight Time)
+# timestamp: Wed Sep 18 2019 12:20:24 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -5348,6 +5348,8 @@ type User implements Node {
   role: Role!
   branch: Branch
   resumes(where: ResumeWhereInput, orderBy: ResumeOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Resume!]
+  resetToken: String
+  resetTokenExpiry: Float
 }
 
 """A connection to a list of items."""
@@ -5365,6 +5367,8 @@ input UserCreateInput {
   name: String!
   email: String!
   password: String!
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -5420,6 +5424,8 @@ input UserCreateWithoutApplicationsInput {
   name: String!
   email: String!
   password: String!
+  resetToken: String
+  resetTokenExpiry: Float
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
@@ -5434,6 +5440,8 @@ input UserCreateWithoutBranchInput {
   name: String!
   email: String!
   password: String!
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -5448,6 +5456,8 @@ input UserCreateWithoutFavoritesInput {
   name: String!
   email: String!
   password: String!
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -5462,6 +5472,8 @@ input UserCreateWithoutJobsInput {
   name: String!
   email: String!
   password: String!
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationCreateManyWithoutUserInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
@@ -5476,6 +5488,8 @@ input UserCreateWithoutLocationInput {
   name: String!
   email: String!
   password: String!
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   skills: SkillCreateManyWithoutUsersInput
@@ -5490,6 +5504,8 @@ input UserCreateWithoutResumesInput {
   name: String!
   email: String!
   password: String!
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -5504,6 +5520,8 @@ input UserCreateWithoutRoleInput {
   name: String!
   email: String!
   password: String!
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -5518,6 +5536,8 @@ input UserCreateWithoutSkillsInput {
   name: String!
   email: String!
   password: String!
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -5549,6 +5569,10 @@ enum UserOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  resetToken_ASC
+  resetToken_DESC
+  resetTokenExpiry_ASC
+  resetTokenExpiry_DESC
 }
 
 type UserPreviousValues {
@@ -5558,6 +5582,8 @@ type UserPreviousValues {
   password: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  resetToken: String
+  resetTokenExpiry: Float
 }
 
 input UserScalarWhereInput {
@@ -5773,6 +5799,68 @@ input UserScalarWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  resetToken: String
+
+  """All values that are not equal to given value."""
+  resetToken_not: String
+
+  """All values that are contained in given list."""
+  resetToken_in: [String!]
+
+  """All values that are not contained in given list."""
+  resetToken_not_in: [String!]
+
+  """All values less than the given value."""
+  resetToken_lt: String
+
+  """All values less than or equal the given value."""
+  resetToken_lte: String
+
+  """All values greater than the given value."""
+  resetToken_gt: String
+
+  """All values greater than or equal the given value."""
+  resetToken_gte: String
+
+  """All values containing the given string."""
+  resetToken_contains: String
+
+  """All values not containing the given string."""
+  resetToken_not_contains: String
+
+  """All values starting with the given string."""
+  resetToken_starts_with: String
+
+  """All values not starting with the given string."""
+  resetToken_not_starts_with: String
+
+  """All values ending with the given string."""
+  resetToken_ends_with: String
+
+  """All values not ending with the given string."""
+  resetToken_not_ends_with: String
+  resetTokenExpiry: Float
+
+  """All values that are not equal to given value."""
+  resetTokenExpiry_not: Float
+
+  """All values that are contained in given list."""
+  resetTokenExpiry_in: [Float!]
+
+  """All values that are not contained in given list."""
+  resetTokenExpiry_not_in: [Float!]
+
+  """All values less than the given value."""
+  resetTokenExpiry_lt: Float
+
+  """All values less than or equal the given value."""
+  resetTokenExpiry_lte: Float
+
+  """All values greater than the given value."""
+  resetTokenExpiry_gt: Float
+
+  """All values greater than or equal the given value."""
+  resetTokenExpiry_gte: Float
 }
 
 type UserSubscriptionPayload {
@@ -5816,6 +5904,8 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -5830,12 +5920,16 @@ input UserUpdateManyDataInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
 }
 
 input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
 }
 
 input UserUpdateManyWithoutBranchInput {
@@ -5923,6 +6017,8 @@ input UserUpdateWithoutApplicationsDataInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
@@ -5936,6 +6032,8 @@ input UserUpdateWithoutBranchDataInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -5949,6 +6047,8 @@ input UserUpdateWithoutFavoritesDataInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -5962,6 +6062,8 @@ input UserUpdateWithoutJobsDataInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationUpdateManyWithoutUserInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
@@ -5975,6 +6077,8 @@ input UserUpdateWithoutLocationDataInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   skills: SkillUpdateManyWithoutUsersInput
@@ -5988,6 +6092,8 @@ input UserUpdateWithoutResumesDataInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -6001,6 +6107,8 @@ input UserUpdateWithoutRoleDataInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -6014,6 +6122,8 @@ input UserUpdateWithoutSkillsDataInput {
   name: String
   email: String
   password: String
+  resetToken: String
+  resetTokenExpiry: Float
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -6300,6 +6410,68 @@ input UserWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  resetToken: String
+
+  """All values that are not equal to given value."""
+  resetToken_not: String
+
+  """All values that are contained in given list."""
+  resetToken_in: [String!]
+
+  """All values that are not contained in given list."""
+  resetToken_not_in: [String!]
+
+  """All values less than the given value."""
+  resetToken_lt: String
+
+  """All values less than or equal the given value."""
+  resetToken_lte: String
+
+  """All values greater than the given value."""
+  resetToken_gt: String
+
+  """All values greater than or equal the given value."""
+  resetToken_gte: String
+
+  """All values containing the given string."""
+  resetToken_contains: String
+
+  """All values not containing the given string."""
+  resetToken_not_contains: String
+
+  """All values starting with the given string."""
+  resetToken_starts_with: String
+
+  """All values not starting with the given string."""
+  resetToken_not_starts_with: String
+
+  """All values ending with the given string."""
+  resetToken_ends_with: String
+
+  """All values not ending with the given string."""
+  resetToken_not_ends_with: String
+  resetTokenExpiry: Float
+
+  """All values that are not equal to given value."""
+  resetTokenExpiry_not: Float
+
+  """All values that are contained in given list."""
+  resetTokenExpiry_in: [Float!]
+
+  """All values that are not contained in given list."""
+  resetTokenExpiry_not_in: [Float!]
+
+  """All values less than the given value."""
+  resetTokenExpiry_lt: Float
+
+  """All values less than or equal the given value."""
+  resetTokenExpiry_lte: Float
+
+  """All values greater than the given value."""
+  resetTokenExpiry_gt: Float
+
+  """All values greater than or equal the given value."""
+  resetTokenExpiry_gte: Float
   applications_every: ApplicationWhereInput
   applications_some: ApplicationWhereInput
   applications_none: ApplicationWhereInput
