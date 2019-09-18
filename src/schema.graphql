@@ -96,6 +96,7 @@ type Mutation {
     signup(name: String! password: String! email: String!): User
     logout:String
     requestReset(email: String!): String
+    resetPassword(token: String! password: String! confirmPassword: String!): User
     createCompany(name: String! description: String!): Company!
 }
 
