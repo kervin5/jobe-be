@@ -376,7 +376,7 @@ const Mutations = {
             from: 'noreply@myexactjobs.com',
             to: user.email,
             subject: 'Your Password Reset Token',
-            html: makeANiceEmail(`Your password Reset Token is here! \n\n <a href="${process.env.FRONTEND_URL}/reset?resetToken=${resetToken}">Click Here to Reset</a>`) 
+            html: makeANiceEmail(`Your password Reset Token is here! \n\n <a href="${process.env.FRONTEND_URL}/user/password/reset?resetToken=${resetToken}">Click Here to Reset</a>`) 
          });
 
          return args.email;
