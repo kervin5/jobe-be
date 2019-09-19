@@ -64,6 +64,7 @@ const Mutations = {
             }
         }`);
 
+        console.log("Hit");
         return await ctx.db.mutation.updateRole({data:{
             name: args.name || role.name,
             permissions: {
@@ -91,6 +92,10 @@ const Mutations = {
                             {
                                 object: "JOB",
                                 actions: {set: ["READ"]}
+                            },
+                            {
+                              object: "APPLICATION",
+                              actions: ["CREATE", "READ", "UPDATE", "DELETE"]  
                             }
                         ]
                     }
@@ -137,7 +142,10 @@ const Mutations = {
             role {
                 id
                 name
-                
+                permissions {
+                    object
+                    actions
+                }
             }
           }`);
         if (!user) {
