@@ -59,8 +59,8 @@ const Query = {
         }
 
         const user =  await ctx.db.query.user({where: { id: ctx.request.user.id }},info);
-        console.log(user);
-        console.log(await can("READ","BRANCH",ctx)  ?  user : {...user, branch: null});
+    
+        console.log("=====================>",await can("READ","BRANCH",ctx)  ?  user : {...user, branch: null});
 
         return await can("READ","BRANCH",ctx)  ?  user : {...user, branch: null} ;
     },
