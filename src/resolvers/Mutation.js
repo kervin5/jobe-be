@@ -33,7 +33,7 @@ const Mutations = {
             from: 'noreply@myexactjobs.com',
             to: user.email,
             subject: 'My Exact Jobs Invite',
-            html: makeANiceEmail(`An account at MyExactJobs has been created for you, please click on the following link to setup your password! \n\n <a href="${process.env.FRONTEND_URL}/user/password/reset?resetToken=${resetToken}">Click Here to Create Password</a>`) 
+            html: makeANiceEmail(`${args.name}, an account at MyExactJobs has been created for you, please click on the following link to setup your password! \n\n <a href="${process.env.FRONTEND_URL}/user/password/reset?resetToken=${resetToken}">Click Here to Create Password</a>`) 
          });
         return user;
     },

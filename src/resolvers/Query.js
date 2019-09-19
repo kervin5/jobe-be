@@ -81,7 +81,7 @@ const Query = {
     async popularTerms(parent, args, ctx, info) {
 
 
-        let categories = await ctx.db.query.categories({},`{
+        let categories = await ctx.db.query.categories({where: { jobs_some: {status: "POSTED"} }},`{
             id
             name
             jobs {
