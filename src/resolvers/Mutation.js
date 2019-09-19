@@ -11,13 +11,30 @@ const { transport, makeANiceEmail } = require('../lib/mail');
 const Mutations = {
     async createUser(parent, args, ctx, info) {
         const salt = await bcrypt.genSalt(10);
+
+        const randomBytesPromisified = promisify(randomBytes);
+        const resetToken = (await randomBytesPromisified(20)).toString('hex');
+        const resetTokenExpiry = (Date.now() + 3600000) * 24; // 1 hour from now
+
         const user = await ctx.db.mutation.createUser({
             data: {
                 ...args,
-                // password: await bcrypt.hash(args.password, salt)
-                password: await bcrypt.hash("Test", salt)
+                branch: {
+                    connect: {id: args.branch}
+                },
+                role: { connect: { id: args.role} },
+                password: await bcrypt.hash(resetToken+resetTokenExpiry, salt),
+                resetToken,
+                resetTokenExpiry
             }
         }, info);
+
+        const mailRes = await transport.sendMail({
+            from: 'noreply@myexactjobs.com',
+            to: user.email,
+            subject: 'My Exact Jobs Invite',
+            html: makeANiceEmail(`An account at MyExactJobs has been created for you, please click on the following link to setup your password! \n\n <a href="${process.env.FRONTEND_URL}/user/password/reset?resetToken=${resetToken}">Click Here to Create Password</a>`) 
+         });
         return user;
     },
 

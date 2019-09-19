@@ -33,6 +33,26 @@ const Query = {
         return await ctx.db.query.jobsConnection({where: { branch: {id: user.branch.id }, ...(args.status ? {status: args.status} : {}) , ...(user.role.permissions.length > 0 && user.role.permissions[0].actions.includes("READ") ? {} :{author: {id: user.id}}) }}, info)
     },
     users: forwardTo('db'),
+    roles: forwardTo('db'),
+    async branches(parent, args, ctx, info) {
+        if (!userExists(ctx)) {
+            return null;
+        }
+      
+        const user = await ctx.db.query.user({where: { id: ctx.request.user.id}},`{ 
+            id
+            branch {
+                id
+                company {
+                    id
+                }
+            }
+         }`);
+
+        const branches = await ctx.db.query.branches({where: {company: { id: user.branch.company.id }}});
+
+        return branches;
+    },
     async me(parent, args, ctx, info) {
         if (!userExists(ctx)) {
             return null;

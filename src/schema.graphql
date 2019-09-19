@@ -34,8 +34,10 @@ type PopularTerm {
 
 type Mutation {
     createUser(
-        name: String
-        email: String
+        name: String!
+        email: String!
+        role: ID!
+        branch: ID!
     ): User!
 
     createRole (
@@ -102,6 +104,8 @@ type Mutation {
 type Query {
     users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
     me: User
+    roles: [Role]
+    branches: [Branch]
     jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job]!
     job(where: JobWhereUniqueInput!): Job
     jobsConnection(where: UserWhereUniqueInput status: String): JobConnection
