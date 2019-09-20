@@ -64,7 +64,6 @@ const Mutations = {
             }
         }`);
 
-        console.log("Hit");
         return await ctx.db.mutation.updateRole({data:{
             name: args.name || role.name,
             permissions: {
