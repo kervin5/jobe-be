@@ -8,7 +8,7 @@ const uuidv4 = require('uuid/v4');
 //     secretAccessKey: process.env.AWSSecretKey
 // });
 
-const S3_BUCKET = process.env.bucket;
+const S3_BUCKET = process.env.Bucket;
 const ACL = 'public-read';
 
 // Now lets export this function so we can call it from somewhere else 
