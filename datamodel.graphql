@@ -53,7 +53,7 @@ type Job {
   title: String!
   compensationType: String! @default(value: "hourly")
   description: String!
-  type:  String!
+  type: String!
   maxCompensation: Float!
   minCompensation: Float!
   author: User!
@@ -104,6 +104,7 @@ type Location {
   name: String!
   longitude: Float!
   latitude: Float!
+  boundary: [Float]! @scalarList(strategy: RELATION)
   jobs: [Job]
   users: [User]
 }
@@ -139,4 +140,3 @@ type Resume {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
-
