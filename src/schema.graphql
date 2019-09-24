@@ -125,7 +125,7 @@ type Query {
     first: Int
     last: Int
   ): [Job]!
-  jobsConnection(where: UserWhereUniqueInput, status: String): JobConnection
+  jobsConnection(where: JobWhereInput, status: String): JobConnection
   locations(
     where: LocationWhereInput
     orderBy: LocationOrderByInput

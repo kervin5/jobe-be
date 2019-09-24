@@ -67,7 +67,8 @@ const Query = {
           ...(user.role.permissions.length > 0 &&
           user.role.permissions[0].actions.includes("READ")
             ? {}
-            : { author: { id: user.id } })
+            : { author: { id: user.id } }),
+          ...args.where
         }
       },
       info

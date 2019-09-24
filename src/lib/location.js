@@ -1,6 +1,8 @@
 const request = require("./request");
 
 const searchBoundary = async (locationName, ctx, radius = 10) => {
+  //Latitude Longitude degree to miles calculation times the radius
+  const radiusDistance = (1 / 68.703) * (radius || 10);
   const LOCATION_QUERY = `{
         id
         name
@@ -8,12 +10,14 @@ const searchBoundary = async (locationName, ctx, radius = 10) => {
         longitude
         latitude
     }`;
+
+  //Gets data of location if it exists in database
   const locations = await ctx.db.query.locations(
     { where: { name: locationName } },
     LOCATION_QUERY
   );
+
   let [location] = locations || null;
-  const radiusDistance = (1 / 68.703) * (radius || 10);
 
   if (location) {
     [leftEdge, bottomEdge, rightEdge, topEdge] = location.boundary;
