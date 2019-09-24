@@ -9,6 +9,7 @@ const Query = {
   // }
   jobs: forwardTo("db"),
   job: forwardTo("db"),
+  usersConnection: forwardTo("db"),
   async searchJobs(parent, args, ctx, info) {
     const [leftEdge, bottomEdge, rightEdge, topEdge] = await searchBoundary(
       args.location,

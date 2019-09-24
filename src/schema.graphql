@@ -100,6 +100,15 @@ type Query {
     first: Int
     last: Int
   ): [User]!
+  usersConnection(
+    where: UserWhereInput
+    orderBy: UserOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): UserConnection!
   me: User
   roles: [Role]
   branches: [Branch]
@@ -126,6 +135,7 @@ type Query {
     last: Int
   ): [Job]!
   jobsConnection(where: JobWhereInput, status: String): JobConnection
+
   locations(
     where: LocationWhereInput
     orderBy: LocationOrderByInput
