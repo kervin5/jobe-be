@@ -15,7 +15,7 @@ const Query = {
       ctx,
       args.radius
     );
-    // console.log(ctx.db.query.jobs({  },info));
+
     return await ctx.db.query.jobs(
       {
         where: {
@@ -28,9 +28,11 @@ const Query = {
             longitude_gte: leftEdge,
             latitude_lte: topEdge,
             latitude_gte: bottomEdge
-          }
+          },
+          ...args.where
         },
-        ...(args.perPage ? { perPage: args.perPage, skip: args.skip } : {})
+        ...(args.perPage ? { perPage: args.perPage, skip: args.skip } : {}),
+        orderBy: "createdAt_DESC"
       },
       info
     );
