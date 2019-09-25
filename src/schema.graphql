@@ -167,7 +167,7 @@ type Query {
     last: Int
   ): [Skill]!
   skill(where: SkillWhereUniqueInput!): Skill
-  authorize: Boolean!
+  getSignedFileUrl(AWSUrl: String!): String
   applicationsConnection(where: ApplicationWhereInput): ApplicationConnection
 }
 

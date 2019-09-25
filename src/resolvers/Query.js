@@ -2,6 +2,7 @@ const { forwardTo } = require("prisma-binding");
 const jwt = require("jsonwebtoken");
 const { can } = require("../../middleware/auth/permissions/utils");
 const { searchBoundary } = require("../lib/location");
+const { sign_s3_read } = require("../lib/aws");
 const Query = {
   // async locations(parent, args, ctx, info) {
   //     const locations = await ctx.db.query.locations();
@@ -121,9 +122,18 @@ const Query = {
   categories: forwardTo("db"),
   category: forwardTo("db"),
   skills: forwardTo("db"),
-  async authorize(parent, args, ctx, info) {
-    return userExists(ctx);
-    // put the userId onto the req for future requests to access
+  async getSignedFileUrl(parent, args, ctx, info) {
+    if (!userExists(ctx)) {
+      return null;
+    }
+    const [file] = await ctx.db.query.files({
+      where: { path_ends_with: args.AWSUrl }
+    });
+
+    if (file) {
+      return await sign_s3_read(file.path);
+    }
+    return null;
   },
   async applicationsConnection(parent, args, ctx, info) {
     if (!userExists(ctx)) {

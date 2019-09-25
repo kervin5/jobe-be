@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Mon Sep 23 2019 14:04:48 GMT-0700 (Pacific Daylight Time)
+# timestamp: Tue Sep 24 2019 16:36:12 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -2941,6 +2941,7 @@ input FileWhereInput {
 
 input FileWhereUniqueInput {
   id: ID
+  path: String
 }
 
 type Job implements Node {

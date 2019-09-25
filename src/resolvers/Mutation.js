@@ -5,7 +5,7 @@ const { randomBytes } = require("crypto");
 const { promisify } = require("util");
 const { forwardTo } = require("prisma-binding");
 const { userExists } = require("../lib/utils");
-const { sign_s3 } = require("../lib/aws");
+const { sign_s3_upload } = require("../lib/aws");
 const { transport, makeANiceEmail } = require("../lib/mail");
 
 const Mutations = {
@@ -399,7 +399,7 @@ const Mutations = {
       return null;
     }
 
-    const result = await sign_s3({
+    const result = await sign_s3_upload({
       fileName: args.fileName,
       fileType: args.fileType
     });

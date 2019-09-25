@@ -124,7 +124,7 @@ type Skill {
 
 type File {
   id: ID! @id
-  path: String!
+  path: String! @unique
   mimetype: String!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
