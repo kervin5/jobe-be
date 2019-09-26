@@ -1,8 +1,11 @@
 const { forwardTo } = require("prisma-binding");
+const request = require("../lib/request");
 const jwt = require("jsonwebtoken");
 const { can } = require("../../middleware/auth/permissions/utils");
 const { searchBoundary } = require("../lib/location");
 const { sign_s3_read } = require("../lib/aws");
+const { shuffleArray } = require("../lib/utils");
+
 const Query = {
   // async locations(parent, args, ctx, info) {
   //     const locations = await ctx.db.query.locations();
@@ -17,7 +20,6 @@ const Query = {
       ctx,
       args.radius
     );
-
     return await ctx.db.query.jobs(
       {
         where: {
@@ -146,6 +148,7 @@ const Query = {
     );
   },
   async popularTerms(parent, args, ctx, info) {
+    console.log("hit");
     let categories = await ctx.db.query.categories(
       { where: { jobs_some: { status: "POSTED" } } },
       `{
@@ -157,13 +160,40 @@ const Query = {
         }`
     );
 
-    categories.sort((a, b) => (a.jobs.length > b.jobs.length ? 1 : -1));
+    let locations = await ctx.db.query.locations(
+      { where: { jobs_some: { status: "POSTED" } } },
+      `{
+              id
+              name
+              jobs {
+                  id
+              }
+          }`
+    );
 
-    return categories.map(category => ({
-      label: category.name,
-      type: "category",
-      id: category.id
-    }));
+    categories.sort((a, b) => (a.jobs.length > b.jobs.length ? -1 : 1));
+    locations.sort((a, b) => (a.jobs.length > b.jobs.length ? -1 : 1));
+
+    const terms = [
+      ...categories
+        .map(category => ({
+          label: category.name,
+          type: "category",
+          id: category.id
+        }))
+        .slice(0, 3),
+      ...locations
+        .map(location => ({
+          label: location.name,
+          type: "location",
+          id: location.id
+        }))
+        .slice(0, 3)
+    ];
+
+    shuffleArray(terms);
+
+    return terms;
   }
 };
 

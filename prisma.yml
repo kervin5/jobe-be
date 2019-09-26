@@ -1,9 +1,8 @@
 endpoint: ${env:PRISMA_ENDPOINT}
 #endpoint: https://myexactjobsstaging-417309a1d8.herokuapp.com/myexactjobs-staging/prod
 datamodel: datamodel.graphql
-#secret: ${env:PRISMA_SECRET}
+secret: ${env:PRISMA_SECRET}
 hooks:
   post-deploy:
     - graphql get-schema -p prisma
-    
 #https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
