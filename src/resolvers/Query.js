@@ -148,7 +148,6 @@ const Query = {
     );
   },
   async popularTerms(parent, args, ctx, info) {
-    console.log("hit");
     let categories = await ctx.db.query.categories(
       { where: { jobs_some: { status: "POSTED" } } },
       `{
@@ -181,14 +180,14 @@ const Query = {
           type: "category",
           id: category.id
         }))
-        .slice(0, 3),
+        .slice(0, 4),
       ...locations
         .map(location => ({
           label: location.name,
           type: "location",
           id: location.id
         }))
-        .slice(0, 3)
+        .slice(0, 5)
     ];
 
     shuffleArray(terms);
