@@ -24,8 +24,12 @@ const Query = {
       {
         where: {
           OR: [
-            { title_contains: args.query },
-            { description_contains: args.query }
+            { title_contains: args.query.toLowerCase() },
+            { description_contains: args.query.toLowerCase() },
+            { title_contains: args.query.toUpperCase() },
+            { description_contains: args.query.toUpperCase() },
+            { title_contains: titleCase(args.query) },
+            { description_contains: titleCase(args.query) }
           ],
           location: {
             longitude_lte: rightEdge,
@@ -199,5 +203,13 @@ const Query = {
 const userExists = ctx => {
   return !!(typeof ctx.request.user !== "undefined" && ctx.request.user.id);
 };
+
+function titleCase(str) {
+  let string = str.toLowerCase().split(" ");
+  for (var i = 0; i < string.length; i++) {
+    string[i] = string[i].charAt(0).toUpperCase() + string[i].slice(1);
+  }
+  return string.join(" ");
+}
 
 module.exports = Query;
