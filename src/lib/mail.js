@@ -1,12 +1,12 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 const transport = nodemailer.createTransport({
-    host: process.env.MAIL_HOST,
-    port: process.env.MAIL_POST,
-    auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS
-    }
+  host: process.env.MAIL_HOST,
+  port: process.env.MAIL_POST,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS
+  }
 });
 
 const makeANiceEmail = text => `
@@ -19,8 +19,8 @@ const makeANiceEmail = text => `
     ">
         <h2>Hello There!</h2>
         <p>${text}</p>
-        <p>😘, MyExactJobs Team</p>
+        <p>MyExactJobs Team 😎,</p>
     </div>
 `;
 
-module.exports = {transport, makeANiceEmail};
+module.exports = { transport, makeANiceEmail };
