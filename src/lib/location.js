@@ -33,6 +33,10 @@ const searchBoundary = async (locationName, ctx, radius = 10) => {
     )).features[0];
     // console.log(foundLocation);
 
+    if (!foundLocation) {
+      return [0, 0, 0, 0];
+    }
+
     location = await ctx.db.mutation.createLocation(
       {
         data: {
