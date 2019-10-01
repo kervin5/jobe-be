@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Tue Sep 24 2019 16:36:12 GMT-0700 (Pacific Daylight Time)
+# timestamp: Mon Sep 30 2019 17:04:37 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -6890,9 +6890,11 @@ input RoleUpdateOneRequiredWithoutPermissionsInput {
   upsert: RoleUpsertWithoutPermissionsInput
 }
 
-input RoleUpdateOneRequiredWithoutUsersInput {
+input RoleUpdateOneWithoutUsersInput {
   create: RoleCreateWithoutUsersInput
   connect: RoleWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
   update: RoleUpdateWithoutUsersDataInput
   upsert: RoleUpsertWithoutUsersInput
 }
@@ -7707,7 +7709,7 @@ type User implements Node {
     first: Int
     last: Int
   ): [Favorite!]
-  role: Role!
+  role: Role
   branch: Branch
   resumes(
     where: ResumeWhereInput
@@ -7750,7 +7752,7 @@ input UserCreateInput {
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
-  role: RoleCreateOneWithoutUsersInput!
+  role: RoleCreateOneWithoutUsersInput
   branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
@@ -7806,7 +7808,7 @@ input UserCreateWithoutApplicationsInput {
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
-  role: RoleCreateOneWithoutUsersInput!
+  role: RoleCreateOneWithoutUsersInput
   branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
@@ -7823,7 +7825,7 @@ input UserCreateWithoutBranchInput {
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
-  role: RoleCreateOneWithoutUsersInput!
+  role: RoleCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
 
@@ -7838,7 +7840,7 @@ input UserCreateWithoutFavoritesInput {
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
-  role: RoleCreateOneWithoutUsersInput!
+  role: RoleCreateOneWithoutUsersInput
   branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
@@ -7854,7 +7856,7 @@ input UserCreateWithoutJobsInput {
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
-  role: RoleCreateOneWithoutUsersInput!
+  role: RoleCreateOneWithoutUsersInput
   branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
@@ -7870,7 +7872,7 @@ input UserCreateWithoutLocationInput {
   jobs: JobCreateManyWithoutAuthorInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
-  role: RoleCreateOneWithoutUsersInput!
+  role: RoleCreateOneWithoutUsersInput
   branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
@@ -7887,7 +7889,7 @@ input UserCreateWithoutResumesInput {
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
-  role: RoleCreateOneWithoutUsersInput!
+  role: RoleCreateOneWithoutUsersInput
   branch: BranchCreateOneWithoutUsersInput
 }
 
@@ -7918,7 +7920,7 @@ input UserCreateWithoutSkillsInput {
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
   favorites: FavoriteCreateManyWithoutUserInput
-  role: RoleCreateOneWithoutUsersInput!
+  role: RoleCreateOneWithoutUsersInput
   branch: BranchCreateOneWithoutUsersInput
   resumes: ResumeCreateManyWithoutUserInput
 }
@@ -8479,7 +8481,7 @@ input UserUpdateInput {
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
-  role: RoleUpdateOneRequiredWithoutUsersInput
+  role: RoleUpdateOneWithoutUsersInput
   branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
@@ -8591,7 +8593,7 @@ input UserUpdateWithoutApplicationsDataInput {
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
-  role: RoleUpdateOneRequiredWithoutUsersInput
+  role: RoleUpdateOneWithoutUsersInput
   branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
@@ -8607,7 +8609,7 @@ input UserUpdateWithoutBranchDataInput {
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
-  role: RoleUpdateOneRequiredWithoutUsersInput
+  role: RoleUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
 
@@ -8621,7 +8623,7 @@ input UserUpdateWithoutFavoritesDataInput {
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
-  role: RoleUpdateOneRequiredWithoutUsersInput
+  role: RoleUpdateOneWithoutUsersInput
   branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
@@ -8636,7 +8638,7 @@ input UserUpdateWithoutJobsDataInput {
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
-  role: RoleUpdateOneRequiredWithoutUsersInput
+  role: RoleUpdateOneWithoutUsersInput
   branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
@@ -8651,7 +8653,7 @@ input UserUpdateWithoutLocationDataInput {
   jobs: JobUpdateManyWithoutAuthorInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
-  role: RoleUpdateOneRequiredWithoutUsersInput
+  role: RoleUpdateOneWithoutUsersInput
   branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }
@@ -8667,7 +8669,7 @@ input UserUpdateWithoutResumesDataInput {
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
-  role: RoleUpdateOneRequiredWithoutUsersInput
+  role: RoleUpdateOneWithoutUsersInput
   branch: BranchUpdateOneWithoutUsersInput
 }
 
@@ -8696,7 +8698,7 @@ input UserUpdateWithoutSkillsDataInput {
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
   favorites: FavoriteUpdateManyWithoutUserInput
-  role: RoleUpdateOneRequiredWithoutUsersInput
+  role: RoleUpdateOneWithoutUsersInput
   branch: BranchUpdateOneWithoutUsersInput
   resumes: ResumeUpdateManyWithoutUserInput
 }

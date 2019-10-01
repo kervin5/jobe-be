@@ -25,7 +25,7 @@ type User {
   location: Location
   skills: [Skill]
   favorites: [Favorite]
-  role: Role!
+  role: Role
   branch: Branch
   resumes: [Resume]
   resetToken: String
