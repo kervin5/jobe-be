@@ -91,6 +91,7 @@ type Mutation {
 }
 
 type Query {
+  image(query: String!): String!
   users(
     where: UserWhereInput
     orderBy: UserOrderByInput

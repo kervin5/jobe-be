@@ -197,6 +197,20 @@ const Query = {
     shuffleArray(terms);
 
     return terms;
+  },
+  async image(parent, args, ctx, info) {
+    try {
+      const result = await request(
+        `https://api.unsplash.com/photos/random?client_id=10ef2049e8dbf02f4198df4e287771e0b9f3a9635917dab105b9940004d87e1e&query=${
+          args.query
+        }&orientation=landscape`,
+        null,
+        "GET"
+      );
+      return result.urls.regular;
+    } catch (ex) {
+      return "";
+    }
   }
 };
 
