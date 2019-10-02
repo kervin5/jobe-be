@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const prisma = require("../../startup/db");
 const { randomBytes } = require("crypto");
 const { promisify } = require("util");
+const { can } = require("../../middleware/auth/permissions/utils");
 const { forwardTo } = require("prisma-binding");
 const { userExists } = require("../lib/utils");
 const { sign_s3_upload } = require("../lib/aws");
@@ -348,7 +349,8 @@ const Mutations = {
       { where: { id: args.id } },
       `{ id author { id} }`
     );
-    if (ctx.request.user.id === job.author.id) {
+
+    if (ctx.request.user.id === job.author.id || can("READ", "BRANCH", ctx)) {
       const result = await ctx.db.mutation.deleteJob({
         where: { id: args.id }
       });
