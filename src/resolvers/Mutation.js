@@ -350,7 +350,7 @@ const Mutations = {
       `{ id author { id} }`
     );
 
-    if (ctx.request.user.id === job.author.id || can("READ", "BRANCH", ctx)) {
+    if (ctx.request.user.id === job.author.id || can("UPDATE", "BRANCH", ctx)) {
       const result = await ctx.db.mutation.deleteJob({
         where: { id: args.id }
       });
