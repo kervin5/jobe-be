@@ -124,36 +124,40 @@ const Mutations = {
       });
     }
 
-    const user = await ctx.db.mutation.createUser(
-      {
-        data: {
-          ...args,
-          password: await bcrypt.hash(args.password, salt),
-          role: {
-            connect: { id: defaultRole.id }
-          }
-        }
-      },
-      `{
-            id
-            name
-            role {
-                id
-                name
+    try {
+      const user = await ctx.db.mutation.createUser(
+        {
+          data: {
+            ...args,
+            password: await bcrypt.hash(args.password, salt),
+            role: {
+              connect: { id: defaultRole.id }
             }
-        }`
-    );
+          }
+        },
+        `{
+              id
+              name
+              role {
+                  id
+                  name
+              }
+          }`
+      );
 
-    const token = jwt.sign({ id: user.id }, process.env.APP_SECRET);
+      const token = jwt.sign({ id: user.id }, process.env.APP_SECRET);
 
-    // 4. Set the cookie with the token
-    ctx.response.header("token", token);
-    ctx.response.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 365
-    });
-    // console.log(user);
-    return user;
+      // 4. Set the cookie with the token
+      ctx.response.header("token", token);
+      ctx.response.cookie("token", token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 365
+      });
+      // console.log(user);
+      return user;
+    } catch (error) {
+      throw new Error(`A user with the email ${args.email}`);
+    }
   },
 
   async login(parent, { email, password }, ctx, info) {
