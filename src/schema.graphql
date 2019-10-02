@@ -58,6 +58,8 @@ type Mutation {
     skills: [String!]!
   ): Job!
 
+  deleteJob(id: ID!): Job
+
   updateJob(where: JobWhereUniqueInput!, data: UpdateJobCustomInput!): Job
 
   createApplication(job: JobCreateOneWithoutApplicationsInput!): Application

@@ -59,6 +59,7 @@ type Job {
   author: User!
   location: Location!
   applications: [Application!]
+    @relation(name: "JobApplications", onDelete: CASCADE)
   categories: [Category!]!
   skills: [Skill!]!
   status(jobStatus: Status = DRAFT): Status
@@ -70,7 +71,7 @@ type Application {
   id: ID! @id
   user: User!
   resume: Resume!
-  job: Job!
+  job: Job! @relation(name: "JobApplications")
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }

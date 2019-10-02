@@ -339,6 +339,24 @@ const Mutations = {
 
     return job;
   },
+  async deleteJob(parent, args, ctx, info) {
+    if (!userExists(ctx)) {
+      return null;
+    }
+
+    const job = await ctx.db.query.job(
+      { where: { id: args.id } },
+      `{ id author { id} }`
+    );
+    if (ctx.request.user.id === job.author.id) {
+      const result = await ctx.db.mutation.deleteJob({
+        where: { id: args.id }
+      });
+      return result;
+    }
+
+    return null;
+  },
   async createApplication(parent, args, ctx, info) {
     if (!userExists(ctx)) {
       return null;
