@@ -156,7 +156,7 @@ const Mutations = {
       // console.log(user);
       return user;
     } catch (error) {
-      throw new Error(`A user with the email ${args.email}`);
+      throw new Error(`An user with this email already exists`);
     }
   },
 
