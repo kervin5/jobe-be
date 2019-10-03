@@ -3,8 +3,8 @@ const rules = require("./rules");
 
 const permissions = shield({
   Query: {
-    protectedJobs: rules.can("CREATE", "JOBS"),
-    protectedJobsConnection: rules.can("CREATE", "JOBS"),
+    protectedJobs: rules.can("CREATE", "JOB"),
+    protectedJobsConnection: rules.can("CREATE", "JOB"),
     users: rules.can("READ", "USER"),
     usersConnection: rules.can("READ", "USER"),
     candidates: or(rules.can("READ", "BRANCH"), rules.can("READ", "COMPANY")),
