@@ -1,8 +1,8 @@
-require('dotenv').config();
-const createServer = require('./startup/createServer');
-const db = require('./startup/db');
-const auth = require('./middleware/auth/auth');
-const cookieParser = require('cookie-parser');
+require("dotenv").config();
+const createServer = require("./startup/createServer");
+const db = require("./startup/db");
+const auth = require("./src/middleware/auth/auth");
+const cookieParser = require("cookie-parser");
 
 const server = createServer();
 
@@ -24,7 +24,6 @@ const server = createServer();
 server.express.use(cookieParser());
 server.express.use(auth);
 
-
 //TODO: Use express middleware to populate current user
 // server.express.use(async (req, res, next) => {
 //     // if they aren't logged in, skip this
@@ -37,11 +36,14 @@ server.express.use(auth);
 //     next();
 // });
 
-server.start({
+server.start(
+  {
     cors: {
-        credentials: true,
-        origin: process.env.FRONTEND_URL.split("|")
+      credentials: true,
+      origin: process.env.FRONTEND_URL.split("|")
     }
-}, deets => {
-    console.log(`Server is now running on port http://localhost:${deets.port}`)
-})
+  },
+  deets => {
+    console.log(`Server is now running on port http://localhost:${deets.port}`);
+  }
+);
