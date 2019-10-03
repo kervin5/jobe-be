@@ -2,9 +2,10 @@ const { shield, and } = require("graphql-shield");
 const rules = require("./rules");
 
 const permissions = shield({
-  //   Query: {
-  //     jobs: rules.isGrocer,
-  //   }//,
+  Query: {
+    protectedJobs: rules.isAuthenticated,
+    candidates: rules.isAuthenticated
+  },
   //   Mutation: {
   //     addItemToBasket: rules.isCustomer,
   //     removeItemFromBasket: rules.isCustomer,

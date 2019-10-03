@@ -1,4 +1,5 @@
 const { rule, and, or, not } = require("graphql-shield");
+
 // const getUserEmail = require("./utils");
 
 // const isGrocer = rule()(async (parent, args, ctx, info) => {
@@ -41,6 +42,9 @@ const can = (action, object) =>
     }
   });
 
-// const isAuthenticated = or(isCustomer, isGrocer);
+// isAuthenticated = or(isCustomer, isGrocer);
+const isAuthenticated = rule()(async (parent, args, ctx, info) => {
+  return ctx.db.exists.User({ id: ctx.request.user.id });
+});
 
-module.exports = { can };
+module.exports = { can, isAuthenticated };

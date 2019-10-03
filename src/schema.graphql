@@ -102,8 +102,26 @@ type Query {
     before: String
     first: Int
     last: Int
-  ): [User]!
+  ): [User]
+  candidates(
+    where: UserWhereInput
+    orderBy: UserOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [User]
   usersConnection(
+    where: UserWhereInput
+    orderBy: UserOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): UserConnection!
+  candidatesConnection(
     where: UserWhereInput
     orderBy: UserOrderByInput
     skip: Int
