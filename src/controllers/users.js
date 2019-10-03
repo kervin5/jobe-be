@@ -1,10 +1,10 @@
 const { forwardTo } = require("prisma-binding");
-const { can } = require("../middleware/auth/permissions/utils");
+const { can } = require("../lib/auth");
 
 const users = forwardTo("db");
 const usersConnection = forwardTo("db");
 const me = async (parent, args, ctx, info) => {
-  if (!userExists(ctx)) {
+  if (!ctx.request.user) {
     return null;
   }
 

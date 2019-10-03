@@ -12,7 +12,6 @@ module.exports = function(req, res, next) {
   try {
     const decoded = jwt.verify(token, process.env.APP_SECRET);
     req.user = decoded;
-    req.userExists = !!decoded.id;
   } catch (ex) {
     //TODO: Handle missing AUTH
     // console.log("error");

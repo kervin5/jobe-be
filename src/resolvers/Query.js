@@ -6,7 +6,7 @@ const { shuffleArray } = require("../lib/utils");
 
 //////////////////////////
 const Jobs = require("../controllers/jobs");
-const Users = require("../controllers/jobs");
+const Users = require("../controllers/users");
 const Roles = require("../controllers/roles");
 
 const Query = {

@@ -137,7 +137,17 @@ type Query {
     first: Int
     last: Int
   ): [Job]!
-  jobsConnection(where: JobWhereInput, status: String): JobConnection
+  protectedJobs(
+    where: JobWhereInput
+    orderBy: JobOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Job]!
+  jobsConnection(where: JobWhereInput): JobConnection
+  protectedJobsConnection(where: JobWhereInput): JobConnection
 
   locations(
     where: LocationWhereInput
