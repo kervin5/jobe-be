@@ -7,15 +7,8 @@ const permissions = shield({
     protectedJobsConnection: rules.can("CREATE", "JOB"),
     users: rules.can("READ", "USER"),
     usersConnection: rules.can("READ", "USER"),
-    candidates: or(rules.can("READ", "BRANCH"), rules.can("READ", "COMPANY")),
-    candidatesConnection: or(
-      rules.can("READ", "BRANCH"),
-      rules.can("READ", "COMPANY")
-    ),
-    protectedJobsConnection: or(
-      rules.can("READ", "BRANCH"),
-      rules.can("READ", "COMPANY")
-    )
+    candidates: rules.can("CREATE", "JOB"),
+    candidatesConnection: rules.can("CREATE", "JOB")
   },
   Mutation: {
     createUser: rules.can("CREATE", "USER"),
