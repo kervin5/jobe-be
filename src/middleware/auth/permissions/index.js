@@ -5,7 +5,6 @@ const permissions = shield({
   Query: {
     protectedJobs: rules.can("CREATE", "JOBS"),
     protectedJobsConnection: rules.can("CREATE", "JOBS"),
-    me: rules.isAuthenticated,
     users: rules.can("READ", "USER"),
     usersConnection: rules.can("READ", "USER"),
     candidates: or(rules.can("READ", "BRANCH"), rules.can("READ", "COMPANY")),
