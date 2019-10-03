@@ -8,7 +8,8 @@ const permissions = shield({
     users: rules.can("READ", "USER"),
     usersConnection: rules.can("READ", "USER"),
     candidates: rules.can("CREATE", "JOB"),
-    candidatesConnection: rules.can("CREATE", "JOB")
+    candidatesConnection: rules.can("CREATE", "JOB"),
+    roles: rules.can("READ", "ROLE")
   },
   Mutation: {
     createUser: rules.can("CREATE", "USER"),
