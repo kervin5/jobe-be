@@ -70,7 +70,7 @@ type Job {
 type Application {
   id: ID! @id
   user: User!
-  resume: Resume!
+  resume: Resume! @relation(name: "ResumeApplications")
   job: Job! @relation(name: "JobApplications")
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
@@ -138,6 +138,7 @@ type Resume {
   user: User! @relation(name: "UserResumes")
   skills: [Skill]
   applications: [Application]
+    @relation(name: "ResumeApplications", onDelete: CASCADE)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
