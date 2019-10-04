@@ -24,10 +24,10 @@ type User {
   jobs: [Job]
   location: Location
   skills: [Skill]
-  favorites: [Favorite]
+  favorites: [Favorite] @relation(name: "UserFavorites", onDelete: CASCADE)
   role: Role
   branch: Branch
-  resumes: [Resume]
+  resumes: [Resume] @relation(name: "UserResumes", onDelete: CASCADE)
   resetToken: String
   resetTokenExpiry: Float
 }
@@ -78,7 +78,7 @@ type Application {
 
 type Favorite {
   id: ID! @id
-  user: User!
+  user: User! @relation(name: "UserFavorites")
   job: Job!
 }
 
@@ -134,8 +134,8 @@ type File {
 type Resume {
   id: ID! @id
   title: String!
-  file: File!
-  user: User!
+  file: File! @relation(name: "ResumeFile", onDelete: CASCADE)
+  user: User! @relation(name: "UserResumes")
   skills: [Skill]
   applications: [Application]
   createdAt: DateTime! @createdAt

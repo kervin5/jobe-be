@@ -301,44 +301,56 @@ const Mutations = {
     return job;
   },
   async updateJob(parent, args, ctx, info) {
-    if (args.location) {
-      const jobLocation = args.data.location.create;
-      const locationExists = await prisma.exists.Location({
-        ...jobLocation
-      });
+    const jobs = await ctx.db.query.jobs({
+      where: { id: args.id, author: { id: ctx.request.user.id } }
+    });
 
-      if (locationExists) {
-        const existingLocations = await ctx.db.query.locations({
-          where: {
-            ...jobLocation
-          }
+    if (
+      jobs.length > 0 ||
+      can("UPDATE", "BRANCH", ctx) ||
+      can("UPDATE", "COMPANY", ctx)
+    ) {
+      if (args.location) {
+        const jobLocation = args.data.location.create;
+        const locationExists = await prisma.exists.Location({
+          ...jobLocation
         });
-        //Deletes the create mutation and forces connection to existing location if the location already exists
-        delete args.data.location.create;
-        args.data.location.connect = { id: existingLocations[0].id };
+
+        if (locationExists) {
+          const existingLocations = await ctx.db.query.locations({
+            where: {
+              ...jobLocation
+            }
+          });
+          //Deletes the create mutation and forces connection to existing location if the location already exists
+          delete args.data.location.create;
+          args.data.location.connect = { id: existingLocations[0].id };
+        }
       }
-    }
-    // console.log(args);
-    //Connect User to job
-    if (args.data.categories) {
-      args.data.categories = {
-        set: args.data.categories.map(category => ({ name: category }))
-      };
-    }
+      // console.log(args);
+      //Connect User to job
+      if (args.data.categories) {
+        args.data.categories = {
+          set: args.data.categories.map(category => ({ name: category }))
+        };
+      }
 
-    if (args.data.skills) {
-      args.data.skills = {
-        set: args.data.skills.map(skill => ({ name: skill }))
-      };
+      if (args.data.skills) {
+        args.data.skills = {
+          set: args.data.skills.map(skill => ({ name: skill }))
+        };
+      }
+
+      if (!args.data.status) {
+        args.data.status = "DRAFT";
+      }
+
+      const job = await ctx.db.mutation.updateJob(args, info);
+
+      return job;
+    } else {
+      return null;
     }
-
-    if (!args.data.status) {
-      args.data.status = "DRAFT";
-    }
-
-    const job = await ctx.db.mutation.updateJob(args, info);
-
-    return job;
   },
   async deleteJob(parent, args, ctx, info) {
     if (!userExists(ctx)) {
