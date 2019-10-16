@@ -43,6 +43,7 @@ const searchJobs = async (parent, args, ctx, info) => {
     ctx,
     args.radius
   );
+
   return await ctx.db.query.jobs(
     {
       where: {
@@ -60,7 +61,8 @@ const searchJobs = async (parent, args, ctx, info) => {
           latitude_lte: topEdge,
           latitude_gte: bottomEdge
         },
-        ...args.where
+        ...args.where,
+        status: "POSTED"
       },
       ...(args.perPage ? { perPage: args.perPage, skip: args.skip } : {}),
       orderBy: "createdAt_DESC"

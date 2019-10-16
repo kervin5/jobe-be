@@ -17,10 +17,45 @@ const searchBoundary = async (locationName, ctx, radius = 10) => {
     LOCATION_QUERY
   );
 
-  let [location] = locations || null;
-
+  let [location] = locations || [null];
   if (location) {
-    [leftEdge, bottomEdge, rightEdge, topEdge] = location.boundary;
+    if (location.boundary.every(edge => edge === 0)) {
+      const foundLocation = (await request(
+        "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
+          location.name +
+          ".json" +
+          "?access_token=pk.eyJ1Ijoia3Zhc3F1ZXppdCIsImEiOiJjandzNWtjcjUwMHh2NDJxa2toeWJ6N2FlIn0.Qa-IM4Em_QMvC2QWlMvieQ" +
+          "&types=country,region,postcode,place",
+        {},
+        "GET"
+      )).features[0];
+
+      if (!foundLocation) {
+        return [leftEdge, bottomEdge, rightEdge, topEdge];
+      }
+
+      location = await ctx.db.mutation.updateLocation(
+        {
+          data: {
+            name: locationName,
+            longitude: foundLocation.center[1],
+            latitude: foundLocation.center[0],
+            boundary: { set: foundLocation.bbox }
+          },
+          where: {
+            id: location.id
+          }
+        },
+        LOCATION_QUERY
+      );
+    }
+    const [leftEdge, bottomEdge, rightEdge, topEdge] = location.boundary;
+    return [
+      leftEdge - radiusDistance,
+      bottomEdge - radiusDistance,
+      rightEdge + radiusDistance,
+      topEdge + radiusDistance
+    ];
   } else {
     const foundLocation = (await request(
       "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
