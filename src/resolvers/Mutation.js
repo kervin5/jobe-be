@@ -103,6 +103,15 @@ const Mutations = {
   async signup(parent, args, ctx, info) {
     const salt = await bcrypt.genSalt(10);
 
+    let usersCount = await ctx.db.query.usersConnection(
+      {},
+      `{
+      aggregate {
+        count
+      }
+    }`
+    );
+
     //A role must exist in the database
     let defaultRole = await ctx.db.query.role({ where: { name: "candidate" } });
     if (!defaultRole) {
@@ -117,6 +126,52 @@ const Mutations = {
               },
               {
                 object: "APPLICATION",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              }
+            ]
+          }
+        }
+      });
+    }
+
+    if (usersCount.aggregate.count === 0) {
+      defaultRole = await ctx.db.mutation.createRole({
+        data: {
+          name: "administrator",
+          permissions: {
+            create: [
+              {
+                object: "JOB",
+                actions: {
+                  set: ["CREATE", "READ", "UPDATE", "DELETE", "PUBLISH"]
+                }
+              },
+              {
+                object: "USER",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "ROLE",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "PERMISSION",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "SKILL",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "CATEGORY",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "BRANCH",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "COMPANY",
                 actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
               }
             ]
