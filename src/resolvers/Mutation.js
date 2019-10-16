@@ -104,11 +104,11 @@ const Mutations = {
     const salt = await bcrypt.genSalt(10);
 
     //A role must exist in the database
-    let defaultRole = await ctx.db.query.role({ where: { name: "CANDIDATE" } });
+    let defaultRole = await ctx.db.query.role({ where: { name: "candidate" } });
     if (!defaultRole) {
       defaultRole = await ctx.db.mutation.createRole({
         data: {
-          name: "CANDIDATE",
+          name: "candidate",
           permissions: {
             create: [
               {
@@ -117,7 +117,7 @@ const Mutations = {
               },
               {
                 object: "APPLICATION",
-                actions: ["CREATE", "READ", "UPDATE", "DELETE"]
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
               }
             ]
           }
