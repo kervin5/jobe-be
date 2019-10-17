@@ -127,6 +127,14 @@ const Mutations = {
               {
                 object: "APPLICATION",
                 actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "FAVORITE",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "RESUME",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
               }
             ]
           }
@@ -142,6 +150,12 @@ const Mutations = {
             create: [
               {
                 object: "JOB",
+                actions: {
+                  set: ["CREATE", "READ", "UPDATE", "DELETE", "PUBLISH"]
+                }
+              },
+              {
+                object: "APPLICATION",
                 actions: {
                   set: ["CREATE", "READ", "UPDATE", "DELETE", "PUBLISH"]
                 }
@@ -172,6 +186,15 @@ const Mutations = {
               },
               {
                 object: "COMPANY",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              ,
+              {
+                object: "RESUME",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "FAVORITE",
                 actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
               }
             ]
