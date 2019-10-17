@@ -11,6 +11,7 @@ server.express.use(auth);
 
 server.start(
   {
+    playground: null,
     cors: {
       credentials: true,
       origin: process.env.FRONTEND_URL.split("|")
