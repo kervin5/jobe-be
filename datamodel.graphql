@@ -53,6 +53,7 @@ type Job {
   title: String!
   compensationType: String! @default(value: "hourly")
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!

@@ -4,6 +4,7 @@
 input UpdateJobCustomInput {
   title: String
   description: String
+  disclaimer: String
   compensationType: String
   type: String
   maxCompensation: Float
@@ -49,7 +50,7 @@ type Mutation {
     title: String!
     description: String!
     compensationType: String!
-    description: String!
+    disclaimer: String
     type: String!
     maxCompensation: Float!
     minCompensation: Float!
