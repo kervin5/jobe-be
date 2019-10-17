@@ -157,7 +157,7 @@ const Mutations = {
               {
                 object: "APPLICATION",
                 actions: {
-                  set: ["CREATE", "READ", "UPDATE", "DELETE", "PUBLISH"]
+                  set: ["CREATE", "READ", "UPDATE", "DELETE"]
                 }
               },
               {
