@@ -464,6 +464,10 @@ const Mutations = {
         }`
     );
     args.user = { connect: { id: ctx.request.user.id } };
+    args.job = await ctx.db.query.job(
+      { where: { id: args.job.connect.id } },
+      `{ id title location { id name }}`
+    );
 
     const application = await ctx.db.mutation.createApplication(
       {
@@ -478,6 +482,21 @@ const Mutations = {
       },
       info
     );
+
+    try {
+      const mailRes = await transport.sendMail({
+        from: "noreply@myexactjobs.com",
+        to: user.email,
+        subject: `Your application for ${job.title} is on its way!`,
+        html: makeANiceEmail(
+          `Congrats! your application for the position ${job.title} at $${
+            job.location.name
+          } is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="https://exactstaff.com/register/">https://exactstaff.com/register/</a>`
+        )
+      });
+    } catch (ex) {
+      console.log(ex);
+    }
 
     return application;
   },
