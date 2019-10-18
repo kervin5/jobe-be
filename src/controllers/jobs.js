@@ -55,12 +55,21 @@ const searchJobs = async (parent, args, ctx, info) => {
           { title_contains: titleCase(args.query) },
           { description_contains: titleCase(args.query) }
         ],
-        location: {
-          longitude_lte: rightEdge,
-          longitude_gte: leftEdge,
-          latitude_lte: topEdge,
-          latitude_gte: bottomEdge
-        },
+        OR: [
+          {
+            location: {
+              longitude_lte: rightEdge,
+              longitude_gte: leftEdge,
+              latitude_lte: topEdge,
+              latitude_gte: bottomEdge
+            }
+          },
+          {
+            location: {
+              name_contains: args.location
+            }
+          }
+        ],
         ...args.where,
         status: "POSTED"
       },

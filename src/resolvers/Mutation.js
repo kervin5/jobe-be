@@ -491,9 +491,9 @@ const Mutations = {
         to: user.email,
         subject: `Your application for ${job.title} is on its way!`,
         html: makeANiceEmail(
-          `Congrats ${user.name}! \n\nyour application for the position ${
+          `Congrats ${user.name}, \n\nyour application for the position ${
             job.title
-          } at $${
+          } at ${
             job.location.name
           } is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="https://exactstaff.com/register/">https://exactstaff.com/register/</a>`
         )
