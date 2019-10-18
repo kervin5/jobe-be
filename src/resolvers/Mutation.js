@@ -459,6 +459,7 @@ const Mutations = {
       `{
             id
             name
+            email
             resumes {
                 id
             }
