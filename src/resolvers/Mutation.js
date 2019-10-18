@@ -458,13 +458,14 @@ const Mutations = {
       { where: { id: ctx.request.user.id } },
       `{
             id
+            name
             resumes {
                 id
             }
         }`
     );
     args.user = { connect: { id: ctx.request.user.id } };
-    args.job = await ctx.db.query.job(
+    const job = await ctx.db.query.job(
       { where: { id: args.job.connect.id } },
       `{ id title location { id name }}`
     );
@@ -489,7 +490,9 @@ const Mutations = {
         to: user.email,
         subject: `Your application for ${job.title} is on its way!`,
         html: makeANiceEmail(
-          `Congrats! your application for the position ${job.title} at $${
+          `Congrats ${user.name}! \n\nyour application for the position ${
+            job.title
+          } at $${
             job.location.name
           } is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="https://exactstaff.com/register/">https://exactstaff.com/register/</a>`
         )
