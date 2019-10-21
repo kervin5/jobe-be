@@ -369,6 +369,8 @@ const Mutations = {
         can("READ", "USER", ctx))
     ) {
       authorId = args.author;
+    } else {
+      console.log(args);
     }
 
     const job = await ctx.db.mutation.createJob(
