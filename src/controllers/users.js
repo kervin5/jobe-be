@@ -71,14 +71,14 @@ const me = async (parent, args, ctx, info) => {
 
 const candidates = async (parent, args, ctx, info) => {
   return await ctx.db.query.users(
-    { ...args, where: { ...args.where, role: { name: "CANDIDATE" } } },
+    { ...args, where: { ...args.where, role: { name: "candidate" } } },
     info
   );
 };
 
 const candidatesConnection = async (parent, args, ctx, info) => {
   return await ctx.db.query.usersConnection(
-    { ...args, where: { ...args.where, role: { name: "CANDIDATE" } } },
+    { ...args, where: { ...args.where, role: { name: "candidate" } } },
     info
   );
 };
