@@ -402,8 +402,7 @@ const Mutations = {
     ) {
       console.log("Has access");
       authorId = args.data.author;
-    }
-    {
+    } else {
       console.log("failed");
       console.log(args);
       console.log(authorId);
@@ -468,7 +467,8 @@ const Mutations = {
 
       args.data.author = { connect: { id: authorId } };
       args.data["branch"] = { connect: { id: user.branch.id } };
-
+      console.log(args.data.author);
+      console.log(ctx.request.user.id);
       const job = await ctx.db.mutation.updateJob(args, info);
 
       return job;
