@@ -225,7 +225,6 @@ const Mutations = {
       );
 
       const token = jwt.sign({ id: user.id }, process.env.APP_SECRET);
-
       // 4. Set the cookie with the token
       ctx.response.header("token", token);
       ctx.response.cookie("token", token, {
