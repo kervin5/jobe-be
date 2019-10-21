@@ -18,10 +18,13 @@ const users = async (parent, args, ctx, info) => {
     usersFilter = {};
   }
 
-  const users = await ctx.db.query.users({
-    ...args,
-    where: { ...args.where, ...usersFilter }
-  });
+  const users = await ctx.db.query.users(
+    {
+      ...args,
+      where: { ...args.where, ...usersFilter }
+    },
+    info
+  );
   return users;
 };
 
@@ -30,6 +33,7 @@ const usersConnection = async (parent, args, ctx, info) => {
     { where: { id: ctx.request.user.id } },
     `{ id branch { id company { id } } }`
   );
+
   let usersFilter = { branch: { id: requesterData.branch.id } };
 
   if (await can("READ", "COMPANY", ctx)) {
@@ -42,10 +46,14 @@ const usersConnection = async (parent, args, ctx, info) => {
     usersFilter = {};
   }
 
-  const users = await ctx.db.query.usersConnection({
-    ...args,
-    where: { ...args.where, ...usersFilter }
-  });
+  const users = await ctx.db.query.usersConnection(
+    {
+      ...args,
+      where: { ...args.where, ...usersFilter }
+    },
+    info
+  );
+
   return users;
 };
 const me = async (parent, args, ctx, info) => {
