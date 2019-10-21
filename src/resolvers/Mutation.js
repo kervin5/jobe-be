@@ -369,7 +369,7 @@ const Mutations = {
     ) {
       authorId = args.author;
     } else {
-      console.log(args);
+      // console.log(args);
     }
 
     const job = await ctx.db.mutation.createJob(
