@@ -400,7 +400,13 @@ const Mutations = {
         can("READ", "COMPANY", ctx) ||
         can("READ", "USER", ctx))
     ) {
+      console.log("Has access");
       authorId = args.data.author;
+    }
+    {
+      console.log("failed");
+      console.log(args);
+      console.log(authorId);
     }
 
     const jobs = await ctx.db.query.jobs({
