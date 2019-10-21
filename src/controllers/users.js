@@ -30,15 +30,15 @@ const usersConnection = async (parent, args, ctx, info) => {
     { where: { id: ctx.request.user.id } },
     `{ id branch { id company { id } } }`
   );
-  let usersFilter = { branch: { id: requesterData.brach.id } };
+  let usersFilter = { branch: { id: requesterData.branch.id } };
 
   if (await can("READ", "COMPANY", ctx)) {
     usersFilter = {
-      branch: { company: { id: requesterData.brach.company.id } }
+      branch: { company: { id: requesterData.branch.company.id } }
     };
   }
 
-  if ((await can("READ", "USER"), ctx)) {
+  if (await can("READ", "USER", ctx)) {
     usersFilter = {};
   }
 
