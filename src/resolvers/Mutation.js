@@ -359,6 +359,18 @@ const Mutations = {
       };
     }
 
+    let authorId = ctx.request.user.id;
+
+    if (
+      args.author &&
+      args.author !== "" &&
+      (can("READ", "BRANCH", ctx) ||
+        can("READ", "COMPANY", ctx) ||
+        can("READ", "USER", ctx))
+    ) {
+      authorId = args.author;
+    }
+
     const job = await ctx.db.mutation.createJob(
       {
         data: {
@@ -368,7 +380,7 @@ const Mutations = {
           },
           skills: { connect: args.skills.map(skill => ({ name: skill })) },
           status: "DRAFT",
-          author: { connect: { id: ctx.request.user.id } },
+          author: { connect: { id: authorId } },
           location,
           branch: { connect: { id: user.branch.id } }
         }
@@ -379,8 +391,20 @@ const Mutations = {
     return job;
   },
   async updateJob(parent, args, ctx, info) {
+    let authorId = ctx.request.user.id;
+
+    if (
+      args.data.author &&
+      args.data.author !== "" &&
+      (can("READ", "BRANCH", ctx) ||
+        can("READ", "COMPANY", ctx) ||
+        can("READ", "USER", ctx))
+    ) {
+      authorId = args.data.author;
+    }
+
     const jobs = await ctx.db.query.jobs({
-      where: { id: args.id, author: { id: ctx.request.user.id } }
+      where: { id: args.id, author: { id: authorId } }
     });
 
     if (
@@ -422,6 +446,22 @@ const Mutations = {
       if (!args.data.status) {
         args.data.status = "DRAFT";
       }
+
+      const user = await ctx.db.query.user(
+        { where: { id: ctx.request.user.id } },
+        `{
+              id
+              branch {
+                  id
+                  company {
+                      id
+                  }
+              }
+            }`
+      );
+
+      args.data.author = { connect: { id: authorId } };
+      args.data["branch"] = { connect: { id: user.branch.id } };
 
       const job = await ctx.db.mutation.updateJob(args, info);
 
@@ -468,7 +508,7 @@ const Mutations = {
     args.user = { connect: { id: ctx.request.user.id } };
     const job = await ctx.db.query.job(
       { where: { id: args.job.connect.id } },
-      `{ id title location { id name }}`
+      `{ id title location { id name } author { id email name}}`
     );
 
     const application = await ctx.db.mutation.createApplication(
@@ -496,6 +536,23 @@ const Mutations = {
           } at ${
             job.location.name
           } is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="https://exactstaff.com/register/">https://exactstaff.com/register/</a>`
+        )
+      });
+
+      const mailRecruiterRes = await transport.sendMail({
+        from: "noreply@myexactjobs.com",
+        to: job.author.email,
+        subject: `Your listing for ${job.title} has a new application!`,
+        html: makeANiceEmail(
+          `Hi ${job.author.name}, \n\nThe candidate ${
+            user.name
+          } for the position ${job.title} at ${
+            job.location.name
+          } 😁. Click here to view the resume of the applicant \n\n<a href="https://www.myexactjobs.com/dashboard/applications/${
+            application.id
+          }">https://www.myexactjobs.com/dashboard/applications/${
+            application.id
+          }</a>`
         )
       });
     } catch (ex) {

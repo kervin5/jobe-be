@@ -1,8 +1,53 @@
 const { forwardTo } = require("prisma-binding");
 const { can } = require("../lib/auth");
 
-const users = forwardTo("db");
-const usersConnection = forwardTo("db");
+const users = async (parent, args, ctx, info) => {
+  const requesterData = await ctx.db.query.user(
+    { where: { id: ctx.request.user.id } },
+    `{ id branch { id company { id } } }`
+  );
+  let usersFilter = { branch: { id: requesterData.branch.id } };
+
+  if (await can("READ", "COMPANY", ctx)) {
+    usersFilter = {
+      branch: { company: { id: requesterData.branch.company.id } }
+    };
+  }
+
+  if (await can("READ", "USER", ctx)) {
+    usersFilter = {};
+  }
+
+  const users = await ctx.db.query.users({
+    ...args,
+    where: { ...args.where, ...usersFilter }
+  });
+  return users;
+};
+
+const usersConnection = async (parent, args, ctx, info) => {
+  const requesterData = await ctx.db.query.user(
+    { where: { id: ctx.request.user.id } },
+    `{ id branch { id company { id } } }`
+  );
+  let usersFilter = { branch: { id: requesterData.brach.id } };
+
+  if (await can("READ", "COMPANY", ctx)) {
+    usersFilter = {
+      branch: { company: { id: requesterData.brach.company.id } }
+    };
+  }
+
+  if ((await can("READ", "USER"), ctx)) {
+    usersFilter = {};
+  }
+
+  const users = await ctx.db.query.usersConnection({
+    ...args,
+    where: { ...args.where, ...usersFilter }
+  });
+  return users;
+};
 const me = async (parent, args, ctx, info) => {
   if (!ctx.request.user) {
     return null;

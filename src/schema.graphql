@@ -13,6 +13,7 @@ input UpdateJobCustomInput {
   categories: [String!]
   skills: [String!]
   status: Status
+  author: String
 }
 
 input RolePermissionsInput {
@@ -57,6 +58,7 @@ type Mutation {
     location: LocationInput!
     categories: [String!]!
     skills: [String!]!
+    author: String
   ): Job!
 
   deleteJob(id: ID!): Job
