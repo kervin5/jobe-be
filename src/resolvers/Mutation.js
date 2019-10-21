@@ -535,7 +535,9 @@ const Mutations = {
             job.title
           } at ${
             job.location.name
-          } is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="https://exactstaff.com/register/">https://exactstaff.com/register/</a>`
+          } is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="${
+            process.env.FRONTEND_URL
+          }/register/">${process.env.FRONTEND_URL}/register/</a>`
         )
       });
 
@@ -548,11 +550,11 @@ const Mutations = {
             user.name
           } for the position ${job.title} at ${
             job.location.name
-          } 😁. Click here to view the resume of the applicant \n\n<a href="https://www.myexactjobs.com/dashboard/applications/${
-            application.id
-          }">https://www.myexactjobs.com/dashboard/applications/${
-            application.id
-          }</a>`
+          } 😁. Click here to view the resume of the applicant \n\n<a href="${
+            process.env.FRONTEND_URL
+          }/dashboard/applications/${application.id}">${
+            process.env.FRONTEND_URL
+          }/dashboard/applications/${application.id}</a>`
         )
       });
     } catch (ex) {
