@@ -4,6 +4,7 @@ enum Status {
   DELETED
   EDITING
   EXPIRED
+  PENDING
 }
 
 # enum Permission {

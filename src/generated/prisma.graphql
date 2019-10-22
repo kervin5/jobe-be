@@ -1,5 +1,5 @@
 # source: https://myexactjobs-prisma-e77cb8d5f9.herokuapp.com/myexactjobs-prisma-prod/prod
-# timestamp: Thu Oct 17 2019 14:45:46 GMT-0700 (Pacific Daylight Time)
+# timestamp: Tue Oct 22 2019 08:36:24 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -7797,6 +7797,7 @@ enum Status {
   DELETED
   EDITING
   EXPIRED
+  PENDING
 }
 
 type Subscription {
