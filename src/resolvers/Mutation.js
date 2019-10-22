@@ -403,7 +403,7 @@ const Mutations = {
     ) {
       authorId = args.data.author;
     } else {
-      const job = ctx.db.query.job(
+      const job = await ctx.db.query.job(
         { where: { id: args.id } },
         `{id author {id} }`
       );
