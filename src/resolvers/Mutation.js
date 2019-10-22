@@ -403,7 +403,11 @@ const Mutations = {
     ) {
       authorId = args.data.author;
     } else {
-      console.log("default user");
+      const job = ctx.db.query.job(
+        { where: { id: args.id } },
+        `{id author {id} }`
+      );
+      authorId = job.author.id;
     }
 
     const jobs = await ctx.db.query.jobs({
@@ -451,7 +455,7 @@ const Mutations = {
       }
 
       const user = await ctx.db.query.user(
-        { where: { id: ctx.request.user.id } },
+        { where: { id: authorId } },
         `{
               id
               branch {
