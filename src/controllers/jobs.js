@@ -43,19 +43,20 @@ const searchJobs = async (parent, args, ctx, info) => {
     ctx,
     args.radius
   );
+  
+  console.log(args);
 
   return await ctx.db.query.jobs(
     {
       where: {
-        OR: [
+        AND: [{OR: [
           { title_contains: args.query.toLowerCase() },
           { description_contains: args.query.toLowerCase() },
           { title_contains: args.query.toUpperCase() },
           { description_contains: args.query.toUpperCase() },
           { title_contains: titleCase(args.query) },
           { description_contains: titleCase(args.query) }
-        ],
-        OR: [
+        ]},{OR: [
           {
             location: {
               longitude_lte: rightEdge,
@@ -69,7 +70,8 @@ const searchJobs = async (parent, args, ctx, info) => {
               name_contains: args.location
             }
           }
-        ],
+        ]}]
+        ,
         ...args.where,
         status: "POSTED"
       },
