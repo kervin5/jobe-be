@@ -32,6 +32,7 @@ const protectedJobs = async (parent, args, ctx, info) => {
     //Gets all the jobs from the branch
     ownerFilter = { branch: { id: user.branch.id } };
   }
+
   return await ctx.db.query.jobs(
     { ...args, where: { ...args.where, ...ownerFilter } },
     info
@@ -43,35 +44,41 @@ const searchJobs = async (parent, args, ctx, info) => {
     ctx,
     args.radius
   );
-  
+
   console.log(args);
 
   return await ctx.db.query.jobs(
     {
       where: {
-        AND: [{OR: [
-          { title_contains: args.query.toLowerCase() },
-          { description_contains: args.query.toLowerCase() },
-          { title_contains: args.query.toUpperCase() },
-          { description_contains: args.query.toUpperCase() },
-          { title_contains: titleCase(args.query) },
-          { description_contains: titleCase(args.query) }
-        ]},{OR: [
+        AND: [
           {
-            location: {
-              longitude_lte: rightEdge,
-              longitude_gte: leftEdge,
-              latitude_lte: topEdge,
-              latitude_gte: bottomEdge
-            }
+            OR: [
+              { title_contains: args.query.toLowerCase() },
+              { description_contains: args.query.toLowerCase() },
+              { title_contains: args.query.toUpperCase() },
+              { description_contains: args.query.toUpperCase() },
+              { title_contains: titleCase(args.query) },
+              { description_contains: titleCase(args.query) }
+            ]
           },
           {
-            location: {
-              name_contains: args.location
-            }
+            OR: [
+              {
+                location: {
+                  longitude_lte: rightEdge,
+                  longitude_gte: leftEdge,
+                  latitude_lte: topEdge,
+                  latitude_gte: bottomEdge
+                }
+              },
+              {
+                location: {
+                  name_contains: args.location
+                }
+              }
+            ]
           }
-        ]}]
-        ,
+        ],
         ...args.where,
         status: "POSTED"
       },
