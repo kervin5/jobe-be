@@ -45,8 +45,6 @@ const searchJobs = async (parent, args, ctx, info) => {
     args.radius
   );
 
-  console.log(args);
-
   return await ctx.db.query.jobs(
     {
       where: {
