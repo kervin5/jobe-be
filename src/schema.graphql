@@ -202,6 +202,16 @@ type Query {
   ): [Skill]!
   skill(where: SkillWhereUniqueInput!): Skill
   getSignedFileUrl(AWSUrl: String!): String
+  applications(
+    where: ApplicationWhereInput
+    orderBy: ApplicationOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Application]!
+  application(where: ApplicationWhereUniqueInput!): Application
   applicationsConnection(where: ApplicationWhereInput): ApplicationConnection
 }
 
