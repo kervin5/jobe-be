@@ -27,7 +27,10 @@ const applications = async (parent, args, ctx, info) => {
       ...args,
       where: {
         ...args.where,
-        job: { ...(args.where.job ? args.where.job : {}), ...ownerFilter }
+        job: {
+          ...(args.where && args.where.job ? args.where.job : {}),
+          ...ownerFilter
+        }
       }
     },
     info
@@ -57,7 +60,10 @@ const applicationsConnection = async (parent, args, ctx, info) => {
       ...args,
       where: {
         ...args.where,
-        job: { ...(args.where.job ? args.where.job : {}), ...ownerFilter }
+        job: {
+          ...(args.where && args.where.job ? args.where.job : {}),
+          ...ownerFilter
+        }
       }
     },
     info
