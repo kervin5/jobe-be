@@ -1,5 +1,5 @@
 # source: https://myexactjobs-prisma-e77cb8d5f9.herokuapp.com/myexactjobs-prisma-prod/prod
-# timestamp: Fri Nov 01 2019 09:58:58 GMT-0700 (Pacific Daylight Time)
+# timestamp: Fri Nov 01 2019 12:55:31 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -58,6 +58,7 @@ type Application implements Node {
   user: User!
   resume: Resume!
   job: Job!
+  status: ApplicationStatus
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -80,6 +81,7 @@ type ApplicationConnection {
 
 input ApplicationCreateInput {
   id: ID
+  status: ApplicationStatus
   user: UserCreateOneWithoutApplicationsInput!
   resume: ResumeCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
@@ -102,18 +104,21 @@ input ApplicationCreateManyWithoutUserInput {
 
 input ApplicationCreateWithoutJobInput {
   id: ID
+  status: ApplicationStatus
   user: UserCreateOneWithoutApplicationsInput!
   resume: ResumeCreateOneWithoutApplicationsInput!
 }
 
 input ApplicationCreateWithoutResumeInput {
   id: ID
+  status: ApplicationStatus
   user: UserCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
 }
 
 input ApplicationCreateWithoutUserInput {
   id: ID
+  status: ApplicationStatus
   resume: ResumeCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
 }
@@ -136,6 +141,8 @@ type ApplicationEdge {
 enum ApplicationOrderByInput {
   id_ASC
   id_DESC
+  status_ASC
+  status_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -144,6 +151,7 @@ enum ApplicationOrderByInput {
 
 type ApplicationPreviousValues {
   id: ID!
+  status: ApplicationStatus
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -229,6 +237,22 @@ input ApplicationScalarWhereInput {
   All values not ending with the given string.
   """
   id_not_ends_with: ID
+  status: ApplicationStatus
+
+  """
+  All values that are not equal to given value.
+  """
+  status_not: ApplicationStatus
+
+  """
+  All values that are contained in given list.
+  """
+  status_in: [ApplicationStatus!]
+
+  """
+  All values that are not contained in given list.
+  """
+  status_not_in: [ApplicationStatus!]
   createdAt: DateTime
 
   """
@@ -303,6 +327,15 @@ input ApplicationScalarWhereInput {
   updatedAt_gte: DateTime
 }
 
+enum ApplicationStatus {
+  NEW
+  VIEWED
+  REVIEWING
+  CONTACTED
+  HIRED
+  ARCHIVED
+}
+
 type ApplicationSubscriptionPayload {
   mutation: MutationType!
   node: Application
@@ -349,9 +382,18 @@ input ApplicationSubscriptionWhereInput {
 }
 
 input ApplicationUpdateInput {
+  status: ApplicationStatus
   user: UserUpdateOneRequiredWithoutApplicationsInput
   resume: ResumeUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
+}
+
+input ApplicationUpdateManyDataInput {
+  status: ApplicationStatus
+}
+
+input ApplicationUpdateManyMutationInput {
+  status: ApplicationStatus
 }
 
 input ApplicationUpdateManyWithoutJobInput {
@@ -361,6 +403,7 @@ input ApplicationUpdateManyWithoutJobInput {
   disconnect: [ApplicationWhereUniqueInput!]
   delete: [ApplicationWhereUniqueInput!]
   update: [ApplicationUpdateWithWhereUniqueWithoutJobInput!]
+  updateMany: [ApplicationUpdateManyWithWhereNestedInput!]
   deleteMany: [ApplicationScalarWhereInput!]
   upsert: [ApplicationUpsertWithWhereUniqueWithoutJobInput!]
 }
@@ -372,6 +415,7 @@ input ApplicationUpdateManyWithoutResumeInput {
   disconnect: [ApplicationWhereUniqueInput!]
   delete: [ApplicationWhereUniqueInput!]
   update: [ApplicationUpdateWithWhereUniqueWithoutResumeInput!]
+  updateMany: [ApplicationUpdateManyWithWhereNestedInput!]
   deleteMany: [ApplicationScalarWhereInput!]
   upsert: [ApplicationUpsertWithWhereUniqueWithoutResumeInput!]
 }
@@ -383,21 +427,30 @@ input ApplicationUpdateManyWithoutUserInput {
   disconnect: [ApplicationWhereUniqueInput!]
   delete: [ApplicationWhereUniqueInput!]
   update: [ApplicationUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [ApplicationUpdateManyWithWhereNestedInput!]
   deleteMany: [ApplicationScalarWhereInput!]
   upsert: [ApplicationUpsertWithWhereUniqueWithoutUserInput!]
 }
 
+input ApplicationUpdateManyWithWhereNestedInput {
+  where: ApplicationScalarWhereInput!
+  data: ApplicationUpdateManyDataInput!
+}
+
 input ApplicationUpdateWithoutJobDataInput {
+  status: ApplicationStatus
   user: UserUpdateOneRequiredWithoutApplicationsInput
   resume: ResumeUpdateOneRequiredWithoutApplicationsInput
 }
 
 input ApplicationUpdateWithoutResumeDataInput {
+  status: ApplicationStatus
   user: UserUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
 }
 
 input ApplicationUpdateWithoutUserDataInput {
+  status: ApplicationStatus
   resume: ResumeUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
 }
@@ -516,6 +569,22 @@ input ApplicationWhereInput {
   All values not ending with the given string.
   """
   id_not_ends_with: ID
+  status: ApplicationStatus
+
+  """
+  All values that are not equal to given value.
+  """
+  status_not: ApplicationStatus
+
+  """
+  All values that are contained in given list.
+  """
+  status_in: [ApplicationStatus!]
+
+  """
+  All values that are not contained in given list.
+  """
+  status_not_in: [ApplicationStatus!]
   createdAt: DateTime
 
   """
@@ -5397,6 +5466,10 @@ type Mutation {
   updateManyJobs(
     data: JobUpdateManyMutationInput!
     where: JobWhereInput
+  ): BatchPayload!
+  updateManyApplications(
+    data: ApplicationUpdateManyMutationInput!
+    where: ApplicationWhereInput
   ): BatchPayload!
   updateManyCompanies(
     data: CompanyUpdateManyMutationInput!
