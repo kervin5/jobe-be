@@ -1,5 +1,5 @@
 # source: https://myexactjobs-prisma-e77cb8d5f9.herokuapp.com/myexactjobs-prisma-prod/prod
-# timestamp: Tue Oct 22 2019 08:36:24 GMT-0700 (Pacific Daylight Time)
+# timestamp: Fri Nov 01 2019 09:58:58 GMT-0700 (Pacific Daylight Time)
 
 type AggregateApplication {
   count: Int!
@@ -2984,7 +2984,7 @@ type Job implements Node {
     first: Int
     last: Int
   ): [Skill!]
-  status: Status
+  status: JobStatus
   favorites(
     where: FavoriteWhereInput
     orderBy: FavoriteOrderByInput
@@ -3022,7 +3022,7 @@ input JobCreateInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -3076,7 +3076,7 @@ input JobCreateWithoutApplicationsInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   categories: CategoryCreateManyWithoutJobsInput
@@ -3094,7 +3094,7 @@ input JobCreateWithoutAuthorInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
@@ -3112,7 +3112,7 @@ input JobCreateWithoutBranchInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -3130,7 +3130,7 @@ input JobCreateWithoutCategoriesInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -3148,7 +3148,7 @@ input JobCreateWithoutFavoritesInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -3166,7 +3166,7 @@ input JobCreateWithoutLocationInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
@@ -3184,7 +3184,7 @@ input JobCreateWithoutSkillsInput {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -3244,7 +3244,7 @@ type JobPreviousValues {
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
 }
 
 input JobScalarWhereInput {
@@ -3802,22 +3802,31 @@ input JobScalarWhereInput {
   All values greater than or equal the given value.
   """
   minCompensation_gte: Float
-  status: Status
+  status: JobStatus
 
   """
   All values that are not equal to given value.
   """
-  status_not: Status
+  status_not: JobStatus
 
   """
   All values that are contained in given list.
   """
-  status_in: [Status!]
+  status_in: [JobStatus!]
 
   """
   All values that are not contained in given list.
   """
-  status_not_in: [Status!]
+  status_not_in: [JobStatus!]
+}
+
+enum JobStatus {
+  DRAFT
+  POSTED
+  DELETED
+  EDITING
+  EXPIRED
+  PENDING
 }
 
 type JobSubscriptionPayload {
@@ -3873,7 +3882,7 @@ input JobUpdateInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -3891,7 +3900,7 @@ input JobUpdateManyDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
 }
 
 input JobUpdateManyMutationInput {
@@ -3902,7 +3911,7 @@ input JobUpdateManyMutationInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
 }
 
 input JobUpdateManyWithoutAuthorInput {
@@ -3992,7 +4001,7 @@ input JobUpdateWithoutApplicationsDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   categories: CategoryUpdateManyWithoutJobsInput
@@ -4009,7 +4018,7 @@ input JobUpdateWithoutAuthorDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
@@ -4026,7 +4035,7 @@ input JobUpdateWithoutBranchDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -4043,7 +4052,7 @@ input JobUpdateWithoutCategoriesDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -4060,7 +4069,7 @@ input JobUpdateWithoutFavoritesDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -4077,7 +4086,7 @@ input JobUpdateWithoutLocationDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
@@ -4094,7 +4103,7 @@ input JobUpdateWithoutSkillsDataInput {
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -4723,22 +4732,22 @@ input JobWhereInput {
   All values greater than or equal the given value.
   """
   minCompensation_gte: Float
-  status: Status
+  status: JobStatus
 
   """
   All values that are not equal to given value.
   """
-  status_not: Status
+  status_not: JobStatus
 
   """
   All values that are contained in given list.
   """
-  status_in: [Status!]
+  status_in: [JobStatus!]
 
   """
   All values that are not contained in given list.
   """
-  status_not_in: [Status!]
+  status_not_in: [JobStatus!]
   author: UserWhereInput
   location: LocationWhereInput
   applications_every: ApplicationWhereInput
@@ -7789,15 +7798,6 @@ input SkillWhereInput {
 input SkillWhereUniqueInput {
   id: ID
   name: String
-}
-
-enum Status {
-  DRAFT
-  POSTED
-  DELETED
-  EDITING
-  EXPIRED
-  PENDING
 }
 
 type Subscription {

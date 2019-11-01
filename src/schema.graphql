@@ -12,7 +12,7 @@ input UpdateJobCustomInput {
   location: LocationCreateOneWithoutJobsInput
   categories: [String!]
   skills: [String!]
-  status: Status
+  status: JobStatus
   author: String
 }
 
