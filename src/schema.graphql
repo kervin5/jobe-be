@@ -66,6 +66,7 @@ type Mutation {
   updateJob(where: JobWhereUniqueInput!, data: UpdateJobCustomInput!): Job
 
   createApplication(job: JobCreateOneWithoutApplicationsInput!): Application
+  updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
 
   createLocation(
     name: String
@@ -75,11 +76,8 @@ type Mutation {
   ): Location!
 
   createCategory(name: String!): Category!
-
   createSkill(name: String!): Skill!
-
   addFavorite(job: JobCreateOneWithoutFavoritesInput!): Favorite
-
   deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
   signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
   createResume(path: String!, type: String!, title: String!): Resume!

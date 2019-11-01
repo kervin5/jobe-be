@@ -525,6 +525,7 @@ const Mutations = {
       {
         data: {
           ...args,
+          status: "NEW",
           resume: {
             connect: {
               id: user.resumes[0].id
@@ -573,7 +574,14 @@ const Mutations = {
 
     return application;
   },
+  async updateApplicationStatus(parent, args, ctx, info) {
+    const application = await ctx.db.mutation.updateApplication({
+      where: { id: args.id },
+      data: { status: args.status }
+    });
 
+    return application;
+  },
   async addFavorite(parent, args, ctx, info) {
     if (!userExists(ctx)) {
       return null;

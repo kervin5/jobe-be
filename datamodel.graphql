@@ -8,19 +8,13 @@ enum JobStatus {
 }
 
 enum ApplicationStatus {
-  UNTOUCHED
+  NEW
   VIEWED
+  REVIEWING
   CONTACTED
   HIRED
   ARCHIVED
 }
-
-# enum Permission {
-#   JOBCREATE
-#   JOBUPDATE
-#   JOBDELETE
-#   # PERMISSIONUPDATE
-# }
 
 type User {
   id: ID! @id
@@ -82,6 +76,7 @@ type Application {
   user: User!
   resume: Resume! @relation(name: "ResumeApplications")
   job: Job! @relation(name: "JobApplications")
+  status(applicationStatus: ApplicationStatus = UNTOUCHED): ApplicationStatus
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
