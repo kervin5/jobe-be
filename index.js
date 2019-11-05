@@ -4,7 +4,7 @@ const db = require("./startup/db");
 const auth = require("./src/middleware/auth/auth");
 const cookieParser = require("cookie-parser");
 const Sentry = require("@sentry/node");
-Sentry.init({ dsn: process.env.NODE_ENV });
+Sentry.init({ dsn: process.env.SENTRY_DSN });
 
 const server = createServer();
 
