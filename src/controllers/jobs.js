@@ -49,7 +49,16 @@ const searchJobs = async (parent, args, ctx, info) => {
             { title_contains: args.query.toUpperCase() },
             { description_contains: args.query.toUpperCase() },
             { title_contains: titleCase(args.query) },
-            { description_contains: titleCase(args.query) }
+            { description_contains: titleCase(args.query) },
+            {
+              location: {
+                OR: [
+                  { name_contains: titleCase(args.query) },
+                  { name_contains: args.query.toLowerCase() },
+                  { name_contains: args.query.toUpperCase() }
+                ]
+              }
+            }
           ],
           ...args.where,
           status: "POSTED"
