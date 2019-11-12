@@ -11,16 +11,18 @@ const applications = async (parent, args, ctx, info) => {
   );
 
   //Gets jobs created by this user by default;
-  let ownerFilter = { author: { id: ctx.request.user.id } };
+  let ownerFilter = { branch: { id: user.branch.id } };
 
   //Define jobs filter based on access level
   if (await can("READ", "COMPANY", ctx)) {
     //Gets all the jobs from the company
     ownerFilter = { branch: { company: { id: user.branch.company.id } } };
-  } else if (await can("READ", "BRANCH", ctx)) {
-    //Gets all the jobs from the branch
-    ownerFilter = { branch: { id: user.branch.id } };
   }
+
+  // else if (await can("READ", "BRANCH", ctx)) {
+  //   //Gets all the jobs from the branch
+  //   ownerFilter = { branch: { id: user.branch.id } };
+  // }
 
   return await ctx.db.query.applications(
     {
@@ -44,16 +46,19 @@ const applicationsConnection = async (parent, args, ctx, info) => {
   );
 
   //Gets jobs created by this user by default;
-  let ownerFilter = { author: { id: ctx.request.user.id } };
+  // let ownerFilter = { author: { id: ctx.request.user.id } };
+  let ownerFilter = { branch: { id: user.branch.id } };
 
   //Define jobs filter based on access level
   if (await can("READ", "COMPANY", ctx)) {
     //Gets all the jobs from the company
     ownerFilter = { branch: { company: { id: user.branch.company.id } } };
-  } else if (await can("READ", "BRANCH", ctx)) {
-    //Gets all the jobs from the branch
-    ownerFilter = { branch: { id: user.branch.id } };
   }
+
+  // else if (await can("READ", "BRANCH", ctx)) {
+  //   //Gets all the jobs from the branch
+  //   ownerFilter = { branch: { id: user.branch.id } };
+  // }
 
   return await ctx.db.query.applicationsConnection(
     {
