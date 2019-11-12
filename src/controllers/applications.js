@@ -70,10 +70,18 @@ const applicationsConnection = async (parent, args, ctx, info) => {
   );
 };
 
+const applicationNotes = async (parent, args, ctx, info) => {
+  return await ctx.db.query.applicationNotes(
+    { where: { application: { id: args.id } }, orderBy: "createdAt_DESC" },
+    info
+  );
+};
+
 module.exports = {
   queries: {
     application,
     applications,
-    applicationsConnection
+    applicationsConnection,
+    applicationNotes
   }
 };
