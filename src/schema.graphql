@@ -67,7 +67,7 @@ type Mutation {
 
   createApplication(job: JobCreateOneWithoutApplicationsInput!): Application
   updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
-
+  createApplicationNote(id: ID!, content: String!): ApplicationNote
   createLocation(
     name: String
     latitude: Float!
@@ -211,6 +211,7 @@ type Query {
   ): [Application]!
   application(where: ApplicationWhereUniqueInput!): Application
   applicationsConnection(where: ApplicationWhereInput): ApplicationConnection
+  applicationNotes(id: ID!): [ApplicationNote]
 }
 
 # Custom types

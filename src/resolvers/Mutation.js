@@ -408,7 +408,6 @@ const Mutations = {
         `{ id title location { id name } author { id email name}}`
       );
       authorId = job.author.id;
-      console.log(authorId);
     }
 
     const jobs = await ctx.db.query.jobs({
@@ -575,12 +574,50 @@ const Mutations = {
     return application;
   },
   async updateApplicationStatus(parent, args, ctx, info) {
-    const application = await ctx.db.mutation.updateApplication({
-      where: { id: args.id },
-      data: { status: args.status }
-    });
+    try {
+      const application = await ctx.db.mutation.updateApplication({
+        where: { id: args.id },
+        data: { status: args.status }
+      });
 
-    return application;
+      try {
+        const applicationNote = await ctx.db.mutation.createApplicationNote(
+          {
+            data: {
+              content: args.status,
+              user: { connect: { id: ctx.request.user.id } },
+              application: { connect: { id: args.id } },
+              type: "STATUS"
+            }
+          },
+          info
+        );
+      } catch (error) {
+        console.log("note not added");
+      }
+
+      return application;
+    } catch (err) {
+      return null;
+    }
+  },
+  async createApplicationNote(parent, args, ctx, info) {
+    try {
+      const applicationNote = await ctx.db.mutation.createApplicationNote(
+        {
+          data: {
+            content: args.content,
+            user: { connect: { id: ctx.request.user.id } },
+            application: { connect: { id: args.id } },
+            type: "NOTE"
+          }
+        },
+        info
+      );
+      return applicationNote;
+    } catch (error) {
+      return null;
+    }
   },
   async addFavorite(parent, args, ctx, info) {
     if (!userExists(ctx)) {

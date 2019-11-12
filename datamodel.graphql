@@ -16,6 +16,11 @@ enum ApplicationStatus {
   ARCHIVED
 }
 
+enum ApplicationNoteType {
+  NOTE
+  STATUS
+}
+
 type User {
   id: ID! @id
   name: String!
@@ -79,6 +84,17 @@ type Application {
   status(applicationStatus: ApplicationStatus = UNTOUCHED): ApplicationStatus
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  notes: [ApplicationNote]!
+}
+
+type ApplicationNote {
+  id: ID! @id
+  user: User!
+  application: Application!
+  content: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  type: ApplicationNoteType!
 }
 
 type Favorite {

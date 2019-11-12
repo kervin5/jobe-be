@@ -1,7 +1,11 @@
 # source: https://myexactjobs-prisma-e77cb8d5f9.herokuapp.com/myexactjobs-prisma-prod/prod
-# timestamp: Fri Nov 01 2019 12:55:31 GMT-0700 (Pacific Daylight Time)
+# timestamp: Mon Nov 11 2019 13:42:03 GMT-0800 (Pacific Standard Time)
 
 type AggregateApplication {
+  count: Int!
+}
+
+type AggregateApplicationNote {
   count: Int!
 }
 
@@ -61,6 +65,15 @@ type Application implements Node {
   status: ApplicationStatus
   createdAt: DateTime!
   updatedAt: DateTime!
+  notes(
+    where: ApplicationNoteWhereInput
+    orderBy: ApplicationNoteOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [ApplicationNote!]
 }
 
 """
@@ -85,6 +98,7 @@ input ApplicationCreateInput {
   user: UserCreateOneWithoutApplicationsInput!
   resume: ResumeCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
+  notes: ApplicationNoteCreateManyWithoutApplicationInput
 }
 
 input ApplicationCreateManyWithoutJobInput {
@@ -102,11 +116,25 @@ input ApplicationCreateManyWithoutUserInput {
   connect: [ApplicationWhereUniqueInput!]
 }
 
+input ApplicationCreateOneWithoutNotesInput {
+  create: ApplicationCreateWithoutNotesInput
+  connect: ApplicationWhereUniqueInput
+}
+
 input ApplicationCreateWithoutJobInput {
   id: ID
   status: ApplicationStatus
   user: UserCreateOneWithoutApplicationsInput!
   resume: ResumeCreateOneWithoutApplicationsInput!
+  notes: ApplicationNoteCreateManyWithoutApplicationInput
+}
+
+input ApplicationCreateWithoutNotesInput {
+  id: ID
+  status: ApplicationStatus
+  user: UserCreateOneWithoutApplicationsInput!
+  resume: ResumeCreateOneWithoutApplicationsInput!
+  job: JobCreateOneWithoutApplicationsInput!
 }
 
 input ApplicationCreateWithoutResumeInput {
@@ -114,6 +142,7 @@ input ApplicationCreateWithoutResumeInput {
   status: ApplicationStatus
   user: UserCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
+  notes: ApplicationNoteCreateManyWithoutApplicationInput
 }
 
 input ApplicationCreateWithoutUserInput {
@@ -121,6 +150,7 @@ input ApplicationCreateWithoutUserInput {
   status: ApplicationStatus
   resume: ResumeCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
+  notes: ApplicationNoteCreateManyWithoutApplicationInput
 }
 
 """
@@ -136,6 +166,669 @@ type ApplicationEdge {
   A cursor for use in pagination.
   """
   cursor: String!
+}
+
+type ApplicationNote implements Node {
+  id: ID!
+  user: User!
+  application: Application!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: ApplicationNoteType!
+}
+
+"""
+A connection to a list of items.
+"""
+type ApplicationNoteConnection {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  """
+  A list of edges.
+  """
+  edges: [ApplicationNoteEdge]!
+  aggregate: AggregateApplicationNote!
+}
+
+input ApplicationNoteCreateInput {
+  id: ID
+  content: String!
+  type: ApplicationNoteType!
+  user: UserCreateOneInput!
+  application: ApplicationCreateOneWithoutNotesInput!
+}
+
+input ApplicationNoteCreateManyWithoutApplicationInput {
+  create: [ApplicationNoteCreateWithoutApplicationInput!]
+  connect: [ApplicationNoteWhereUniqueInput!]
+}
+
+input ApplicationNoteCreateWithoutApplicationInput {
+  id: ID
+  content: String!
+  type: ApplicationNoteType!
+  user: UserCreateOneInput!
+}
+
+"""
+An edge in a connection.
+"""
+type ApplicationNoteEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: ApplicationNote!
+
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+}
+
+enum ApplicationNoteOrderByInput {
+  id_ASC
+  id_DESC
+  content_ASC
+  content_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  type_ASC
+  type_DESC
+}
+
+type ApplicationNotePreviousValues {
+  id: ID!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: ApplicationNoteType!
+}
+
+input ApplicationNoteScalarWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [ApplicationNoteScalarWhereInput!]
+
+  """
+  Logical OR on all given filters.
+  """
+  OR: [ApplicationNoteScalarWhereInput!]
+
+  """
+  Logical NOT on all given filters combined by AND.
+  """
+  NOT: [ApplicationNoteScalarWhereInput!]
+  id: ID
+
+  """
+  All values that are not equal to given value.
+  """
+  id_not: ID
+
+  """
+  All values that are contained in given list.
+  """
+  id_in: [ID!]
+
+  """
+  All values that are not contained in given list.
+  """
+  id_not_in: [ID!]
+
+  """
+  All values less than the given value.
+  """
+  id_lt: ID
+
+  """
+  All values less than or equal the given value.
+  """
+  id_lte: ID
+
+  """
+  All values greater than the given value.
+  """
+  id_gt: ID
+
+  """
+  All values greater than or equal the given value.
+  """
+  id_gte: ID
+
+  """
+  All values containing the given string.
+  """
+  id_contains: ID
+
+  """
+  All values not containing the given string.
+  """
+  id_not_contains: ID
+
+  """
+  All values starting with the given string.
+  """
+  id_starts_with: ID
+
+  """
+  All values not starting with the given string.
+  """
+  id_not_starts_with: ID
+
+  """
+  All values ending with the given string.
+  """
+  id_ends_with: ID
+
+  """
+  All values not ending with the given string.
+  """
+  id_not_ends_with: ID
+  content: String
+
+  """
+  All values that are not equal to given value.
+  """
+  content_not: String
+
+  """
+  All values that are contained in given list.
+  """
+  content_in: [String!]
+
+  """
+  All values that are not contained in given list.
+  """
+  content_not_in: [String!]
+
+  """
+  All values less than the given value.
+  """
+  content_lt: String
+
+  """
+  All values less than or equal the given value.
+  """
+  content_lte: String
+
+  """
+  All values greater than the given value.
+  """
+  content_gt: String
+
+  """
+  All values greater than or equal the given value.
+  """
+  content_gte: String
+
+  """
+  All values containing the given string.
+  """
+  content_contains: String
+
+  """
+  All values not containing the given string.
+  """
+  content_not_contains: String
+
+  """
+  All values starting with the given string.
+  """
+  content_starts_with: String
+
+  """
+  All values not starting with the given string.
+  """
+  content_not_starts_with: String
+
+  """
+  All values ending with the given string.
+  """
+  content_ends_with: String
+
+  """
+  All values not ending with the given string.
+  """
+  content_not_ends_with: String
+  createdAt: DateTime
+
+  """
+  All values that are not equal to given value.
+  """
+  createdAt_not: DateTime
+
+  """
+  All values that are contained in given list.
+  """
+  createdAt_in: [DateTime!]
+
+  """
+  All values that are not contained in given list.
+  """
+  createdAt_not_in: [DateTime!]
+
+  """
+  All values less than the given value.
+  """
+  createdAt_lt: DateTime
+
+  """
+  All values less than or equal the given value.
+  """
+  createdAt_lte: DateTime
+
+  """
+  All values greater than the given value.
+  """
+  createdAt_gt: DateTime
+
+  """
+  All values greater than or equal the given value.
+  """
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """
+  All values that are not equal to given value.
+  """
+  updatedAt_not: DateTime
+
+  """
+  All values that are contained in given list.
+  """
+  updatedAt_in: [DateTime!]
+
+  """
+  All values that are not contained in given list.
+  """
+  updatedAt_not_in: [DateTime!]
+
+  """
+  All values less than the given value.
+  """
+  updatedAt_lt: DateTime
+
+  """
+  All values less than or equal the given value.
+  """
+  updatedAt_lte: DateTime
+
+  """
+  All values greater than the given value.
+  """
+  updatedAt_gt: DateTime
+
+  """
+  All values greater than or equal the given value.
+  """
+  updatedAt_gte: DateTime
+  type: ApplicationNoteType
+
+  """
+  All values that are not equal to given value.
+  """
+  type_not: ApplicationNoteType
+
+  """
+  All values that are contained in given list.
+  """
+  type_in: [ApplicationNoteType!]
+
+  """
+  All values that are not contained in given list.
+  """
+  type_not_in: [ApplicationNoteType!]
+}
+
+type ApplicationNoteSubscriptionPayload {
+  mutation: MutationType!
+  node: ApplicationNote
+  updatedFields: [String!]
+  previousValues: ApplicationNotePreviousValues
+}
+
+input ApplicationNoteSubscriptionWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [ApplicationNoteSubscriptionWhereInput!]
+
+  """
+  Logical OR on all given filters.
+  """
+  OR: [ApplicationNoteSubscriptionWhereInput!]
+
+  """
+  Logical NOT on all given filters combined by AND.
+  """
+  NOT: [ApplicationNoteSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ApplicationNoteWhereInput
+}
+
+enum ApplicationNoteType {
+  NOTE
+  STATUS
+}
+
+input ApplicationNoteUpdateInput {
+  content: String
+  type: ApplicationNoteType
+  user: UserUpdateOneRequiredInput
+  application: ApplicationUpdateOneRequiredWithoutNotesInput
+}
+
+input ApplicationNoteUpdateManyDataInput {
+  content: String
+  type: ApplicationNoteType
+}
+
+input ApplicationNoteUpdateManyMutationInput {
+  content: String
+  type: ApplicationNoteType
+}
+
+input ApplicationNoteUpdateManyWithoutApplicationInput {
+  create: [ApplicationNoteCreateWithoutApplicationInput!]
+  connect: [ApplicationNoteWhereUniqueInput!]
+  set: [ApplicationNoteWhereUniqueInput!]
+  disconnect: [ApplicationNoteWhereUniqueInput!]
+  delete: [ApplicationNoteWhereUniqueInput!]
+  update: [ApplicationNoteUpdateWithWhereUniqueWithoutApplicationInput!]
+  updateMany: [ApplicationNoteUpdateManyWithWhereNestedInput!]
+  deleteMany: [ApplicationNoteScalarWhereInput!]
+  upsert: [ApplicationNoteUpsertWithWhereUniqueWithoutApplicationInput!]
+}
+
+input ApplicationNoteUpdateManyWithWhereNestedInput {
+  where: ApplicationNoteScalarWhereInput!
+  data: ApplicationNoteUpdateManyDataInput!
+}
+
+input ApplicationNoteUpdateWithoutApplicationDataInput {
+  content: String
+  type: ApplicationNoteType
+  user: UserUpdateOneRequiredInput
+}
+
+input ApplicationNoteUpdateWithWhereUniqueWithoutApplicationInput {
+  where: ApplicationNoteWhereUniqueInput!
+  data: ApplicationNoteUpdateWithoutApplicationDataInput!
+}
+
+input ApplicationNoteUpsertWithWhereUniqueWithoutApplicationInput {
+  where: ApplicationNoteWhereUniqueInput!
+  update: ApplicationNoteUpdateWithoutApplicationDataInput!
+  create: ApplicationNoteCreateWithoutApplicationInput!
+}
+
+input ApplicationNoteWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [ApplicationNoteWhereInput!]
+
+  """
+  Logical OR on all given filters.
+  """
+  OR: [ApplicationNoteWhereInput!]
+
+  """
+  Logical NOT on all given filters combined by AND.
+  """
+  NOT: [ApplicationNoteWhereInput!]
+  id: ID
+
+  """
+  All values that are not equal to given value.
+  """
+  id_not: ID
+
+  """
+  All values that are contained in given list.
+  """
+  id_in: [ID!]
+
+  """
+  All values that are not contained in given list.
+  """
+  id_not_in: [ID!]
+
+  """
+  All values less than the given value.
+  """
+  id_lt: ID
+
+  """
+  All values less than or equal the given value.
+  """
+  id_lte: ID
+
+  """
+  All values greater than the given value.
+  """
+  id_gt: ID
+
+  """
+  All values greater than or equal the given value.
+  """
+  id_gte: ID
+
+  """
+  All values containing the given string.
+  """
+  id_contains: ID
+
+  """
+  All values not containing the given string.
+  """
+  id_not_contains: ID
+
+  """
+  All values starting with the given string.
+  """
+  id_starts_with: ID
+
+  """
+  All values not starting with the given string.
+  """
+  id_not_starts_with: ID
+
+  """
+  All values ending with the given string.
+  """
+  id_ends_with: ID
+
+  """
+  All values not ending with the given string.
+  """
+  id_not_ends_with: ID
+  content: String
+
+  """
+  All values that are not equal to given value.
+  """
+  content_not: String
+
+  """
+  All values that are contained in given list.
+  """
+  content_in: [String!]
+
+  """
+  All values that are not contained in given list.
+  """
+  content_not_in: [String!]
+
+  """
+  All values less than the given value.
+  """
+  content_lt: String
+
+  """
+  All values less than or equal the given value.
+  """
+  content_lte: String
+
+  """
+  All values greater than the given value.
+  """
+  content_gt: String
+
+  """
+  All values greater than or equal the given value.
+  """
+  content_gte: String
+
+  """
+  All values containing the given string.
+  """
+  content_contains: String
+
+  """
+  All values not containing the given string.
+  """
+  content_not_contains: String
+
+  """
+  All values starting with the given string.
+  """
+  content_starts_with: String
+
+  """
+  All values not starting with the given string.
+  """
+  content_not_starts_with: String
+
+  """
+  All values ending with the given string.
+  """
+  content_ends_with: String
+
+  """
+  All values not ending with the given string.
+  """
+  content_not_ends_with: String
+  createdAt: DateTime
+
+  """
+  All values that are not equal to given value.
+  """
+  createdAt_not: DateTime
+
+  """
+  All values that are contained in given list.
+  """
+  createdAt_in: [DateTime!]
+
+  """
+  All values that are not contained in given list.
+  """
+  createdAt_not_in: [DateTime!]
+
+  """
+  All values less than the given value.
+  """
+  createdAt_lt: DateTime
+
+  """
+  All values less than or equal the given value.
+  """
+  createdAt_lte: DateTime
+
+  """
+  All values greater than the given value.
+  """
+  createdAt_gt: DateTime
+
+  """
+  All values greater than or equal the given value.
+  """
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """
+  All values that are not equal to given value.
+  """
+  updatedAt_not: DateTime
+
+  """
+  All values that are contained in given list.
+  """
+  updatedAt_in: [DateTime!]
+
+  """
+  All values that are not contained in given list.
+  """
+  updatedAt_not_in: [DateTime!]
+
+  """
+  All values less than the given value.
+  """
+  updatedAt_lt: DateTime
+
+  """
+  All values less than or equal the given value.
+  """
+  updatedAt_lte: DateTime
+
+  """
+  All values greater than the given value.
+  """
+  updatedAt_gt: DateTime
+
+  """
+  All values greater than or equal the given value.
+  """
+  updatedAt_gte: DateTime
+  type: ApplicationNoteType
+
+  """
+  All values that are not equal to given value.
+  """
+  type_not: ApplicationNoteType
+
+  """
+  All values that are contained in given list.
+  """
+  type_in: [ApplicationNoteType!]
+
+  """
+  All values that are not contained in given list.
+  """
+  type_not_in: [ApplicationNoteType!]
+  user: UserWhereInput
+  application: ApplicationWhereInput
+}
+
+input ApplicationNoteWhereUniqueInput {
+  id: ID
 }
 
 enum ApplicationOrderByInput {
@@ -386,6 +1079,7 @@ input ApplicationUpdateInput {
   user: UserUpdateOneRequiredWithoutApplicationsInput
   resume: ResumeUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
+  notes: ApplicationNoteUpdateManyWithoutApplicationInput
 }
 
 input ApplicationUpdateManyDataInput {
@@ -437,22 +1131,39 @@ input ApplicationUpdateManyWithWhereNestedInput {
   data: ApplicationUpdateManyDataInput!
 }
 
+input ApplicationUpdateOneRequiredWithoutNotesInput {
+  create: ApplicationCreateWithoutNotesInput
+  connect: ApplicationWhereUniqueInput
+  update: ApplicationUpdateWithoutNotesDataInput
+  upsert: ApplicationUpsertWithoutNotesInput
+}
+
 input ApplicationUpdateWithoutJobDataInput {
   status: ApplicationStatus
   user: UserUpdateOneRequiredWithoutApplicationsInput
   resume: ResumeUpdateOneRequiredWithoutApplicationsInput
+  notes: ApplicationNoteUpdateManyWithoutApplicationInput
+}
+
+input ApplicationUpdateWithoutNotesDataInput {
+  status: ApplicationStatus
+  user: UserUpdateOneRequiredWithoutApplicationsInput
+  resume: ResumeUpdateOneRequiredWithoutApplicationsInput
+  job: JobUpdateOneRequiredWithoutApplicationsInput
 }
 
 input ApplicationUpdateWithoutResumeDataInput {
   status: ApplicationStatus
   user: UserUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
+  notes: ApplicationNoteUpdateManyWithoutApplicationInput
 }
 
 input ApplicationUpdateWithoutUserDataInput {
   status: ApplicationStatus
   resume: ResumeUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
+  notes: ApplicationNoteUpdateManyWithoutApplicationInput
 }
 
 input ApplicationUpdateWithWhereUniqueWithoutJobInput {
@@ -468,6 +1179,11 @@ input ApplicationUpdateWithWhereUniqueWithoutResumeInput {
 input ApplicationUpdateWithWhereUniqueWithoutUserInput {
   where: ApplicationWhereUniqueInput!
   data: ApplicationUpdateWithoutUserDataInput!
+}
+
+input ApplicationUpsertWithoutNotesInput {
+  update: ApplicationUpdateWithoutNotesDataInput!
+  create: ApplicationCreateWithoutNotesInput!
 }
 
 input ApplicationUpsertWithWhereUniqueWithoutJobInput {
@@ -660,6 +1376,9 @@ input ApplicationWhereInput {
   user: UserWhereInput
   resume: ResumeWhereInput
   job: JobWhereInput
+  notes_every: ApplicationNoteWhereInput
+  notes_some: ApplicationNoteWhereInput
+  notes_none: ApplicationNoteWhereInput
 }
 
 input ApplicationWhereUniqueInput {
@@ -5329,11 +6048,11 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createUser(data: UserCreateInput!): User!
   createRole(data: RoleCreateInput!): Role!
   createPermission(data: PermissionCreateInput!): Permission!
   createJob(data: JobCreateInput!): Job!
   createApplication(data: ApplicationCreateInput!): Application!
+  createApplicationNote(data: ApplicationNoteCreateInput!): ApplicationNote!
   createFavorite(data: FavoriteCreateInput!): Favorite!
   createCompany(data: CompanyCreateInput!): Company!
   createBranch(data: BranchCreateInput!): Branch!
@@ -5342,7 +6061,7 @@ type Mutation {
   createFile(data: FileCreateInput!): File!
   createSkill(data: SkillCreateInput!): Skill!
   createLocation(data: LocationCreateInput!): Location!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  createUser(data: UserCreateInput!): User!
   updateRole(data: RoleUpdateInput!, where: RoleWhereUniqueInput!): Role
   updatePermission(
     data: PermissionUpdateInput!
@@ -5353,6 +6072,10 @@ type Mutation {
     data: ApplicationUpdateInput!
     where: ApplicationWhereUniqueInput!
   ): Application
+  updateApplicationNote(
+    data: ApplicationNoteUpdateInput!
+    where: ApplicationNoteWhereUniqueInput!
+  ): ApplicationNote
   updateFavorite(
     data: FavoriteUpdateInput!
     where: FavoriteWhereUniqueInput!
@@ -5373,11 +6096,14 @@ type Mutation {
     data: LocationUpdateInput!
     where: LocationWhereUniqueInput!
   ): Location
-  deleteUser(where: UserWhereUniqueInput!): User
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   deleteRole(where: RoleWhereUniqueInput!): Role
   deletePermission(where: PermissionWhereUniqueInput!): Permission
   deleteJob(where: JobWhereUniqueInput!): Job
   deleteApplication(where: ApplicationWhereUniqueInput!): Application
+  deleteApplicationNote(
+    where: ApplicationNoteWhereUniqueInput!
+  ): ApplicationNote
   deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
   deleteCompany(where: CompanyWhereUniqueInput!): Company
   deleteBranch(where: BranchWhereUniqueInput!): Branch
@@ -5386,11 +6112,7 @@ type Mutation {
   deleteFile(where: FileWhereUniqueInput!): File
   deleteSkill(where: SkillWhereUniqueInput!): Skill
   deleteLocation(where: LocationWhereUniqueInput!): Location
-  upsertUser(
-    where: UserWhereUniqueInput!
-    create: UserCreateInput!
-    update: UserUpdateInput!
-  ): User!
+  deleteUser(where: UserWhereUniqueInput!): User
   upsertRole(
     where: RoleWhereUniqueInput!
     create: RoleCreateInput!
@@ -5411,6 +6133,11 @@ type Mutation {
     create: ApplicationCreateInput!
     update: ApplicationUpdateInput!
   ): Application!
+  upsertApplicationNote(
+    where: ApplicationNoteWhereUniqueInput!
+    create: ApplicationNoteCreateInput!
+    update: ApplicationNoteUpdateInput!
+  ): ApplicationNote!
   upsertFavorite(
     where: FavoriteWhereUniqueInput!
     create: FavoriteCreateInput!
@@ -5451,10 +6178,11 @@ type Mutation {
     create: LocationCreateInput!
     update: LocationUpdateInput!
   ): Location!
-  updateManyUsers(
-    data: UserUpdateManyMutationInput!
-    where: UserWhereInput
-  ): BatchPayload!
+  upsertUser(
+    where: UserWhereUniqueInput!
+    create: UserCreateInput!
+    update: UserUpdateInput!
+  ): User!
   updateManyRoles(
     data: RoleUpdateManyMutationInput!
     where: RoleWhereInput
@@ -5470,6 +6198,10 @@ type Mutation {
   updateManyApplications(
     data: ApplicationUpdateManyMutationInput!
     where: ApplicationWhereInput
+  ): BatchPayload!
+  updateManyApplicationNotes(
+    data: ApplicationNoteUpdateManyMutationInput!
+    where: ApplicationNoteWhereInput
   ): BatchPayload!
   updateManyCompanies(
     data: CompanyUpdateManyMutationInput!
@@ -5499,11 +6231,15 @@ type Mutation {
     data: LocationUpdateManyMutationInput!
     where: LocationWhereInput
   ): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  updateManyUsers(
+    data: UserUpdateManyMutationInput!
+    where: UserWhereInput
+  ): BatchPayload!
   deleteManyRoles(where: RoleWhereInput): BatchPayload!
   deleteManyPermissions(where: PermissionWhereInput): BatchPayload!
   deleteManyJobs(where: JobWhereInput): BatchPayload!
   deleteManyApplications(where: ApplicationWhereInput): BatchPayload!
+  deleteManyApplicationNotes(where: ApplicationNoteWhereInput): BatchPayload!
   deleteManyFavorites(where: FavoriteWhereInput): BatchPayload!
   deleteManyCompanies(where: CompanyWhereInput): BatchPayload!
   deleteManyBranches(where: BranchWhereInput): BatchPayload!
@@ -5512,6 +6248,7 @@ type Mutation {
   deleteManyFiles(where: FileWhereInput): BatchPayload!
   deleteManySkills(where: SkillWhereInput): BatchPayload!
   deleteManyLocations(where: LocationWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -6030,15 +6767,6 @@ input PermissionWhereUniqueInput {
 }
 
 type Query {
-  users(
-    where: UserWhereInput
-    orderBy: UserOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [User]!
   roles(
     where: RoleWhereInput
     orderBy: RoleOrderByInput
@@ -6075,6 +6803,15 @@ type Query {
     first: Int
     last: Int
   ): [Application]!
+  applicationNotes(
+    where: ApplicationNoteWhereInput
+    orderBy: ApplicationNoteOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [ApplicationNote]!
   favorites(
     where: FavoriteWhereInput
     orderBy: FavoriteOrderByInput
@@ -6147,11 +6884,20 @@ type Query {
     first: Int
     last: Int
   ): [Location]!
-  user(where: UserWhereUniqueInput!): User
+  users(
+    where: UserWhereInput
+    orderBy: UserOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [User]!
   role(where: RoleWhereUniqueInput!): Role
   permission(where: PermissionWhereUniqueInput!): Permission
   job(where: JobWhereUniqueInput!): Job
   application(where: ApplicationWhereUniqueInput!): Application
+  applicationNote(where: ApplicationNoteWhereUniqueInput!): ApplicationNote
   favorite(where: FavoriteWhereUniqueInput!): Favorite
   company(where: CompanyWhereUniqueInput!): Company
   branch(where: BranchWhereUniqueInput!): Branch
@@ -6160,15 +6906,7 @@ type Query {
   file(where: FileWhereUniqueInput!): File
   skill(where: SkillWhereUniqueInput!): Skill
   location(where: LocationWhereUniqueInput!): Location
-  usersConnection(
-    where: UserWhereInput
-    orderBy: UserOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): UserConnection!
+  user(where: UserWhereUniqueInput!): User
   rolesConnection(
     where: RoleWhereInput
     orderBy: RoleOrderByInput
@@ -6205,6 +6943,15 @@ type Query {
     first: Int
     last: Int
   ): ApplicationConnection!
+  applicationNotesConnection(
+    where: ApplicationNoteWhereInput
+    orderBy: ApplicationNoteOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ApplicationNoteConnection!
   favoritesConnection(
     where: FavoriteWhereInput
     orderBy: FavoriteOrderByInput
@@ -6277,6 +7024,15 @@ type Query {
     first: Int
     last: Int
   ): LocationConnection!
+  usersConnection(
+    where: UserWhereInput
+    orderBy: UserOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): UserConnection!
 
   """
   Fetches an object given its ID
@@ -7874,7 +8630,6 @@ input SkillWhereUniqueInput {
 }
 
 type Subscription {
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   role(where: RoleSubscriptionWhereInput): RoleSubscriptionPayload
   permission(
     where: PermissionSubscriptionWhereInput
@@ -7883,6 +8638,9 @@ type Subscription {
   application(
     where: ApplicationSubscriptionWhereInput
   ): ApplicationSubscriptionPayload
+  applicationNote(
+    where: ApplicationNoteSubscriptionWhereInput
+  ): ApplicationNoteSubscriptionPayload
   favorite(where: FavoriteSubscriptionWhereInput): FavoriteSubscriptionPayload
   company(where: CompanySubscriptionWhereInput): CompanySubscriptionPayload
   branch(where: BranchSubscriptionWhereInput): BranchSubscriptionPayload
@@ -7891,6 +8649,7 @@ type Subscription {
   file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
   skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
   location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
 type User implements Node {
@@ -8003,6 +8762,11 @@ input UserCreateManyWithoutRoleInput {
 input UserCreateManyWithoutSkillsInput {
   create: [UserCreateWithoutSkillsInput!]
   connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutApplicationsInput {
@@ -8698,6 +9462,22 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
+input UserUpdateDataInput {
+  name: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  applications: ApplicationUpdateManyWithoutUserInput
+  jobs: JobUpdateManyWithoutAuthorInput
+  location: LocationUpdateOneWithoutUsersInput
+  skills: SkillUpdateManyWithoutUsersInput
+  favorites: FavoriteUpdateManyWithoutUserInput
+  role: RoleUpdateOneWithoutUsersInput
+  branch: BranchUpdateOneWithoutUsersInput
+  resumes: ResumeUpdateManyWithoutUserInput
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -8781,6 +9561,13 @@ input UserUpdateManyWithoutSkillsInput {
 input UserUpdateManyWithWhereNestedInput {
   where: UserScalarWhereInput!
   data: UserUpdateManyDataInput!
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
 }
 
 input UserUpdateOneRequiredWithoutApplicationsInput {
@@ -8949,6 +9736,11 @@ input UserUpdateWithWhereUniqueWithoutRoleInput {
 input UserUpdateWithWhereUniqueWithoutSkillsInput {
   where: UserWhereUniqueInput!
   data: UserUpdateWithoutSkillsDataInput!
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserUpsertWithoutApplicationsInput {
