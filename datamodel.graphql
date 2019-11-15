@@ -74,6 +74,7 @@ type Job {
   status(jobStatus: JobStatus = DRAFT): JobStatus
   favorites: [Favorite]
   branch: Branch!
+  cronTask: JobCronTask @relation(name: "JobJobCronTask", onDelete: CASCADE)
 }
 
 type Application {
@@ -162,4 +163,13 @@ type Resume {
     @relation(name: "ResumeApplications", onDelete: CASCADE)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+}
+
+type JobCronTask {
+  id: ID! @id
+  job: Job! @relation(name: "JobJobCronTak")
+  lastRun: DateTime!
+  nextRun: DateTime!
+  result: String!
+  objectId: String! @unique
 }

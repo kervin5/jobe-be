@@ -91,6 +91,7 @@ type Mutation {
     confirmPassword: String!
   ): User
   createCompany(name: String!, description: String!): Company!
+  schedule(id: String!): String
 }
 
 type Query {

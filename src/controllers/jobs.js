@@ -64,7 +64,7 @@ const searchJobs = async (parent, args, ctx, info) => {
           status: "POSTED"
         },
         ...(args.perPage ? { perPage: args.perPage, skip: args.skip } : {}),
-        orderBy: "createdAt_DESC"
+        orderBy: "updatedAt_DESC"
       },
       info
     );

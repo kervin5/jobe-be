@@ -759,6 +759,66 @@ const Mutations = {
     // 8. Return the new user
     return updatedUser;
     // 9. Amazing
+  },
+  async schedule(parent, args, ctx, info) {
+    var timeObject = new Date();
+    const jobCronTask = await ctx.db.mutation.createJobCronTask(
+      {
+        data: {
+          job: { connect: { id: args.id } },
+          lastRun: timeObject,
+          nextRun: new Date(timeObject.getTime() + 10000),
+          result: "Created",
+          objectId: args.id
+        }
+      },
+      `{ id }`
+    );
+
+    const scheduleJob = (({ jobId, cronTaksId }) => {
+      let futureDate = new Date(timeObject.getTime() + 10000);
+      let lastDate = new Date(timeObject.getTime());
+      return () => {
+        const updateInterval = setInterval(async () => {
+          lastDate = futureDate;
+          futureDate = new Date(lastDate.getTime() + 10000);
+
+          const jobData = await ctx.db.mutation.updateJob(
+            {
+              where: { id: jobId },
+              data: { cronTask: { connect: { id: cronTaksId } } }
+            },
+            "{title cronTask { id } }"
+          );
+
+          if (jobData.cronTask) {
+            await ctx.db.mutation.updateJobCronTask(
+              {
+                where: { id: cronTaksId },
+                data: {
+                  lastRun: lastDate,
+                  nextRun: futureDate,
+                  result: "Success"
+                }
+              },
+              `{ id }`
+            );
+
+            await ctx.db.mutation.updateJob({
+              where: { id: jobId },
+              data: { title: jobData.title }
+            });
+          } else {
+            console.log("Clear task");
+            clearInterval(updateInterval);
+          }
+        }, 5000);
+      };
+    })({ jobId: args.id, cronTaksId: jobCronTask.id });
+
+    scheduleJob();
+
+    return jobCronTask.id;
   }
 };
 
