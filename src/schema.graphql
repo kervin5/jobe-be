@@ -54,8 +54,8 @@ type Mutation {
     compensationType: String!
     disclaimer: String
     type: String!
-    maxCompensation: Float!
     minCompensation: Float!
+    maxCompensation: Float
     location: String!
     categories: [String!]!
     skills: [String!]!
