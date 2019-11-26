@@ -388,7 +388,8 @@ const Mutations = {
           status: "DRAFT",
           author: { connect: { id: authorId } },
           location,
-          branch: { connect: { id: user.branch.id } }
+          branch: { connect: { id: user.branch.id } },
+          maxCompensation: args.maxCompensation || 0
         }
       },
       info
