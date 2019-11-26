@@ -576,7 +576,7 @@ const Mutations = {
         html: makeANiceEmail(
           `Hi ${job.author.name}, \n\nThe candidate ${
             user.name
-          } for the position ${job.title} at ${
+          } applied for the position ${job.title} at ${
             job.location.name
           } 😁. Click here to view the resume of the applicant \n\n<a href="${
             process.env.FRONTEND_URL
