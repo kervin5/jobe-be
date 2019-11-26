@@ -20,15 +20,7 @@ const searchBoundary = async (locationName, ctx, radius = 10) => {
   let [location] = locations || [null];
   if (location) {
     if (location.boundary.every(edge => edge === 0)) {
-      const foundLocation = (await request(
-        "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
-          location.name +
-          ".json" +
-          "?access_token=pk.eyJ1Ijoia3Zhc3F1ZXppdCIsImEiOiJjandzNWtjcjUwMHh2NDJxa2toeWJ6N2FlIn0.Qa-IM4Em_QMvC2QWlMvieQ" +
-          "&types=country,region,postcode,place",
-        {},
-        "GET"
-      )).features[0];
+      const foundLocation = await fetchLocation(locationName);
 
       if (!foundLocation) {
         return [leftEdge, bottomEdge, rightEdge, topEdge];
@@ -57,15 +49,7 @@ const searchBoundary = async (locationName, ctx, radius = 10) => {
       topEdge + radiusDistance
     ];
   } else {
-    const foundLocation = (await request(
-      "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
-        locationName +
-        ".json" +
-        "?access_token=pk.eyJ1Ijoia3Zhc3F1ZXppdCIsImEiOiJjandzNWtjcjUwMHh2NDJxa2toeWJ6N2FlIn0.Qa-IM4Em_QMvC2QWlMvieQ" +
-        "&types=country,region,postcode,place",
-      {},
-      "GET"
-    )).features[0];
+    const foundLocation = await fetchLocation(locationName);
     // console.log(foundLocation);
 
     if (!foundLocation) {
@@ -95,7 +79,18 @@ const searchBoundary = async (locationName, ctx, radius = 10) => {
   ];
 };
 
-module.exports = { searchBoundary };
+async function fetchLocation(locationName) {
+  return (await request(
+    `https://api.mapbox.com/geocoding/v5/mapbox.places/
+      ${locationName}.json?access_token=${
+      process.env.MAPBOX_TOKEN
+    }&types=country,region,postcode,place`,
+    {},
+    "GET"
+  )).features[0];
+}
+
+module.exports = { searchBoundary, fetchLocation };
 
 // async updateBoundaries(parent, args, ctx, info) {
 //   const locations = (await ctx.db.query.locations({},`{id name boundary latitude longitude}`)).filter(location => {

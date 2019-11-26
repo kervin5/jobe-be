@@ -116,6 +116,23 @@ const Query = {
     } catch (ex) {
       return "";
     }
+  },
+  async mapboxLocations(parent, args, ctx, info) {
+    try {
+      if (args.query === "") return [];
+      const mapBoxUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${
+        args.query
+      }.json?access_token=${process.env.MAPBOX_TOKEN}`;
+      const locations = await request(mapBoxUrl, null, "GET");
+      const result = locations.features.map(location => ({
+        id: location.id,
+        name: location.place_name
+      }));
+      return result;
+    } catch (ex) {
+      console.log(ex);
+      return [];
+    }
   }
 };
 
