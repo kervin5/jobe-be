@@ -8,6 +8,7 @@ const { can } = require("../lib/auth");
 const { userExists } = require("../lib/utils");
 const { sign_s3_upload } = require("../lib/aws");
 const { transport, makeANiceEmail } = require("../lib/mail");
+const { fetchLocation } = require("../lib/location");
 
 const Mutations = {
   async createUser(parent, args, ctx, info) {
@@ -337,9 +338,7 @@ const Mutations = {
     );
 
     const jobLocation = {
-      name: args.location.name,
-      latitude: args.location.latitude,
-      longitude: args.location.longitude
+      name: args.location
     };
 
     // Checks if location exists in DB
@@ -353,8 +352,14 @@ const Mutations = {
 
       location = { connect: { id: existingLocations[0].id } };
     } else {
+      const fetchedLocation = await fetchLocation(args.location);
       location = {
-        create: { ...args.location, boundary: { set: args.location.boundary } }
+        create: {
+          name: args.location,
+          longitude: fetchedLocation.center[1],
+          latitude: fetchedLocation.center[0],
+          boundary: { set: fetchedLocation.bbox }
+        }
       };
     }
 
@@ -377,9 +382,9 @@ const Mutations = {
         data: {
           ...args,
           categories: {
-            connect: args.categories.map(category => ({ name: category }))
+            connect: args.categories.map(category => ({ id: category }))
           },
-          skills: { connect: args.skills.map(skill => ({ name: skill })) },
+          skills: { connect: args.skills.map(skill => ({ id: skill })) },
           status: "DRAFT",
           author: { connect: { id: authorId } },
           location,
@@ -422,34 +427,46 @@ const Mutations = {
       can("UPDATE", "BRANCH", ctx) ||
       can("UPDATE", "COMPANY", ctx)
     ) {
-      if (args.location) {
-        const jobLocation = args.data.location.create;
+      if (args.data.location) {
         const locationExists = await prisma.exists.Location({
-          ...jobLocation
+          name: args.data.location
         });
 
         if (locationExists) {
           const existingLocations = await ctx.db.query.locations({
             where: {
-              ...jobLocation
+              name: args.data.location
             }
           });
           //Deletes the create mutation and forces connection to existing location if the location already exists
-          delete args.data.location.create;
-          args.data.location.connect = { id: existingLocations[0].id };
+          args.data.location = {
+            connect: {
+              id: existingLocations[0].id
+            }
+          };
+        } else {
+          const fetchedLocation = await fetchLocation(args.data.location);
+          args.data.location = {
+            create: {
+              name: args.data.location,
+              longitude: fetchedLocation.center[1],
+              latitude: fetchedLocation.center[0],
+              boundary: { set: fetchedLocation.bbox }
+            }
+          };
         }
       }
       // console.log(args);
       //Connect User to job
       if (args.data.categories) {
         args.data.categories = {
-          set: args.data.categories.map(category => ({ name: category }))
+          set: args.data.categories.map(category => ({ id: category }))
         };
       }
 
       if (args.data.skills) {
         args.data.skills = {
-          set: args.data.skills.map(skill => ({ name: skill }))
+          set: args.data.skills.map(skill => ({ id: skill }))
         };
       }
 
