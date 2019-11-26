@@ -60,6 +60,7 @@ type Mutation {
     categories: [String!]!
     skills: [String!]!
     author: String
+    isRecurring: Boolean
   ): Job!
 
   deleteJob(id: ID!): Job
@@ -93,6 +94,7 @@ type Mutation {
   ): User
   createCompany(name: String!, description: String!): Company!
   schedule(id: String!): String
+  unschedule(id: String!): String
 }
 
 type Query {

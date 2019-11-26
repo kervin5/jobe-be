@@ -5,6 +5,15 @@ const auth = require("./src/middleware/auth/auth");
 const cookieParser = require("cookie-parser");
 // const Sentry = require("@sentry/node");
 // Sentry.init({ dsn: process.env.SENTRY_DSN });
+// console.log(db.query);
+// console.log(db.query);
+const testing = new Promise(function(resolve, reject) {
+  setTimeout(function() {
+    resolve("foo");
+  }, 3000);
+});
+
+testing.then(console.log);
 
 const server = createServer();
 

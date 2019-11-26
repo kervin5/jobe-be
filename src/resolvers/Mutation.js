@@ -9,6 +9,7 @@ const { userExists } = require("../lib/utils");
 const { sign_s3_upload } = require("../lib/aws");
 const { transport, makeANiceEmail } = require("../lib/mail");
 const { fetchLocation } = require("../lib/location");
+const { scheduleJobAutoUpdate } = require("../lib/schedule");
 
 const Mutations = {
   async createUser(parent, args, ctx, info) {
@@ -779,64 +780,10 @@ const Mutations = {
     // 9. Amazing
   },
   async schedule(parent, args, ctx, info) {
-    var timeObject = new Date();
-    const jobCronTask = await ctx.db.mutation.createJobCronTask(
-      {
-        data: {
-          job: { connect: { id: args.id } },
-          lastRun: timeObject,
-          nextRun: new Date(timeObject.getTime() + 10000),
-          result: "Created",
-          objectId: args.id
-        }
-      },
-      `{ id }`
-    );
-
-    const scheduleJob = (({ jobId, cronTaksId }) => {
-      let futureDate = new Date(timeObject.getTime() + 10000);
-      let lastDate = new Date(timeObject.getTime());
-      return () => {
-        const updateInterval = setInterval(async () => {
-          lastDate = futureDate;
-          futureDate = new Date(lastDate.getTime() + 10000);
-
-          const jobData = await ctx.db.mutation.updateJob(
-            {
-              where: { id: jobId },
-              data: { cronTask: { connect: { id: cronTaksId } } }
-            },
-            "{title cronTask { id } }"
-          );
-
-          if (jobData.cronTask) {
-            await ctx.db.mutation.updateJobCronTask(
-              {
-                where: { id: cronTaksId },
-                data: {
-                  lastRun: lastDate,
-                  nextRun: futureDate,
-                  result: "Success"
-                }
-              },
-              `{ id }`
-            );
-
-            await ctx.db.mutation.updateJob({
-              where: { id: jobId },
-              data: { title: jobData.title }
-            });
-          } else {
-            console.log("Clear task");
-            clearInterval(updateInterval);
-          }
-        }, 5000);
-      };
-    })({ jobId: args.id, cronTaksId: jobCronTask.id });
-
-    scheduleJob();
-
-    return jobCronTask.id;
+    return await scheduleJobAutoUpdate(ctx, args.id);
+  },
+  async unschedule(parent, args, ctx, info) {
+    return await scheduleJobAutoUpdate(ctx, args.id);
   }
 };
 
