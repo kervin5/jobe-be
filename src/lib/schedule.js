@@ -1,3 +1,49 @@
+const scheduleFunction = ({ jobId, cronTaksId, timeObject, db }) => {
+  let futureDate = new Date(timeObject.getTime() + 10000);
+  let lastDate = new Date(timeObject.getTime());
+  return () => {
+    const updateInterval = setInterval(async () => {
+      lastDate = futureDate;
+      futureDate = new Date(lastDate.getTime() + 10000);
+
+      const jobData = await db.mutation.updateJob(
+        {
+          where: { id: jobId },
+          data: { cronTask: { connect: { id: cronTaksId } } }
+        },
+        "{title status cronTask { id } }"
+      );
+
+      if (jobData.cronTask && jobData.status !== "DELETED") {
+        if (jobData.status === "POSTED") {
+          await db.mutation.updateJobCronTask(
+            {
+              where: { id: cronTaksId },
+              data: {
+                lastRun: lastDate,
+                nextRun: futureDate,
+                result: "Success"
+              }
+            },
+            `{ id }`
+          );
+
+          await db.mutation.updateJob({
+            where: { id: jobId },
+            data: { title: jobData.title }
+          });
+
+          console.log(jobId);
+        }
+      } else {
+        console.log("Clear task");
+        clearInterval(updateInterval);
+        await unscheduleJobAutoUpdate({ db }, jobId);
+      }
+    }, 10000);
+  };
+};
+
 async function scheduleJobAutoUpdate(ctx, jobId) {
   try {
     var timeObject = new Date();
@@ -14,49 +60,12 @@ async function scheduleJobAutoUpdate(ctx, jobId) {
       },
       `{ id }`
     );
-
-    const scheduleJob = (({ jobId, cronTaksId }) => {
-      let futureDate = new Date(timeObject.getTime() + 10000);
-      let lastDate = new Date(timeObject.getTime());
-      return () => {
-        const updateInterval = setInterval(async () => {
-          lastDate = futureDate;
-          futureDate = new Date(lastDate.getTime() + 10000);
-
-          const jobData = await ctx.db.mutation.updateJob(
-            {
-              where: { id: jobId },
-              data: { cronTask: { connect: { id: cronTaksId } } }
-            },
-            "{title cronTask { id } }"
-          );
-
-          if (jobData.cronTask) {
-            await ctx.db.mutation.updateJobCronTask(
-              {
-                where: { id: cronTaksId },
-                data: {
-                  lastRun: lastDate,
-                  nextRun: futureDate,
-                  result: "Success"
-                }
-              },
-              `{ id }`
-            );
-
-            await ctx.db.mutation.updateJob({
-              where: { id: jobId },
-              data: { title: jobData.title }
-            });
-          } else {
-            console.log("Clear task");
-            clearInterval(updateInterval);
-          }
-        }, 5000);
-      };
-    })({ jobId, cronTaksId: jobCronTask.id });
-
-    scheduleJob();
+    scheduleFunction({
+      jobId: jobId,
+      cronTaksId: jobCronTask.id,
+      timeObject,
+      db: ctx.db
+    })();
 
     return jobCronTask.id;
   } catch (err) {
@@ -82,22 +91,31 @@ async function unscheduleJobAutoUpdate(ctx, jobId) {
   }
 }
 
-async function restartJobAutoUpdate(ctx) {
+async function restartJobAutoUpdate(db) {
   try {
-    const jobCronTask = await ctx.db.mutation.deleteJobCronTask(
-      { where: { objectId: jobId } },
-      `{ id }`
-    );
+    const jobCronTasks = await db.query.jobCronTasks({}, `{ id objectId}`);
 
-    await ctx.db.mutation.updateJob({
-      where: { id: jobId },
-      data: { cronTask: null }
+    jobCronTasks.forEach((jobCronTask, index) => {
+      setTimeout(() => {
+        const timeObject = new Date();
+        scheduleFunction({
+          jobId: jobCronTask.objectId,
+          cronTaksId: jobCronTask.id,
+          timeObject,
+          db
+        })();
+      }, index * 2000);
     });
 
-    return jobId;
+    return jobCronTasks;
   } catch (err) {
+    console.log(err);
     return null;
   }
 }
 
-module.exports = { scheduleJobAutoUpdate, unscheduleJobAutoUpdate };
+module.exports = {
+  scheduleJobAutoUpdate,
+  unscheduleJobAutoUpdate,
+  restartJobAutoUpdate
+};

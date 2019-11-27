@@ -342,6 +342,9 @@ const Mutations = {
       name: args.location
     };
 
+    const jobIsRecurring = !!args.isRecurring;
+    delete args.isRecurring;
+
     // Checks if location exists in DB
     const locationExists = await prisma.exists.Location(jobLocation);
     let location = {};
@@ -395,6 +398,13 @@ const Mutations = {
       },
       info
     );
+
+    if (jobIsRecurring) {
+      console.log("true");
+      await scheduleJobAutoUpdate(ctx, job.id);
+    } else {
+      console.log(args);
+    }
 
     return job;
   },

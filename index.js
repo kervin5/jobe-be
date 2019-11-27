@@ -3,17 +3,18 @@ const createServer = require("./startup/createServer");
 const db = require("./startup/db");
 const auth = require("./src/middleware/auth/auth");
 const cookieParser = require("cookie-parser");
+const { restartJobAutoUpdate } = require("./src/lib/schedule");
 // const Sentry = require("@sentry/node");
 // Sentry.init({ dsn: process.env.SENTRY_DSN });
 // console.log(db.query);
 // console.log(db.query);
-const testing = new Promise(function(resolve, reject) {
-  setTimeout(function() {
-    resolve("foo");
-  }, 3000);
-});
+const jobsRestart = restartJobAutoUpdate(db);
 
-testing.then(console.log);
+jobsRestart
+  .then(data => console.log("jobs scheduled"))
+  .catch(data => {
+    console.log("scheduling failed");
+  });
 
 const server = createServer();
 
