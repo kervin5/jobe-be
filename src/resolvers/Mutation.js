@@ -9,7 +9,10 @@ const { userExists } = require("../lib/utils");
 const { sign_s3_upload } = require("../lib/aws");
 const { transport, makeANiceEmail } = require("../lib/mail");
 const { fetchLocation } = require("../lib/location");
-const { scheduleJobAutoUpdate } = require("../lib/schedule");
+const {
+  scheduleJobAutoUpdate,
+  unscheduleJobAutoUpdate
+} = require("../lib/schedule");
 
 const Mutations = {
   async createUser(parent, args, ctx, info) {
@@ -793,7 +796,7 @@ const Mutations = {
     return await scheduleJobAutoUpdate(ctx, args.id);
   },
   async unschedule(parent, args, ctx, info) {
-    return await scheduleJobAutoUpdate(ctx, args.id);
+    return await unscheduleJobAutoUpdate(ctx, args.id);
   }
 };
 

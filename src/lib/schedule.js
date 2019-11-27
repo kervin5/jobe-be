@@ -1,18 +1,26 @@
+const MILISECONDS_INTERVAL = 259200000;
+// const MILISECONDS_INTERVAL = 15000;
+
 const scheduleFunction = ({ jobId, cronTaksId, timeObject, db }) => {
-  let futureDate = new Date(timeObject.getTime() + 10000);
+  let futureDate = new Date(timeObject.getTime() + MILISECONDS_INTERVAL);
   let lastDate = new Date(timeObject.getTime());
   return () => {
     const updateInterval = setInterval(async () => {
       lastDate = futureDate;
-      futureDate = new Date(lastDate.getTime() + 10000);
+      futureDate = new Date(lastDate.getTime() + MILISECONDS_INTERVAL);
 
-      const jobData = await db.mutation.updateJob(
+      const jobData = await db.query.job(
         {
-          where: { id: jobId },
-          data: { cronTask: { connect: { id: cronTaksId } } }
+          where: { id: jobId }
         },
         "{title status cronTask { id } }"
       );
+
+      if (jobData.cronTask && jobData.cronTask.id !== cronTaksId) {
+        console.log("orphan");
+        clearInterval(updateInterval);
+        return null;
+      }
 
       if (jobData.cronTask && jobData.status !== "DELETED") {
         if (jobData.status === "POSTED") {
@@ -36,11 +44,11 @@ const scheduleFunction = ({ jobId, cronTaksId, timeObject, db }) => {
           console.log(jobId);
         }
       } else {
-        console.log("Clear task");
+        console.log("cleared");
         clearInterval(updateInterval);
         await unscheduleJobAutoUpdate({ db }, jobId);
       }
-    }, 10000);
+    }, MILISECONDS_INTERVAL);
   };
 };
 
@@ -53,13 +61,22 @@ async function scheduleJobAutoUpdate(ctx, jobId) {
         data: {
           job: { connect: { id: jobId } },
           lastRun: timeObject,
-          nextRun: new Date(timeObject.getTime() + 10000),
+          nextRun: new Date(timeObject.getTime() + MILISECONDS_INTERVAL),
           result: "Created",
           objectId: jobId
         }
       },
       `{ id }`
     );
+
+    await ctx.db.mutation.updateJob(
+      {
+        where: { id: jobId },
+        data: { cronTask: { connect: { id: jobCronTask.id } } }
+      },
+      "{title status cronTask { id } }"
+    );
+
     scheduleFunction({
       jobId: jobId,
       cronTaksId: jobCronTask.id,
@@ -75,10 +92,12 @@ async function scheduleJobAutoUpdate(ctx, jobId) {
 
 async function unscheduleJobAutoUpdate(ctx, jobId) {
   try {
-    const jobCronTask = await ctx.db.mutation.deleteJobCronTask(
-      { where: { objectId: jobId } },
-      `{ id }`
-    );
+    if (await ctx.db.exists.JobCronTask({ objectId: jobId })) {
+      await ctx.db.mutation.deleteJobCronTask(
+        { where: { objectId: jobId } },
+        `{ id }`
+      );
+    }
 
     await ctx.db.mutation.updateJob({
       where: { id: jobId },
@@ -104,7 +123,7 @@ async function restartJobAutoUpdate(db) {
           timeObject,
           db
         })();
-      }, index * 2000);
+      }, index * 120000);
     });
 
     return jobCronTasks;
