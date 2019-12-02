@@ -11,7 +11,7 @@ const { restartJobAutoUpdate } = require("./src/lib/schedule");
 const jobsRestart = restartJobAutoUpdate(db);
 
 jobsRestart
-  .then(data => console.log("jobs scheduled"))
+  .then(data => console.log("jobs scheduled", data))
   .catch(data => {
     console.log("scheduling failed");
   });
