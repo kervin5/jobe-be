@@ -1,5 +1,5 @@
-const MILISECONDS_INTERVAL = 259200000;
-// const MILISECONDS_INTERVAL = 15000;
+// const MILISECONDS_INTERVAL = 259200000;
+const MILISECONDS_INTERVAL = 15000;
 
 const scheduleFunction = ({ jobId, cronTaksId, timeObject, db }) => {
   let futureDate = new Date(timeObject.getTime() + MILISECONDS_INTERVAL);
