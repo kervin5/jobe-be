@@ -32,12 +32,44 @@ const protectedJobs = async (parent, args, ctx, info) => {
     //Gets all the jobs from the branch
     ownerFilter = { branch: { id: user.branch.id } };
   }
+
   return await ctx.db.query.jobs(
     { ...args, where: { ...args.where, ...ownerFilter } },
     info
   );
 };
 const searchJobs = async (parent, args, ctx, info) => {
+  if (!args.location || args.location === "") {
+    return await ctx.db.query.jobs(
+      {
+        where: {
+          OR: [
+            { title_contains: args.query.toLowerCase() },
+            { description_contains: args.query.toLowerCase() },
+            { title_contains: args.query.toUpperCase() },
+            { description_contains: args.query.toUpperCase() },
+            { title_contains: titleCase(args.query) },
+            { description_contains: titleCase(args.query) },
+            {
+              location: {
+                OR: [
+                  { name_contains: titleCase(args.query) },
+                  { name_contains: args.query.toLowerCase() },
+                  { name_contains: args.query.toUpperCase() }
+                ]
+              }
+            }
+          ],
+          ...args.where,
+          status: "POSTED"
+        },
+        ...(args.perPage ? { perPage: args.perPage, skip: args.skip } : {}),
+        orderBy: "updatedAt_DESC"
+      },
+      info
+    );
+  }
+
   const [leftEdge, bottomEdge, rightEdge, topEdge] = await searchBoundary(
     args.location,
     ctx,
@@ -47,20 +79,35 @@ const searchJobs = async (parent, args, ctx, info) => {
   return await ctx.db.query.jobs(
     {
       where: {
-        OR: [
-          { title_contains: args.query.toLowerCase() },
-          { description_contains: args.query.toLowerCase() },
-          { title_contains: args.query.toUpperCase() },
-          { description_contains: args.query.toUpperCase() },
-          { title_contains: titleCase(args.query) },
-          { description_contains: titleCase(args.query) }
+        AND: [
+          {
+            OR: [
+              { title_contains: args.query.toLowerCase() },
+              { description_contains: args.query.toLowerCase() },
+              { title_contains: args.query.toUpperCase() },
+              { description_contains: args.query.toUpperCase() },
+              { title_contains: titleCase(args.query) },
+              { description_contains: titleCase(args.query) }
+            ]
+          },
+          {
+            OR: [
+              {
+                location: {
+                  longitude_lte: rightEdge,
+                  longitude_gte: leftEdge,
+                  latitude_lte: topEdge,
+                  latitude_gte: bottomEdge
+                }
+              },
+              {
+                location: {
+                  name_contains: args.location
+                }
+              }
+            ]
+          }
         ],
-        location: {
-          longitude_lte: rightEdge,
-          longitude_gte: leftEdge,
-          latitude_lte: topEdge,
-          latitude_gte: bottomEdge
-        },
         ...args.where,
         status: "POSTED"
       },

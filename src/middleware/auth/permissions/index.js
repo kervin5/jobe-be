@@ -5,11 +5,31 @@ const permissions = shield({
   Query: {
     protectedJobs: rules.can("CREATE", "JOB"),
     protectedJobsConnection: rules.can("CREATE", "JOB"),
-    users: rules.can("READ", "USER"),
-    usersConnection: rules.can("READ", "USER"),
+    users: or(
+      rules.can("READ", "USER"),
+      rules.can("READ", "COMPANY"),
+      rules.can("READ", "BRANCH")
+    ),
+    usersConnection: or(
+      rules.can("READ", "USER"),
+      rules.can("READ", "COMPANY"),
+      rules.can("READ", "BRANCH")
+    ),
     candidates: rules.can("CREATE", "JOB"),
     candidatesConnection: rules.can("CREATE", "JOB"),
-    roles: rules.can("READ", "ROLE")
+    roles: rules.can("READ", "ROLE"),
+    application: and(
+      rules.can("CREATE", "JOB"),
+      rules.can("READ", "APPLICATION")
+    ),
+    applications: and(
+      rules.can("CREATE", "JOB"),
+      rules.can("READ", "APPLICATION")
+    ),
+    applicationsConnection: and(
+      rules.can("CREATE", "JOB"),
+      rules.can("READ", "APPLICATION")
+    )
   },
   Mutation: {
     createUser: rules.can("CREATE", "USER"),

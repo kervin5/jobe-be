@@ -8,11 +8,13 @@ const { shuffleArray } = require("../lib/utils");
 const Jobs = require("../controllers/jobs");
 const Users = require("../controllers/users");
 const Roles = require("../controllers/roles");
+const Applications = require("../controllers/applications");
 
 const Query = {
   ...Jobs.queries,
   ...Users.queries,
   ...Roles.queries,
+  ...Applications.queries,
   async branches(parent, args, ctx, info) {
     if (!userExists(ctx)) {
       return null;
@@ -53,16 +55,6 @@ const Query = {
       return await sign_s3_read(file.path);
     }
     return null;
-  },
-  async applicationsConnection(parent, args, ctx, info) {
-    if (!userExists(ctx)) {
-      return null;
-    }
-
-    return await ctx.db.query.applicationsConnection(
-      { where: { job: { author: { id: ctx.request.user.id } } } },
-      info
-    );
   },
   async popularTerms(parent, args, ctx, info) {
     let categories = await ctx.db.query.categories(
@@ -123,6 +115,23 @@ const Query = {
       return result.urls.regular;
     } catch (ex) {
       return "";
+    }
+  },
+  async mapboxLocations(parent, args, ctx, info) {
+    try {
+      if (args.query === "") return [];
+      const mapBoxUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${
+        args.query
+      }.json?access_token=${process.env.MAPBOX_TOKEN}`;
+      const locations = await request(mapBoxUrl, null, "GET");
+      const result = locations.features.map(location => ({
+        id: location.id,
+        name: location.place_name
+      }));
+      return result;
+    } catch (ex) {
+      console.log(ex);
+      return [];
     }
   }
 };

@@ -8,6 +8,11 @@ const { can } = require("../lib/auth");
 const { userExists } = require("../lib/utils");
 const { sign_s3_upload } = require("../lib/aws");
 const { transport, makeANiceEmail } = require("../lib/mail");
+const { fetchLocation } = require("../lib/location");
+const {
+  scheduleJobAutoUpdate,
+  unscheduleJobAutoUpdate
+} = require("../lib/schedule");
 
 const Mutations = {
   async createUser(parent, args, ctx, info) {
@@ -127,6 +132,14 @@ const Mutations = {
               {
                 object: "APPLICATION",
                 actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "FAVORITE",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "RESUME",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
               }
             ]
           }
@@ -144,6 +157,12 @@ const Mutations = {
                 object: "JOB",
                 actions: {
                   set: ["CREATE", "READ", "UPDATE", "DELETE", "PUBLISH"]
+                }
+              },
+              {
+                object: "APPLICATION",
+                actions: {
+                  set: ["CREATE", "READ", "UPDATE", "DELETE"]
                 }
               },
               {
@@ -172,6 +191,15 @@ const Mutations = {
               },
               {
                 object: "COMPANY",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              ,
+              {
+                object: "RESUME",
+                actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
+              },
+              {
+                object: "FAVORITE",
                 actions: { set: ["CREATE", "READ", "UPDATE", "DELETE"] }
               }
             ]
@@ -202,7 +230,6 @@ const Mutations = {
       );
 
       const token = jwt.sign({ id: user.id }, process.env.APP_SECRET);
-
       // 4. Set the cookie with the token
       ctx.response.header("token", token);
       ctx.response.cookie("token", token, {
@@ -315,10 +342,11 @@ const Mutations = {
     );
 
     const jobLocation = {
-      name: args.location.name,
-      latitude: args.location.latitude,
-      longitude: args.location.longitude
+      name: args.location
     };
+
+    const jobIsRecurring = !!args.isRecurring;
+    delete args.isRecurring;
 
     // Checks if location exists in DB
     const locationExists = await prisma.exists.Location(jobLocation);
@@ -331,9 +359,29 @@ const Mutations = {
 
       location = { connect: { id: existingLocations[0].id } };
     } else {
+      const fetchedLocation = await fetchLocation(args.location);
       location = {
-        create: { ...args.location, boundary: { set: args.location.boundary } }
+        create: {
+          name: args.location,
+          longitude: fetchedLocation.center[1],
+          latitude: fetchedLocation.center[0],
+          boundary: { set: fetchedLocation.bbox }
+        }
       };
+    }
+
+    let authorId = ctx.request.user.id;
+
+    if (
+      args.author &&
+      args.author !== "" &&
+      (can("READ", "BRANCH", ctx) ||
+        can("READ", "COMPANY", ctx) ||
+        can("READ", "USER", ctx))
+    ) {
+      authorId = args.author;
+    } else {
+      // console.log(args);
     }
 
     const job = await ctx.db.mutation.createJob(
@@ -341,23 +389,52 @@ const Mutations = {
         data: {
           ...args,
           categories: {
-            connect: args.categories.map(category => ({ name: category }))
+            connect: args.categories.map(category => ({ id: category }))
           },
-          skills: { connect: args.skills.map(skill => ({ name: skill })) },
+          skills: { connect: args.skills.map(skill => ({ id: skill })) },
           status: "DRAFT",
-          author: { connect: { id: ctx.request.user.id } },
+          author: { connect: { id: authorId } },
           location,
-          branch: { connect: { id: user.branch.id } }
+          branch: { connect: { id: user.branch.id } },
+          maxCompensation: args.maxCompensation || 0
         }
       },
       info
     );
 
+    if (jobIsRecurring) {
+      console.log("true");
+      await scheduleJobAutoUpdate(ctx, job.id);
+    } else {
+      console.log(args);
+    }
+
     return job;
   },
   async updateJob(parent, args, ctx, info) {
+    let authorId = ctx.request.user.id;
+
+    if (
+      args.data.author &&
+      args.data.author !== "" &&
+      (can("READ", "BRANCH", ctx) ||
+        can("READ", "COMPANY", ctx) ||
+        can("READ", "USER", ctx))
+    ) {
+      authorId = args.data.author;
+    } else {
+      const job = await ctx.db.query.job(
+        { where: { id: args.data.id || args.id || args.where.id } },
+        `{ id title location { id name } author { id email name}}`
+      );
+      authorId = job.author.id;
+    }
+
     const jobs = await ctx.db.query.jobs({
-      where: { id: args.id, author: { id: ctx.request.user.id } }
+      where: {
+        id: args.data.id || args.id || args.where.id,
+        author: { id: authorId }
+      }
     });
 
     if (
@@ -365,34 +442,46 @@ const Mutations = {
       can("UPDATE", "BRANCH", ctx) ||
       can("UPDATE", "COMPANY", ctx)
     ) {
-      if (args.location) {
-        const jobLocation = args.data.location.create;
+      if (args.data.location) {
         const locationExists = await prisma.exists.Location({
-          ...jobLocation
+          name: args.data.location
         });
 
         if (locationExists) {
           const existingLocations = await ctx.db.query.locations({
             where: {
-              ...jobLocation
+              name: args.data.location
             }
           });
           //Deletes the create mutation and forces connection to existing location if the location already exists
-          delete args.data.location.create;
-          args.data.location.connect = { id: existingLocations[0].id };
+          args.data.location = {
+            connect: {
+              id: existingLocations[0].id
+            }
+          };
+        } else {
+          const fetchedLocation = await fetchLocation(args.data.location);
+          args.data.location = {
+            create: {
+              name: args.data.location,
+              longitude: fetchedLocation.center[1],
+              latitude: fetchedLocation.center[0],
+              boundary: { set: fetchedLocation.bbox }
+            }
+          };
         }
       }
       // console.log(args);
       //Connect User to job
       if (args.data.categories) {
         args.data.categories = {
-          set: args.data.categories.map(category => ({ name: category }))
+          set: args.data.categories.map(category => ({ id: category }))
         };
       }
 
       if (args.data.skills) {
         args.data.skills = {
-          set: args.data.skills.map(skill => ({ name: skill }))
+          set: args.data.skills.map(skill => ({ id: skill }))
         };
       }
 
@@ -400,6 +489,21 @@ const Mutations = {
         args.data.status = "DRAFT";
       }
 
+      const user = await ctx.db.query.user(
+        { where: { id: authorId } },
+        `{
+              id
+              branch {
+                  id
+                  company {
+                      id
+                  }
+              }
+            }`
+      );
+
+      args.data.author = { connect: { id: authorId } };
+      args.data["branch"] = { connect: { id: user.branch.id } };
       const job = await ctx.db.mutation.updateJob(args, info);
 
       return job;
@@ -435,17 +539,24 @@ const Mutations = {
       { where: { id: ctx.request.user.id } },
       `{
             id
+            name
+            email
             resumes {
                 id
             }
         }`
     );
     args.user = { connect: { id: ctx.request.user.id } };
+    const job = await ctx.db.query.job(
+      { where: { id: args.job.connect.id } },
+      `{ id title location { id name } author { id email name}}`
+    );
 
     const application = await ctx.db.mutation.createApplication(
       {
         data: {
           ...args,
+          status: "NEW",
           resume: {
             connect: {
               id: user.resumes[0].id
@@ -456,9 +567,90 @@ const Mutations = {
       info
     );
 
+    try {
+      const mailRes = await transport.sendMail({
+        from: "noreply@myexactjobs.com",
+        to: user.email,
+        subject: `Your application for ${job.title} is on its way!`,
+        html: makeANiceEmail(
+          `Congrats ${user.name}, \n\nyour application for the position ${
+            job.title
+          } at ${
+            job.location.name
+          } is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="${
+            process.env.FRONTEND_URL
+          }/register/">${process.env.FRONTEND_URL}/register/</a>`
+        )
+      });
+
+      const mailRecruiterRes = await transport.sendMail({
+        from: "noreply@myexactjobs.com",
+        to: job.author.email,
+        subject: `Your listing for ${job.title} has a new application!`,
+        html: makeANiceEmail(
+          `Hi ${job.author.name}, \n\nThe candidate ${
+            user.name
+          } applied for the position ${job.title} at ${
+            job.location.name
+          } 😁. Click here to view the resume of the applicant \n\n<a href="${
+            process.env.FRONTEND_URL
+          }/dashboard/applications/${application.id}">${
+            process.env.FRONTEND_URL
+          }/dashboard/applications/${application.id}</a>`
+        )
+      });
+    } catch (ex) {
+      console.log(ex);
+    }
+
     return application;
   },
+  async updateApplicationStatus(parent, args, ctx, info) {
+    try {
+      const application = await ctx.db.mutation.updateApplication({
+        where: { id: args.id },
+        data: { status: args.status }
+      });
 
+      try {
+        const applicationNote = await ctx.db.mutation.createApplicationNote(
+          {
+            data: {
+              content: args.status,
+              user: { connect: { id: ctx.request.user.id } },
+              application: { connect: { id: args.id } },
+              type: "STATUS"
+            }
+          },
+          info
+        );
+      } catch (error) {
+        console.log("note not added");
+      }
+
+      return application;
+    } catch (err) {
+      return null;
+    }
+  },
+  async createApplicationNote(parent, args, ctx, info) {
+    try {
+      const applicationNote = await ctx.db.mutation.createApplicationNote(
+        {
+          data: {
+            content: args.content,
+            user: { connect: { id: ctx.request.user.id } },
+            application: { connect: { id: args.id } },
+            type: "NOTE"
+          }
+        },
+        info
+      );
+      return applicationNote;
+    } catch (error) {
+      return null;
+    }
+  },
   async addFavorite(parent, args, ctx, info) {
     if (!userExists(ctx)) {
       return null;
@@ -599,6 +791,12 @@ const Mutations = {
     // 8. Return the new user
     return updatedUser;
     // 9. Amazing
+  },
+  async schedule(parent, args, ctx, info) {
+    return await scheduleJobAutoUpdate(ctx, args.id);
+  },
+  async unschedule(parent, args, ctx, info) {
+    return await unscheduleJobAutoUpdate(ctx, args.id);
   }
 };
 

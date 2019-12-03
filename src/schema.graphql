@@ -4,14 +4,16 @@
 input UpdateJobCustomInput {
   title: String
   description: String
+  disclaimer: String
   compensationType: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  location: LocationCreateOneWithoutJobsInput
+  location: String
   categories: [String!]
   skills: [String!]
-  status: Status
+  status: JobStatus
+  author: String
 }
 
 input RolePermissionsInput {
@@ -19,12 +21,13 @@ input RolePermissionsInput {
   actions: [String]
 }
 
-input LocationInput {
-  name: String!
-  longitude: Float!
-  latitude: Float!
-  boundary: [Float]!
-}
+# #TODO: Remove if not needed
+# input LocationInput {
+#   name: String!
+#   longitude: Float!
+#   latitude: Float!
+#   boundary: [Float]!
+# }
 
 type SignedFileUploadRequest {
   signedRequest: String!
@@ -49,13 +52,15 @@ type Mutation {
     title: String!
     description: String!
     compensationType: String!
-    description: String!
+    disclaimer: String
     type: String!
-    maxCompensation: Float!
     minCompensation: Float!
-    location: LocationInput!
+    maxCompensation: Float
+    location: String!
     categories: [String!]!
     skills: [String!]!
+    author: String
+    isRecurring: Boolean
   ): Job!
 
   deleteJob(id: ID!): Job
@@ -63,7 +68,8 @@ type Mutation {
   updateJob(where: JobWhereUniqueInput!, data: UpdateJobCustomInput!): Job
 
   createApplication(job: JobCreateOneWithoutApplicationsInput!): Application
-
+  updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
+  createApplicationNote(id: ID!, content: String!): ApplicationNote
   createLocation(
     name: String
     latitude: Float!
@@ -72,11 +78,8 @@ type Mutation {
   ): Location!
 
   createCategory(name: String!): Category!
-
   createSkill(name: String!): Skill!
-
   addFavorite(job: JobCreateOneWithoutFavoritesInput!): Favorite
-
   deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
   signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
   createResume(path: String!, type: String!, title: String!): Resume!
@@ -90,6 +93,8 @@ type Mutation {
     confirmPassword: String!
   ): User
   createCompany(name: String!, description: String!): Company!
+  schedule(id: String!): String
+  unschedule(id: String!): String
 }
 
 type Query {
@@ -199,7 +204,24 @@ type Query {
   ): [Skill]!
   skill(where: SkillWhereUniqueInput!): Skill
   getSignedFileUrl(AWSUrl: String!): String
+  applications(
+    where: ApplicationWhereInput
+    orderBy: ApplicationOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Application]!
+  application(where: ApplicationWhereUniqueInput!): Application
   applicationsConnection(where: ApplicationWhereInput): ApplicationConnection
+  applicationNotes(id: ID!): [ApplicationNote]
+  mapboxLocations(query: String!): [MapboxLocation]!
 }
 
 # Custom types
+
+type MapboxLocation {
+  id: String!
+  name: String!
+}

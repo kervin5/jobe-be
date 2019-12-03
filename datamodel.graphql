@@ -1,17 +1,25 @@
-enum Status {
+enum JobStatus {
   DRAFT
   POSTED
   DELETED
   EDITING
   EXPIRED
+  PENDING
 }
 
-# enum Permission {
-#   JOBCREATE
-#   JOBUPDATE
-#   JOBDELETE
-#   # PERMISSIONUPDATE
-# }
+enum ApplicationStatus {
+  NEW
+  VIEWED
+  REVIEWING
+  CONTACTED
+  HIRED
+  ARCHIVED
+}
+
+enum ApplicationNoteType {
+  NOTE
+  STATUS
+}
 
 type User {
   id: ID! @id
@@ -53,6 +61,7 @@ type Job {
   title: String!
   compensationType: String! @default(value: "hourly")
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
@@ -62,9 +71,10 @@ type Job {
     @relation(name: "JobApplications", onDelete: CASCADE)
   categories: [Category!]!
   skills: [Skill!]!
-  status(jobStatus: Status = DRAFT): Status
+  status(jobStatus: JobStatus = DRAFT): JobStatus
   favorites: [Favorite]
   branch: Branch!
+  cronTask: JobCronTask @relation(name: "JobJobCronTask", onDelete: CASCADE)
 }
 
 type Application {
@@ -72,8 +82,20 @@ type Application {
   user: User!
   resume: Resume! @relation(name: "ResumeApplications")
   job: Job! @relation(name: "JobApplications")
+  status(applicationStatus: ApplicationStatus = UNTOUCHED): ApplicationStatus
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  notes: [ApplicationNote]!
+}
+
+type ApplicationNote {
+  id: ID! @id
+  user: User!
+  application: Application!
+  content: String!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  type: ApplicationNoteType!
 }
 
 type Favorite {
@@ -141,4 +163,13 @@ type Resume {
     @relation(name: "ResumeApplications", onDelete: CASCADE)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+}
+
+type JobCronTask {
+  id: ID! @id
+  job: Job! @relation(name: "JobJobCronTak")
+  lastRun: DateTime!
+  nextRun: DateTime!
+  result: String!
+  objectId: String! @unique
 }

@@ -1,7 +1,11 @@
-# source: https://us1.prisma.sh/kervin-vasquez-32e3d7/myexactjobsdb/dev
-# timestamp: Mon Sep 30 2019 17:04:37 GMT-0700 (Pacific Daylight Time)
+# source: https://myexactjobs-prisma-e77cb8d5f9.herokuapp.com/myexactjobs-prisma-prod/prod
+# timestamp: Thu Nov 14 2019 14:53:44 GMT-0800 (Pacific Standard Time)
 
 type AggregateApplication {
+  count: Int!
+}
+
+type AggregateApplicationNote {
   count: Int!
 }
 
@@ -26,6 +30,10 @@ type AggregateFile {
 }
 
 type AggregateJob {
+  count: Int!
+}
+
+type AggregateJobCronTask {
   count: Int!
 }
 
@@ -58,8 +66,18 @@ type Application implements Node {
   user: User!
   resume: Resume!
   job: Job!
+  status: ApplicationStatus
   createdAt: DateTime!
   updatedAt: DateTime!
+  notes(
+    where: ApplicationNoteWhereInput
+    orderBy: ApplicationNoteOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [ApplicationNote!]
 }
 
 """
@@ -80,9 +98,11 @@ type ApplicationConnection {
 
 input ApplicationCreateInput {
   id: ID
+  status: ApplicationStatus
   user: UserCreateOneWithoutApplicationsInput!
   resume: ResumeCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
+  notes: ApplicationNoteCreateManyWithoutApplicationInput
 }
 
 input ApplicationCreateManyWithoutJobInput {
@@ -100,22 +120,41 @@ input ApplicationCreateManyWithoutUserInput {
   connect: [ApplicationWhereUniqueInput!]
 }
 
+input ApplicationCreateOneWithoutNotesInput {
+  create: ApplicationCreateWithoutNotesInput
+  connect: ApplicationWhereUniqueInput
+}
+
 input ApplicationCreateWithoutJobInput {
   id: ID
+  status: ApplicationStatus
   user: UserCreateOneWithoutApplicationsInput!
   resume: ResumeCreateOneWithoutApplicationsInput!
+  notes: ApplicationNoteCreateManyWithoutApplicationInput
+}
+
+input ApplicationCreateWithoutNotesInput {
+  id: ID
+  status: ApplicationStatus
+  user: UserCreateOneWithoutApplicationsInput!
+  resume: ResumeCreateOneWithoutApplicationsInput!
+  job: JobCreateOneWithoutApplicationsInput!
 }
 
 input ApplicationCreateWithoutResumeInput {
   id: ID
+  status: ApplicationStatus
   user: UserCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
+  notes: ApplicationNoteCreateManyWithoutApplicationInput
 }
 
 input ApplicationCreateWithoutUserInput {
   id: ID
+  status: ApplicationStatus
   resume: ResumeCreateOneWithoutApplicationsInput!
   job: JobCreateOneWithoutApplicationsInput!
+  notes: ApplicationNoteCreateManyWithoutApplicationInput
 }
 
 """
@@ -133,9 +172,674 @@ type ApplicationEdge {
   cursor: String!
 }
 
+type ApplicationNote implements Node {
+  id: ID!
+  user: User!
+  application: Application!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: ApplicationNoteType!
+}
+
+"""
+A connection to a list of items.
+"""
+type ApplicationNoteConnection {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  """
+  A list of edges.
+  """
+  edges: [ApplicationNoteEdge]!
+  aggregate: AggregateApplicationNote!
+}
+
+input ApplicationNoteCreateInput {
+  id: ID
+  content: String!
+  type: ApplicationNoteType!
+  user: UserCreateOneInput!
+  application: ApplicationCreateOneWithoutNotesInput!
+}
+
+input ApplicationNoteCreateManyWithoutApplicationInput {
+  create: [ApplicationNoteCreateWithoutApplicationInput!]
+  connect: [ApplicationNoteWhereUniqueInput!]
+}
+
+input ApplicationNoteCreateWithoutApplicationInput {
+  id: ID
+  content: String!
+  type: ApplicationNoteType!
+  user: UserCreateOneInput!
+}
+
+"""
+An edge in a connection.
+"""
+type ApplicationNoteEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: ApplicationNote!
+
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+}
+
+enum ApplicationNoteOrderByInput {
+  id_ASC
+  id_DESC
+  content_ASC
+  content_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  type_ASC
+  type_DESC
+}
+
+type ApplicationNotePreviousValues {
+  id: ID!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  type: ApplicationNoteType!
+}
+
+input ApplicationNoteScalarWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [ApplicationNoteScalarWhereInput!]
+
+  """
+  Logical OR on all given filters.
+  """
+  OR: [ApplicationNoteScalarWhereInput!]
+
+  """
+  Logical NOT on all given filters combined by AND.
+  """
+  NOT: [ApplicationNoteScalarWhereInput!]
+  id: ID
+
+  """
+  All values that are not equal to given value.
+  """
+  id_not: ID
+
+  """
+  All values that are contained in given list.
+  """
+  id_in: [ID!]
+
+  """
+  All values that are not contained in given list.
+  """
+  id_not_in: [ID!]
+
+  """
+  All values less than the given value.
+  """
+  id_lt: ID
+
+  """
+  All values less than or equal the given value.
+  """
+  id_lte: ID
+
+  """
+  All values greater than the given value.
+  """
+  id_gt: ID
+
+  """
+  All values greater than or equal the given value.
+  """
+  id_gte: ID
+
+  """
+  All values containing the given string.
+  """
+  id_contains: ID
+
+  """
+  All values not containing the given string.
+  """
+  id_not_contains: ID
+
+  """
+  All values starting with the given string.
+  """
+  id_starts_with: ID
+
+  """
+  All values not starting with the given string.
+  """
+  id_not_starts_with: ID
+
+  """
+  All values ending with the given string.
+  """
+  id_ends_with: ID
+
+  """
+  All values not ending with the given string.
+  """
+  id_not_ends_with: ID
+  content: String
+
+  """
+  All values that are not equal to given value.
+  """
+  content_not: String
+
+  """
+  All values that are contained in given list.
+  """
+  content_in: [String!]
+
+  """
+  All values that are not contained in given list.
+  """
+  content_not_in: [String!]
+
+  """
+  All values less than the given value.
+  """
+  content_lt: String
+
+  """
+  All values less than or equal the given value.
+  """
+  content_lte: String
+
+  """
+  All values greater than the given value.
+  """
+  content_gt: String
+
+  """
+  All values greater than or equal the given value.
+  """
+  content_gte: String
+
+  """
+  All values containing the given string.
+  """
+  content_contains: String
+
+  """
+  All values not containing the given string.
+  """
+  content_not_contains: String
+
+  """
+  All values starting with the given string.
+  """
+  content_starts_with: String
+
+  """
+  All values not starting with the given string.
+  """
+  content_not_starts_with: String
+
+  """
+  All values ending with the given string.
+  """
+  content_ends_with: String
+
+  """
+  All values not ending with the given string.
+  """
+  content_not_ends_with: String
+  createdAt: DateTime
+
+  """
+  All values that are not equal to given value.
+  """
+  createdAt_not: DateTime
+
+  """
+  All values that are contained in given list.
+  """
+  createdAt_in: [DateTime!]
+
+  """
+  All values that are not contained in given list.
+  """
+  createdAt_not_in: [DateTime!]
+
+  """
+  All values less than the given value.
+  """
+  createdAt_lt: DateTime
+
+  """
+  All values less than or equal the given value.
+  """
+  createdAt_lte: DateTime
+
+  """
+  All values greater than the given value.
+  """
+  createdAt_gt: DateTime
+
+  """
+  All values greater than or equal the given value.
+  """
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """
+  All values that are not equal to given value.
+  """
+  updatedAt_not: DateTime
+
+  """
+  All values that are contained in given list.
+  """
+  updatedAt_in: [DateTime!]
+
+  """
+  All values that are not contained in given list.
+  """
+  updatedAt_not_in: [DateTime!]
+
+  """
+  All values less than the given value.
+  """
+  updatedAt_lt: DateTime
+
+  """
+  All values less than or equal the given value.
+  """
+  updatedAt_lte: DateTime
+
+  """
+  All values greater than the given value.
+  """
+  updatedAt_gt: DateTime
+
+  """
+  All values greater than or equal the given value.
+  """
+  updatedAt_gte: DateTime
+  type: ApplicationNoteType
+
+  """
+  All values that are not equal to given value.
+  """
+  type_not: ApplicationNoteType
+
+  """
+  All values that are contained in given list.
+  """
+  type_in: [ApplicationNoteType!]
+
+  """
+  All values that are not contained in given list.
+  """
+  type_not_in: [ApplicationNoteType!]
+}
+
+type ApplicationNoteSubscriptionPayload {
+  mutation: MutationType!
+  node: ApplicationNote
+  updatedFields: [String!]
+  previousValues: ApplicationNotePreviousValues
+}
+
+input ApplicationNoteSubscriptionWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [ApplicationNoteSubscriptionWhereInput!]
+
+  """
+  Logical OR on all given filters.
+  """
+  OR: [ApplicationNoteSubscriptionWhereInput!]
+
+  """
+  Logical NOT on all given filters combined by AND.
+  """
+  NOT: [ApplicationNoteSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ApplicationNoteWhereInput
+}
+
+enum ApplicationNoteType {
+  NOTE
+  STATUS
+}
+
+input ApplicationNoteUpdateInput {
+  content: String
+  type: ApplicationNoteType
+  user: UserUpdateOneRequiredInput
+  application: ApplicationUpdateOneRequiredWithoutNotesInput
+}
+
+input ApplicationNoteUpdateManyDataInput {
+  content: String
+  type: ApplicationNoteType
+}
+
+input ApplicationNoteUpdateManyMutationInput {
+  content: String
+  type: ApplicationNoteType
+}
+
+input ApplicationNoteUpdateManyWithoutApplicationInput {
+  create: [ApplicationNoteCreateWithoutApplicationInput!]
+  connect: [ApplicationNoteWhereUniqueInput!]
+  set: [ApplicationNoteWhereUniqueInput!]
+  disconnect: [ApplicationNoteWhereUniqueInput!]
+  delete: [ApplicationNoteWhereUniqueInput!]
+  update: [ApplicationNoteUpdateWithWhereUniqueWithoutApplicationInput!]
+  updateMany: [ApplicationNoteUpdateManyWithWhereNestedInput!]
+  deleteMany: [ApplicationNoteScalarWhereInput!]
+  upsert: [ApplicationNoteUpsertWithWhereUniqueWithoutApplicationInput!]
+}
+
+input ApplicationNoteUpdateManyWithWhereNestedInput {
+  where: ApplicationNoteScalarWhereInput!
+  data: ApplicationNoteUpdateManyDataInput!
+}
+
+input ApplicationNoteUpdateWithoutApplicationDataInput {
+  content: String
+  type: ApplicationNoteType
+  user: UserUpdateOneRequiredInput
+}
+
+input ApplicationNoteUpdateWithWhereUniqueWithoutApplicationInput {
+  where: ApplicationNoteWhereUniqueInput!
+  data: ApplicationNoteUpdateWithoutApplicationDataInput!
+}
+
+input ApplicationNoteUpsertWithWhereUniqueWithoutApplicationInput {
+  where: ApplicationNoteWhereUniqueInput!
+  update: ApplicationNoteUpdateWithoutApplicationDataInput!
+  create: ApplicationNoteCreateWithoutApplicationInput!
+}
+
+input ApplicationNoteWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [ApplicationNoteWhereInput!]
+
+  """
+  Logical OR on all given filters.
+  """
+  OR: [ApplicationNoteWhereInput!]
+
+  """
+  Logical NOT on all given filters combined by AND.
+  """
+  NOT: [ApplicationNoteWhereInput!]
+  id: ID
+
+  """
+  All values that are not equal to given value.
+  """
+  id_not: ID
+
+  """
+  All values that are contained in given list.
+  """
+  id_in: [ID!]
+
+  """
+  All values that are not contained in given list.
+  """
+  id_not_in: [ID!]
+
+  """
+  All values less than the given value.
+  """
+  id_lt: ID
+
+  """
+  All values less than or equal the given value.
+  """
+  id_lte: ID
+
+  """
+  All values greater than the given value.
+  """
+  id_gt: ID
+
+  """
+  All values greater than or equal the given value.
+  """
+  id_gte: ID
+
+  """
+  All values containing the given string.
+  """
+  id_contains: ID
+
+  """
+  All values not containing the given string.
+  """
+  id_not_contains: ID
+
+  """
+  All values starting with the given string.
+  """
+  id_starts_with: ID
+
+  """
+  All values not starting with the given string.
+  """
+  id_not_starts_with: ID
+
+  """
+  All values ending with the given string.
+  """
+  id_ends_with: ID
+
+  """
+  All values not ending with the given string.
+  """
+  id_not_ends_with: ID
+  content: String
+
+  """
+  All values that are not equal to given value.
+  """
+  content_not: String
+
+  """
+  All values that are contained in given list.
+  """
+  content_in: [String!]
+
+  """
+  All values that are not contained in given list.
+  """
+  content_not_in: [String!]
+
+  """
+  All values less than the given value.
+  """
+  content_lt: String
+
+  """
+  All values less than or equal the given value.
+  """
+  content_lte: String
+
+  """
+  All values greater than the given value.
+  """
+  content_gt: String
+
+  """
+  All values greater than or equal the given value.
+  """
+  content_gte: String
+
+  """
+  All values containing the given string.
+  """
+  content_contains: String
+
+  """
+  All values not containing the given string.
+  """
+  content_not_contains: String
+
+  """
+  All values starting with the given string.
+  """
+  content_starts_with: String
+
+  """
+  All values not starting with the given string.
+  """
+  content_not_starts_with: String
+
+  """
+  All values ending with the given string.
+  """
+  content_ends_with: String
+
+  """
+  All values not ending with the given string.
+  """
+  content_not_ends_with: String
+  createdAt: DateTime
+
+  """
+  All values that are not equal to given value.
+  """
+  createdAt_not: DateTime
+
+  """
+  All values that are contained in given list.
+  """
+  createdAt_in: [DateTime!]
+
+  """
+  All values that are not contained in given list.
+  """
+  createdAt_not_in: [DateTime!]
+
+  """
+  All values less than the given value.
+  """
+  createdAt_lt: DateTime
+
+  """
+  All values less than or equal the given value.
+  """
+  createdAt_lte: DateTime
+
+  """
+  All values greater than the given value.
+  """
+  createdAt_gt: DateTime
+
+  """
+  All values greater than or equal the given value.
+  """
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """
+  All values that are not equal to given value.
+  """
+  updatedAt_not: DateTime
+
+  """
+  All values that are contained in given list.
+  """
+  updatedAt_in: [DateTime!]
+
+  """
+  All values that are not contained in given list.
+  """
+  updatedAt_not_in: [DateTime!]
+
+  """
+  All values less than the given value.
+  """
+  updatedAt_lt: DateTime
+
+  """
+  All values less than or equal the given value.
+  """
+  updatedAt_lte: DateTime
+
+  """
+  All values greater than the given value.
+  """
+  updatedAt_gt: DateTime
+
+  """
+  All values greater than or equal the given value.
+  """
+  updatedAt_gte: DateTime
+  type: ApplicationNoteType
+
+  """
+  All values that are not equal to given value.
+  """
+  type_not: ApplicationNoteType
+
+  """
+  All values that are contained in given list.
+  """
+  type_in: [ApplicationNoteType!]
+
+  """
+  All values that are not contained in given list.
+  """
+  type_not_in: [ApplicationNoteType!]
+  user: UserWhereInput
+  application: ApplicationWhereInput
+}
+
+input ApplicationNoteWhereUniqueInput {
+  id: ID
+}
+
 enum ApplicationOrderByInput {
   id_ASC
   id_DESC
+  status_ASC
+  status_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -144,6 +848,7 @@ enum ApplicationOrderByInput {
 
 type ApplicationPreviousValues {
   id: ID!
+  status: ApplicationStatus
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -229,6 +934,22 @@ input ApplicationScalarWhereInput {
   All values not ending with the given string.
   """
   id_not_ends_with: ID
+  status: ApplicationStatus
+
+  """
+  All values that are not equal to given value.
+  """
+  status_not: ApplicationStatus
+
+  """
+  All values that are contained in given list.
+  """
+  status_in: [ApplicationStatus!]
+
+  """
+  All values that are not contained in given list.
+  """
+  status_not_in: [ApplicationStatus!]
   createdAt: DateTime
 
   """
@@ -303,6 +1024,15 @@ input ApplicationScalarWhereInput {
   updatedAt_gte: DateTime
 }
 
+enum ApplicationStatus {
+  NEW
+  VIEWED
+  REVIEWING
+  CONTACTED
+  HIRED
+  ARCHIVED
+}
+
 type ApplicationSubscriptionPayload {
   mutation: MutationType!
   node: Application
@@ -349,9 +1079,19 @@ input ApplicationSubscriptionWhereInput {
 }
 
 input ApplicationUpdateInput {
+  status: ApplicationStatus
   user: UserUpdateOneRequiredWithoutApplicationsInput
   resume: ResumeUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
+  notes: ApplicationNoteUpdateManyWithoutApplicationInput
+}
+
+input ApplicationUpdateManyDataInput {
+  status: ApplicationStatus
+}
+
+input ApplicationUpdateManyMutationInput {
+  status: ApplicationStatus
 }
 
 input ApplicationUpdateManyWithoutJobInput {
@@ -361,6 +1101,7 @@ input ApplicationUpdateManyWithoutJobInput {
   disconnect: [ApplicationWhereUniqueInput!]
   delete: [ApplicationWhereUniqueInput!]
   update: [ApplicationUpdateWithWhereUniqueWithoutJobInput!]
+  updateMany: [ApplicationUpdateManyWithWhereNestedInput!]
   deleteMany: [ApplicationScalarWhereInput!]
   upsert: [ApplicationUpsertWithWhereUniqueWithoutJobInput!]
 }
@@ -372,6 +1113,7 @@ input ApplicationUpdateManyWithoutResumeInput {
   disconnect: [ApplicationWhereUniqueInput!]
   delete: [ApplicationWhereUniqueInput!]
   update: [ApplicationUpdateWithWhereUniqueWithoutResumeInput!]
+  updateMany: [ApplicationUpdateManyWithWhereNestedInput!]
   deleteMany: [ApplicationScalarWhereInput!]
   upsert: [ApplicationUpsertWithWhereUniqueWithoutResumeInput!]
 }
@@ -383,23 +1125,49 @@ input ApplicationUpdateManyWithoutUserInput {
   disconnect: [ApplicationWhereUniqueInput!]
   delete: [ApplicationWhereUniqueInput!]
   update: [ApplicationUpdateWithWhereUniqueWithoutUserInput!]
+  updateMany: [ApplicationUpdateManyWithWhereNestedInput!]
   deleteMany: [ApplicationScalarWhereInput!]
   upsert: [ApplicationUpsertWithWhereUniqueWithoutUserInput!]
 }
 
+input ApplicationUpdateManyWithWhereNestedInput {
+  where: ApplicationScalarWhereInput!
+  data: ApplicationUpdateManyDataInput!
+}
+
+input ApplicationUpdateOneRequiredWithoutNotesInput {
+  create: ApplicationCreateWithoutNotesInput
+  connect: ApplicationWhereUniqueInput
+  update: ApplicationUpdateWithoutNotesDataInput
+  upsert: ApplicationUpsertWithoutNotesInput
+}
+
 input ApplicationUpdateWithoutJobDataInput {
+  status: ApplicationStatus
   user: UserUpdateOneRequiredWithoutApplicationsInput
   resume: ResumeUpdateOneRequiredWithoutApplicationsInput
+  notes: ApplicationNoteUpdateManyWithoutApplicationInput
+}
+
+input ApplicationUpdateWithoutNotesDataInput {
+  status: ApplicationStatus
+  user: UserUpdateOneRequiredWithoutApplicationsInput
+  resume: ResumeUpdateOneRequiredWithoutApplicationsInput
+  job: JobUpdateOneRequiredWithoutApplicationsInput
 }
 
 input ApplicationUpdateWithoutResumeDataInput {
+  status: ApplicationStatus
   user: UserUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
+  notes: ApplicationNoteUpdateManyWithoutApplicationInput
 }
 
 input ApplicationUpdateWithoutUserDataInput {
+  status: ApplicationStatus
   resume: ResumeUpdateOneRequiredWithoutApplicationsInput
   job: JobUpdateOneRequiredWithoutApplicationsInput
+  notes: ApplicationNoteUpdateManyWithoutApplicationInput
 }
 
 input ApplicationUpdateWithWhereUniqueWithoutJobInput {
@@ -415,6 +1183,11 @@ input ApplicationUpdateWithWhereUniqueWithoutResumeInput {
 input ApplicationUpdateWithWhereUniqueWithoutUserInput {
   where: ApplicationWhereUniqueInput!
   data: ApplicationUpdateWithoutUserDataInput!
+}
+
+input ApplicationUpsertWithoutNotesInput {
+  update: ApplicationUpdateWithoutNotesDataInput!
+  create: ApplicationCreateWithoutNotesInput!
 }
 
 input ApplicationUpsertWithWhereUniqueWithoutJobInput {
@@ -516,6 +1289,22 @@ input ApplicationWhereInput {
   All values not ending with the given string.
   """
   id_not_ends_with: ID
+  status: ApplicationStatus
+
+  """
+  All values that are not equal to given value.
+  """
+  status_not: ApplicationStatus
+
+  """
+  All values that are contained in given list.
+  """
+  status_in: [ApplicationStatus!]
+
+  """
+  All values that are not contained in given list.
+  """
+  status_not_in: [ApplicationStatus!]
   createdAt: DateTime
 
   """
@@ -591,6 +1380,9 @@ input ApplicationWhereInput {
   user: UserWhereInput
   resume: ResumeWhereInput
   job: JobWhereInput
+  notes_every: ApplicationNoteWhereInput
+  notes_some: ApplicationNoteWhereInput
+  notes_none: ApplicationNoteWhereInput
 }
 
 input ApplicationWhereUniqueInput {
@@ -2951,6 +3743,7 @@ type Job implements Node {
   title: String!
   compensationType: String!
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
@@ -2983,7 +3776,7 @@ type Job implements Node {
     first: Int
     last: Int
   ): [Skill!]
-  status: Status
+  status: JobStatus
   favorites(
     where: FavoriteWhereInput
     orderBy: FavoriteOrderByInput
@@ -2994,6 +3787,7 @@ type Job implements Node {
     last: Int
   ): [Favorite!]
   branch: Branch!
+  cronTask: JobCronTask
 }
 
 """
@@ -3017,10 +3811,11 @@ input JobCreateInput {
   title: String!
   compensationType: String
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
@@ -3028,6 +3823,7 @@ input JobCreateInput {
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
   branch: BranchCreateOneWithoutJobsInput!
+  cronTask: JobCronTaskCreateOneInput
 }
 
 input JobCreateManyWithoutAuthorInput {
@@ -3055,6 +3851,11 @@ input JobCreateManyWithoutSkillsInput {
   connect: [JobWhereUniqueInput!]
 }
 
+input JobCreateOneInput {
+  create: JobCreateInput
+  connect: JobWhereUniqueInput
+}
+
 input JobCreateOneWithoutApplicationsInput {
   create: JobCreateWithoutApplicationsInput
   connect: JobWhereUniqueInput
@@ -3070,16 +3871,18 @@ input JobCreateWithoutApplicationsInput {
   title: String!
   compensationType: String
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
   branch: BranchCreateOneWithoutJobsInput!
+  cronTask: JobCronTaskCreateOneInput
 }
 
 input JobCreateWithoutAuthorInput {
@@ -3087,16 +3890,18 @@ input JobCreateWithoutAuthorInput {
   title: String!
   compensationType: String
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
   branch: BranchCreateOneWithoutJobsInput!
+  cronTask: JobCronTaskCreateOneInput
 }
 
 input JobCreateWithoutBranchInput {
@@ -3104,16 +3909,18 @@ input JobCreateWithoutBranchInput {
   title: String!
   compensationType: String
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
+  cronTask: JobCronTaskCreateOneInput
 }
 
 input JobCreateWithoutCategoriesInput {
@@ -3121,16 +3928,18 @@ input JobCreateWithoutCategoriesInput {
   title: String!
   compensationType: String
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
   branch: BranchCreateOneWithoutJobsInput!
+  cronTask: JobCronTaskCreateOneInput
 }
 
 input JobCreateWithoutFavoritesInput {
@@ -3138,16 +3947,18 @@ input JobCreateWithoutFavoritesInput {
   title: String!
   compensationType: String
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   branch: BranchCreateOneWithoutJobsInput!
+  cronTask: JobCronTaskCreateOneInput
 }
 
 input JobCreateWithoutLocationInput {
@@ -3155,16 +3966,18 @@ input JobCreateWithoutLocationInput {
   title: String!
   compensationType: String
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   skills: SkillCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
   branch: BranchCreateOneWithoutJobsInput!
+  cronTask: JobCronTaskCreateOneInput
 }
 
 input JobCreateWithoutSkillsInput {
@@ -3172,16 +3985,468 @@ input JobCreateWithoutSkillsInput {
   title: String!
   compensationType: String
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
   author: UserCreateOneWithoutJobsInput!
   location: LocationCreateOneWithoutJobsInput!
   applications: ApplicationCreateManyWithoutJobInput
   categories: CategoryCreateManyWithoutJobsInput
   favorites: FavoriteCreateManyWithoutJobInput
   branch: BranchCreateOneWithoutJobsInput!
+  cronTask: JobCronTaskCreateOneInput
+}
+
+type JobCronTask implements Node {
+  id: ID!
+  job: Job!
+  lastRun: DateTime!
+  nextRun: DateTime!
+  result: String!
+  objectId: String!
+}
+
+"""
+A connection to a list of items.
+"""
+type JobCronTaskConnection {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  """
+  A list of edges.
+  """
+  edges: [JobCronTaskEdge]!
+  aggregate: AggregateJobCronTask!
+}
+
+input JobCronTaskCreateInput {
+  id: ID
+  lastRun: DateTime!
+  nextRun: DateTime!
+  result: String!
+  objectId: String!
+  job: JobCreateOneInput!
+}
+
+input JobCronTaskCreateOneInput {
+  create: JobCronTaskCreateInput
+  connect: JobCronTaskWhereUniqueInput
+}
+
+"""
+An edge in a connection.
+"""
+type JobCronTaskEdge {
+  """
+  The item at the end of the edge.
+  """
+  node: JobCronTask!
+
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+}
+
+enum JobCronTaskOrderByInput {
+  id_ASC
+  id_DESC
+  lastRun_ASC
+  lastRun_DESC
+  nextRun_ASC
+  nextRun_DESC
+  result_ASC
+  result_DESC
+  objectId_ASC
+  objectId_DESC
+}
+
+type JobCronTaskPreviousValues {
+  id: ID!
+  lastRun: DateTime!
+  nextRun: DateTime!
+  result: String!
+  objectId: String!
+}
+
+type JobCronTaskSubscriptionPayload {
+  mutation: MutationType!
+  node: JobCronTask
+  updatedFields: [String!]
+  previousValues: JobCronTaskPreviousValues
+}
+
+input JobCronTaskSubscriptionWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [JobCronTaskSubscriptionWhereInput!]
+
+  """
+  Logical OR on all given filters.
+  """
+  OR: [JobCronTaskSubscriptionWhereInput!]
+
+  """
+  Logical NOT on all given filters combined by AND.
+  """
+  NOT: [JobCronTaskSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: JobCronTaskWhereInput
+}
+
+input JobCronTaskUpdateDataInput {
+  lastRun: DateTime
+  nextRun: DateTime
+  result: String
+  objectId: String
+  job: JobUpdateOneRequiredInput
+}
+
+input JobCronTaskUpdateInput {
+  lastRun: DateTime
+  nextRun: DateTime
+  result: String
+  objectId: String
+  job: JobUpdateOneRequiredInput
+}
+
+input JobCronTaskUpdateManyMutationInput {
+  lastRun: DateTime
+  nextRun: DateTime
+  result: String
+  objectId: String
+}
+
+input JobCronTaskUpdateOneInput {
+  create: JobCronTaskCreateInput
+  connect: JobCronTaskWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: JobCronTaskUpdateDataInput
+  upsert: JobCronTaskUpsertNestedInput
+}
+
+input JobCronTaskUpsertNestedInput {
+  update: JobCronTaskUpdateDataInput!
+  create: JobCronTaskCreateInput!
+}
+
+input JobCronTaskWhereInput {
+  """
+  Logical AND on all given filters.
+  """
+  AND: [JobCronTaskWhereInput!]
+
+  """
+  Logical OR on all given filters.
+  """
+  OR: [JobCronTaskWhereInput!]
+
+  """
+  Logical NOT on all given filters combined by AND.
+  """
+  NOT: [JobCronTaskWhereInput!]
+  id: ID
+
+  """
+  All values that are not equal to given value.
+  """
+  id_not: ID
+
+  """
+  All values that are contained in given list.
+  """
+  id_in: [ID!]
+
+  """
+  All values that are not contained in given list.
+  """
+  id_not_in: [ID!]
+
+  """
+  All values less than the given value.
+  """
+  id_lt: ID
+
+  """
+  All values less than or equal the given value.
+  """
+  id_lte: ID
+
+  """
+  All values greater than the given value.
+  """
+  id_gt: ID
+
+  """
+  All values greater than or equal the given value.
+  """
+  id_gte: ID
+
+  """
+  All values containing the given string.
+  """
+  id_contains: ID
+
+  """
+  All values not containing the given string.
+  """
+  id_not_contains: ID
+
+  """
+  All values starting with the given string.
+  """
+  id_starts_with: ID
+
+  """
+  All values not starting with the given string.
+  """
+  id_not_starts_with: ID
+
+  """
+  All values ending with the given string.
+  """
+  id_ends_with: ID
+
+  """
+  All values not ending with the given string.
+  """
+  id_not_ends_with: ID
+  lastRun: DateTime
+
+  """
+  All values that are not equal to given value.
+  """
+  lastRun_not: DateTime
+
+  """
+  All values that are contained in given list.
+  """
+  lastRun_in: [DateTime!]
+
+  """
+  All values that are not contained in given list.
+  """
+  lastRun_not_in: [DateTime!]
+
+  """
+  All values less than the given value.
+  """
+  lastRun_lt: DateTime
+
+  """
+  All values less than or equal the given value.
+  """
+  lastRun_lte: DateTime
+
+  """
+  All values greater than the given value.
+  """
+  lastRun_gt: DateTime
+
+  """
+  All values greater than or equal the given value.
+  """
+  lastRun_gte: DateTime
+  nextRun: DateTime
+
+  """
+  All values that are not equal to given value.
+  """
+  nextRun_not: DateTime
+
+  """
+  All values that are contained in given list.
+  """
+  nextRun_in: [DateTime!]
+
+  """
+  All values that are not contained in given list.
+  """
+  nextRun_not_in: [DateTime!]
+
+  """
+  All values less than the given value.
+  """
+  nextRun_lt: DateTime
+
+  """
+  All values less than or equal the given value.
+  """
+  nextRun_lte: DateTime
+
+  """
+  All values greater than the given value.
+  """
+  nextRun_gt: DateTime
+
+  """
+  All values greater than or equal the given value.
+  """
+  nextRun_gte: DateTime
+  result: String
+
+  """
+  All values that are not equal to given value.
+  """
+  result_not: String
+
+  """
+  All values that are contained in given list.
+  """
+  result_in: [String!]
+
+  """
+  All values that are not contained in given list.
+  """
+  result_not_in: [String!]
+
+  """
+  All values less than the given value.
+  """
+  result_lt: String
+
+  """
+  All values less than or equal the given value.
+  """
+  result_lte: String
+
+  """
+  All values greater than the given value.
+  """
+  result_gt: String
+
+  """
+  All values greater than or equal the given value.
+  """
+  result_gte: String
+
+  """
+  All values containing the given string.
+  """
+  result_contains: String
+
+  """
+  All values not containing the given string.
+  """
+  result_not_contains: String
+
+  """
+  All values starting with the given string.
+  """
+  result_starts_with: String
+
+  """
+  All values not starting with the given string.
+  """
+  result_not_starts_with: String
+
+  """
+  All values ending with the given string.
+  """
+  result_ends_with: String
+
+  """
+  All values not ending with the given string.
+  """
+  result_not_ends_with: String
+  objectId: String
+
+  """
+  All values that are not equal to given value.
+  """
+  objectId_not: String
+
+  """
+  All values that are contained in given list.
+  """
+  objectId_in: [String!]
+
+  """
+  All values that are not contained in given list.
+  """
+  objectId_not_in: [String!]
+
+  """
+  All values less than the given value.
+  """
+  objectId_lt: String
+
+  """
+  All values less than or equal the given value.
+  """
+  objectId_lte: String
+
+  """
+  All values greater than the given value.
+  """
+  objectId_gt: String
+
+  """
+  All values greater than or equal the given value.
+  """
+  objectId_gte: String
+
+  """
+  All values containing the given string.
+  """
+  objectId_contains: String
+
+  """
+  All values not containing the given string.
+  """
+  objectId_not_contains: String
+
+  """
+  All values starting with the given string.
+  """
+  objectId_starts_with: String
+
+  """
+  All values not starting with the given string.
+  """
+  objectId_not_starts_with: String
+
+  """
+  All values ending with the given string.
+  """
+  objectId_ends_with: String
+
+  """
+  All values not ending with the given string.
+  """
+  objectId_not_ends_with: String
+  job: JobWhereInput
+}
+
+input JobCronTaskWhereUniqueInput {
+  id: ID
+  objectId: String
 }
 
 """
@@ -3212,6 +4477,8 @@ enum JobOrderByInput {
   compensationType_DESC
   description_ASC
   description_DESC
+  disclaimer_ASC
+  disclaimer_DESC
   type_ASC
   type_DESC
   maxCompensation_ASC
@@ -3229,10 +4496,11 @@ type JobPreviousValues {
   title: String!
   compensationType: String!
   description: String!
+  disclaimer: String
   type: String!
   maxCompensation: Float!
   minCompensation: Float!
-  status: Status
+  status: JobStatus
 }
 
 input JobScalarWhereInput {
@@ -3586,6 +4854,72 @@ input JobScalarWhereInput {
   All values not ending with the given string.
   """
   description_not_ends_with: String
+  disclaimer: String
+
+  """
+  All values that are not equal to given value.
+  """
+  disclaimer_not: String
+
+  """
+  All values that are contained in given list.
+  """
+  disclaimer_in: [String!]
+
+  """
+  All values that are not contained in given list.
+  """
+  disclaimer_not_in: [String!]
+
+  """
+  All values less than the given value.
+  """
+  disclaimer_lt: String
+
+  """
+  All values less than or equal the given value.
+  """
+  disclaimer_lte: String
+
+  """
+  All values greater than the given value.
+  """
+  disclaimer_gt: String
+
+  """
+  All values greater than or equal the given value.
+  """
+  disclaimer_gte: String
+
+  """
+  All values containing the given string.
+  """
+  disclaimer_contains: String
+
+  """
+  All values not containing the given string.
+  """
+  disclaimer_not_contains: String
+
+  """
+  All values starting with the given string.
+  """
+  disclaimer_starts_with: String
+
+  """
+  All values not starting with the given string.
+  """
+  disclaimer_not_starts_with: String
+
+  """
+  All values ending with the given string.
+  """
+  disclaimer_ends_with: String
+
+  """
+  All values not ending with the given string.
+  """
+  disclaimer_not_ends_with: String
   type: String
 
   """
@@ -3724,22 +5058,31 @@ input JobScalarWhereInput {
   All values greater than or equal the given value.
   """
   minCompensation_gte: Float
-  status: Status
+  status: JobStatus
 
   """
   All values that are not equal to given value.
   """
-  status_not: Status
+  status_not: JobStatus
 
   """
   All values that are contained in given list.
   """
-  status_in: [Status!]
+  status_in: [JobStatus!]
 
   """
   All values that are not contained in given list.
   """
-  status_not_in: [Status!]
+  status_not_in: [JobStatus!]
+}
+
+enum JobStatus {
+  DRAFT
+  POSTED
+  DELETED
+  EDITING
+  EXPIRED
+  PENDING
 }
 
 type JobSubscriptionPayload {
@@ -3787,14 +5130,15 @@ input JobSubscriptionWhereInput {
   node: JobWhereInput
 }
 
-input JobUpdateInput {
+input JobUpdateDataInput {
   title: String
   compensationType: String
   description: String
+  disclaimer: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
@@ -3802,26 +5146,48 @@ input JobUpdateInput {
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
   branch: BranchUpdateOneRequiredWithoutJobsInput
+  cronTask: JobCronTaskUpdateOneInput
+}
+
+input JobUpdateInput {
+  title: String
+  compensationType: String
+  description: String
+  disclaimer: String
+  type: String
+  maxCompensation: Float
+  minCompensation: Float
+  status: JobStatus
+  author: UserUpdateOneRequiredWithoutJobsInput
+  location: LocationUpdateOneRequiredWithoutJobsInput
+  applications: ApplicationUpdateManyWithoutJobInput
+  categories: CategoryUpdateManyWithoutJobsInput
+  skills: SkillUpdateManyWithoutJobsInput
+  favorites: FavoriteUpdateManyWithoutJobInput
+  branch: BranchUpdateOneRequiredWithoutJobsInput
+  cronTask: JobCronTaskUpdateOneInput
 }
 
 input JobUpdateManyDataInput {
   title: String
   compensationType: String
   description: String
+  disclaimer: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
 }
 
 input JobUpdateManyMutationInput {
   title: String
   compensationType: String
   description: String
+  disclaimer: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
 }
 
 input JobUpdateManyWithoutAuthorInput {
@@ -3889,6 +5255,13 @@ input JobUpdateManyWithWhereNestedInput {
   data: JobUpdateManyDataInput!
 }
 
+input JobUpdateOneRequiredInput {
+  create: JobCreateInput
+  connect: JobWhereUniqueInput
+  update: JobUpdateDataInput
+  upsert: JobUpsertNestedInput
+}
+
 input JobUpdateOneRequiredWithoutApplicationsInput {
   create: JobCreateWithoutApplicationsInput
   connect: JobWhereUniqueInput
@@ -3907,112 +5280,126 @@ input JobUpdateWithoutApplicationsDataInput {
   title: String
   compensationType: String
   description: String
+  disclaimer: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
   branch: BranchUpdateOneRequiredWithoutJobsInput
+  cronTask: JobCronTaskUpdateOneInput
 }
 
 input JobUpdateWithoutAuthorDataInput {
   title: String
   compensationType: String
   description: String
+  disclaimer: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
   branch: BranchUpdateOneRequiredWithoutJobsInput
+  cronTask: JobCronTaskUpdateOneInput
 }
 
 input JobUpdateWithoutBranchDataInput {
   title: String
   compensationType: String
   description: String
+  disclaimer: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
+  cronTask: JobCronTaskUpdateOneInput
 }
 
 input JobUpdateWithoutCategoriesDataInput {
   title: String
   compensationType: String
   description: String
+  disclaimer: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
   branch: BranchUpdateOneRequiredWithoutJobsInput
+  cronTask: JobCronTaskUpdateOneInput
 }
 
 input JobUpdateWithoutFavoritesDataInput {
   title: String
   compensationType: String
   description: String
+  disclaimer: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   branch: BranchUpdateOneRequiredWithoutJobsInput
+  cronTask: JobCronTaskUpdateOneInput
 }
 
 input JobUpdateWithoutLocationDataInput {
   title: String
   compensationType: String
   description: String
+  disclaimer: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   skills: SkillUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
   branch: BranchUpdateOneRequiredWithoutJobsInput
+  cronTask: JobCronTaskUpdateOneInput
 }
 
 input JobUpdateWithoutSkillsDataInput {
   title: String
   compensationType: String
   description: String
+  disclaimer: String
   type: String
   maxCompensation: Float
   minCompensation: Float
-  status: Status
+  status: JobStatus
   author: UserUpdateOneRequiredWithoutJobsInput
   location: LocationUpdateOneRequiredWithoutJobsInput
   applications: ApplicationUpdateManyWithoutJobInput
   categories: CategoryUpdateManyWithoutJobsInput
   favorites: FavoriteUpdateManyWithoutJobInput
   branch: BranchUpdateOneRequiredWithoutJobsInput
+  cronTask: JobCronTaskUpdateOneInput
 }
 
 input JobUpdateWithWhereUniqueWithoutAuthorInput {
@@ -4038,6 +5425,11 @@ input JobUpdateWithWhereUniqueWithoutLocationInput {
 input JobUpdateWithWhereUniqueWithoutSkillsInput {
   where: JobWhereUniqueInput!
   data: JobUpdateWithoutSkillsDataInput!
+}
+
+input JobUpsertNestedInput {
+  update: JobUpdateDataInput!
+  create: JobCreateInput!
 }
 
 input JobUpsertWithoutApplicationsInput {
@@ -4431,6 +5823,72 @@ input JobWhereInput {
   All values not ending with the given string.
   """
   description_not_ends_with: String
+  disclaimer: String
+
+  """
+  All values that are not equal to given value.
+  """
+  disclaimer_not: String
+
+  """
+  All values that are contained in given list.
+  """
+  disclaimer_in: [String!]
+
+  """
+  All values that are not contained in given list.
+  """
+  disclaimer_not_in: [String!]
+
+  """
+  All values less than the given value.
+  """
+  disclaimer_lt: String
+
+  """
+  All values less than or equal the given value.
+  """
+  disclaimer_lte: String
+
+  """
+  All values greater than the given value.
+  """
+  disclaimer_gt: String
+
+  """
+  All values greater than or equal the given value.
+  """
+  disclaimer_gte: String
+
+  """
+  All values containing the given string.
+  """
+  disclaimer_contains: String
+
+  """
+  All values not containing the given string.
+  """
+  disclaimer_not_contains: String
+
+  """
+  All values starting with the given string.
+  """
+  disclaimer_starts_with: String
+
+  """
+  All values not starting with the given string.
+  """
+  disclaimer_not_starts_with: String
+
+  """
+  All values ending with the given string.
+  """
+  disclaimer_ends_with: String
+
+  """
+  All values not ending with the given string.
+  """
+  disclaimer_not_ends_with: String
   type: String
 
   """
@@ -4569,22 +6027,22 @@ input JobWhereInput {
   All values greater than or equal the given value.
   """
   minCompensation_gte: Float
-  status: Status
+  status: JobStatus
 
   """
   All values that are not equal to given value.
   """
-  status_not: Status
+  status_not: JobStatus
 
   """
   All values that are contained in given list.
   """
-  status_in: [Status!]
+  status_in: [JobStatus!]
 
   """
   All values that are not contained in given list.
   """
-  status_not_in: [Status!]
+  status_not_in: [JobStatus!]
   author: UserWhereInput
   location: LocationWhereInput
   applications_every: ApplicationWhereInput
@@ -4600,6 +6058,7 @@ input JobWhereInput {
   favorites_some: FavoriteWhereInput
   favorites_none: FavoriteWhereInput
   branch: BranchWhereInput
+  cronTask: JobCronTaskWhereInput
 }
 
 input JobWhereUniqueInput {
@@ -5097,30 +6556,34 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createUser(data: UserCreateInput!): User!
   createRole(data: RoleCreateInput!): Role!
   createPermission(data: PermissionCreateInput!): Permission!
-  createJob(data: JobCreateInput!): Job!
   createApplication(data: ApplicationCreateInput!): Application!
+  createApplicationNote(data: ApplicationNoteCreateInput!): ApplicationNote!
   createFavorite(data: FavoriteCreateInput!): Favorite!
   createCompany(data: CompanyCreateInput!): Company!
   createBranch(data: BranchCreateInput!): Branch!
   createCategory(data: CategoryCreateInput!): Category!
   createResume(data: ResumeCreateInput!): Resume!
+  createJobCronTask(data: JobCronTaskCreateInput!): JobCronTask!
   createFile(data: FileCreateInput!): File!
   createSkill(data: SkillCreateInput!): Skill!
+  createJob(data: JobCreateInput!): Job!
   createLocation(data: LocationCreateInput!): Location!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  createUser(data: UserCreateInput!): User!
   updateRole(data: RoleUpdateInput!, where: RoleWhereUniqueInput!): Role
   updatePermission(
     data: PermissionUpdateInput!
     where: PermissionWhereUniqueInput!
   ): Permission
-  updateJob(data: JobUpdateInput!, where: JobWhereUniqueInput!): Job
   updateApplication(
     data: ApplicationUpdateInput!
     where: ApplicationWhereUniqueInput!
   ): Application
+  updateApplicationNote(
+    data: ApplicationNoteUpdateInput!
+    where: ApplicationNoteWhereUniqueInput!
+  ): ApplicationNote
   updateFavorite(
     data: FavoriteUpdateInput!
     where: FavoriteWhereUniqueInput!
@@ -5135,30 +6598,35 @@ type Mutation {
     where: CategoryWhereUniqueInput!
   ): Category
   updateResume(data: ResumeUpdateInput!, where: ResumeWhereUniqueInput!): Resume
+  updateJobCronTask(
+    data: JobCronTaskUpdateInput!
+    where: JobCronTaskWhereUniqueInput!
+  ): JobCronTask
   updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
   updateSkill(data: SkillUpdateInput!, where: SkillWhereUniqueInput!): Skill
+  updateJob(data: JobUpdateInput!, where: JobWhereUniqueInput!): Job
   updateLocation(
     data: LocationUpdateInput!
     where: LocationWhereUniqueInput!
   ): Location
-  deleteUser(where: UserWhereUniqueInput!): User
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   deleteRole(where: RoleWhereUniqueInput!): Role
   deletePermission(where: PermissionWhereUniqueInput!): Permission
-  deleteJob(where: JobWhereUniqueInput!): Job
   deleteApplication(where: ApplicationWhereUniqueInput!): Application
+  deleteApplicationNote(
+    where: ApplicationNoteWhereUniqueInput!
+  ): ApplicationNote
   deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
   deleteCompany(where: CompanyWhereUniqueInput!): Company
   deleteBranch(where: BranchWhereUniqueInput!): Branch
   deleteCategory(where: CategoryWhereUniqueInput!): Category
   deleteResume(where: ResumeWhereUniqueInput!): Resume
+  deleteJobCronTask(where: JobCronTaskWhereUniqueInput!): JobCronTask
   deleteFile(where: FileWhereUniqueInput!): File
   deleteSkill(where: SkillWhereUniqueInput!): Skill
+  deleteJob(where: JobWhereUniqueInput!): Job
   deleteLocation(where: LocationWhereUniqueInput!): Location
-  upsertUser(
-    where: UserWhereUniqueInput!
-    create: UserCreateInput!
-    update: UserUpdateInput!
-  ): User!
+  deleteUser(where: UserWhereUniqueInput!): User
   upsertRole(
     where: RoleWhereUniqueInput!
     create: RoleCreateInput!
@@ -5169,16 +6637,16 @@ type Mutation {
     create: PermissionCreateInput!
     update: PermissionUpdateInput!
   ): Permission!
-  upsertJob(
-    where: JobWhereUniqueInput!
-    create: JobCreateInput!
-    update: JobUpdateInput!
-  ): Job!
   upsertApplication(
     where: ApplicationWhereUniqueInput!
     create: ApplicationCreateInput!
     update: ApplicationUpdateInput!
   ): Application!
+  upsertApplicationNote(
+    where: ApplicationNoteWhereUniqueInput!
+    create: ApplicationNoteCreateInput!
+    update: ApplicationNoteUpdateInput!
+  ): ApplicationNote!
   upsertFavorite(
     where: FavoriteWhereUniqueInput!
     create: FavoriteCreateInput!
@@ -5204,6 +6672,11 @@ type Mutation {
     create: ResumeCreateInput!
     update: ResumeUpdateInput!
   ): Resume!
+  upsertJobCronTask(
+    where: JobCronTaskWhereUniqueInput!
+    create: JobCronTaskCreateInput!
+    update: JobCronTaskUpdateInput!
+  ): JobCronTask!
   upsertFile(
     where: FileWhereUniqueInput!
     create: FileCreateInput!
@@ -5214,15 +6687,21 @@ type Mutation {
     create: SkillCreateInput!
     update: SkillUpdateInput!
   ): Skill!
+  upsertJob(
+    where: JobWhereUniqueInput!
+    create: JobCreateInput!
+    update: JobUpdateInput!
+  ): Job!
   upsertLocation(
     where: LocationWhereUniqueInput!
     create: LocationCreateInput!
     update: LocationUpdateInput!
   ): Location!
-  updateManyUsers(
-    data: UserUpdateManyMutationInput!
-    where: UserWhereInput
-  ): BatchPayload!
+  upsertUser(
+    where: UserWhereUniqueInput!
+    create: UserCreateInput!
+    update: UserUpdateInput!
+  ): User!
   updateManyRoles(
     data: RoleUpdateManyMutationInput!
     where: RoleWhereInput
@@ -5231,9 +6710,13 @@ type Mutation {
     data: PermissionUpdateManyMutationInput!
     where: PermissionWhereInput
   ): BatchPayload!
-  updateManyJobs(
-    data: JobUpdateManyMutationInput!
-    where: JobWhereInput
+  updateManyApplications(
+    data: ApplicationUpdateManyMutationInput!
+    where: ApplicationWhereInput
+  ): BatchPayload!
+  updateManyApplicationNotes(
+    data: ApplicationNoteUpdateManyMutationInput!
+    where: ApplicationNoteWhereInput
   ): BatchPayload!
   updateManyCompanies(
     data: CompanyUpdateManyMutationInput!
@@ -5251,6 +6734,10 @@ type Mutation {
     data: ResumeUpdateManyMutationInput!
     where: ResumeWhereInput
   ): BatchPayload!
+  updateManyJobCronTasks(
+    data: JobCronTaskUpdateManyMutationInput!
+    where: JobCronTaskWhereInput
+  ): BatchPayload!
   updateManyFiles(
     data: FileUpdateManyMutationInput!
     where: FileWhereInput
@@ -5259,23 +6746,33 @@ type Mutation {
     data: SkillUpdateManyMutationInput!
     where: SkillWhereInput
   ): BatchPayload!
+  updateManyJobs(
+    data: JobUpdateManyMutationInput!
+    where: JobWhereInput
+  ): BatchPayload!
   updateManyLocations(
     data: LocationUpdateManyMutationInput!
     where: LocationWhereInput
   ): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  updateManyUsers(
+    data: UserUpdateManyMutationInput!
+    where: UserWhereInput
+  ): BatchPayload!
   deleteManyRoles(where: RoleWhereInput): BatchPayload!
   deleteManyPermissions(where: PermissionWhereInput): BatchPayload!
-  deleteManyJobs(where: JobWhereInput): BatchPayload!
   deleteManyApplications(where: ApplicationWhereInput): BatchPayload!
+  deleteManyApplicationNotes(where: ApplicationNoteWhereInput): BatchPayload!
   deleteManyFavorites(where: FavoriteWhereInput): BatchPayload!
   deleteManyCompanies(where: CompanyWhereInput): BatchPayload!
   deleteManyBranches(where: BranchWhereInput): BatchPayload!
   deleteManyCategories(where: CategoryWhereInput): BatchPayload!
   deleteManyResumes(where: ResumeWhereInput): BatchPayload!
+  deleteManyJobCronTasks(where: JobCronTaskWhereInput): BatchPayload!
   deleteManyFiles(where: FileWhereInput): BatchPayload!
   deleteManySkills(where: SkillWhereInput): BatchPayload!
+  deleteManyJobs(where: JobWhereInput): BatchPayload!
   deleteManyLocations(where: LocationWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -5794,15 +7291,6 @@ input PermissionWhereUniqueInput {
 }
 
 type Query {
-  users(
-    where: UserWhereInput
-    orderBy: UserOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [User]!
   roles(
     where: RoleWhereInput
     orderBy: RoleOrderByInput
@@ -5821,15 +7309,6 @@ type Query {
     first: Int
     last: Int
   ): [Permission]!
-  jobs(
-    where: JobWhereInput
-    orderBy: JobOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): [Job]!
   applications(
     where: ApplicationWhereInput
     orderBy: ApplicationOrderByInput
@@ -5839,6 +7318,15 @@ type Query {
     first: Int
     last: Int
   ): [Application]!
+  applicationNotes(
+    where: ApplicationNoteWhereInput
+    orderBy: ApplicationNoteOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [ApplicationNote]!
   favorites(
     where: FavoriteWhereInput
     orderBy: FavoriteOrderByInput
@@ -5884,6 +7372,15 @@ type Query {
     first: Int
     last: Int
   ): [Resume]!
+  jobCronTasks(
+    where: JobCronTaskWhereInput
+    orderBy: JobCronTaskOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [JobCronTask]!
   files(
     where: FileWhereInput
     orderBy: FileOrderByInput
@@ -5902,6 +7399,15 @@ type Query {
     first: Int
     last: Int
   ): [Skill]!
+  jobs(
+    where: JobWhereInput
+    orderBy: JobOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Job]!
   locations(
     where: LocationWhereInput
     orderBy: LocationOrderByInput
@@ -5911,20 +7417,7 @@ type Query {
     first: Int
     last: Int
   ): [Location]!
-  user(where: UserWhereUniqueInput!): User
-  role(where: RoleWhereUniqueInput!): Role
-  permission(where: PermissionWhereUniqueInput!): Permission
-  job(where: JobWhereUniqueInput!): Job
-  application(where: ApplicationWhereUniqueInput!): Application
-  favorite(where: FavoriteWhereUniqueInput!): Favorite
-  company(where: CompanyWhereUniqueInput!): Company
-  branch(where: BranchWhereUniqueInput!): Branch
-  category(where: CategoryWhereUniqueInput!): Category
-  resume(where: ResumeWhereUniqueInput!): Resume
-  file(where: FileWhereUniqueInput!): File
-  skill(where: SkillWhereUniqueInput!): Skill
-  location(where: LocationWhereUniqueInput!): Location
-  usersConnection(
+  users(
     where: UserWhereInput
     orderBy: UserOrderByInput
     skip: Int
@@ -5932,7 +7425,22 @@ type Query {
     before: String
     first: Int
     last: Int
-  ): UserConnection!
+  ): [User]!
+  role(where: RoleWhereUniqueInput!): Role
+  permission(where: PermissionWhereUniqueInput!): Permission
+  application(where: ApplicationWhereUniqueInput!): Application
+  applicationNote(where: ApplicationNoteWhereUniqueInput!): ApplicationNote
+  favorite(where: FavoriteWhereUniqueInput!): Favorite
+  company(where: CompanyWhereUniqueInput!): Company
+  branch(where: BranchWhereUniqueInput!): Branch
+  category(where: CategoryWhereUniqueInput!): Category
+  resume(where: ResumeWhereUniqueInput!): Resume
+  jobCronTask(where: JobCronTaskWhereUniqueInput!): JobCronTask
+  file(where: FileWhereUniqueInput!): File
+  skill(where: SkillWhereUniqueInput!): Skill
+  job(where: JobWhereUniqueInput!): Job
+  location(where: LocationWhereUniqueInput!): Location
+  user(where: UserWhereUniqueInput!): User
   rolesConnection(
     where: RoleWhereInput
     orderBy: RoleOrderByInput
@@ -5951,15 +7459,6 @@ type Query {
     first: Int
     last: Int
   ): PermissionConnection!
-  jobsConnection(
-    where: JobWhereInput
-    orderBy: JobOrderByInput
-    skip: Int
-    after: String
-    before: String
-    first: Int
-    last: Int
-  ): JobConnection!
   applicationsConnection(
     where: ApplicationWhereInput
     orderBy: ApplicationOrderByInput
@@ -5969,6 +7468,15 @@ type Query {
     first: Int
     last: Int
   ): ApplicationConnection!
+  applicationNotesConnection(
+    where: ApplicationNoteWhereInput
+    orderBy: ApplicationNoteOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): ApplicationNoteConnection!
   favoritesConnection(
     where: FavoriteWhereInput
     orderBy: FavoriteOrderByInput
@@ -6014,6 +7522,15 @@ type Query {
     first: Int
     last: Int
   ): ResumeConnection!
+  jobCronTasksConnection(
+    where: JobCronTaskWhereInput
+    orderBy: JobCronTaskOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): JobCronTaskConnection!
   filesConnection(
     where: FileWhereInput
     orderBy: FileOrderByInput
@@ -6032,6 +7549,15 @@ type Query {
     first: Int
     last: Int
   ): SkillConnection!
+  jobsConnection(
+    where: JobWhereInput
+    orderBy: JobOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): JobConnection!
   locationsConnection(
     where: LocationWhereInput
     orderBy: LocationOrderByInput
@@ -6041,6 +7567,15 @@ type Query {
     first: Int
     last: Int
   ): LocationConnection!
+  usersConnection(
+    where: UserWhereInput
+    orderBy: UserOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): UserConnection!
 
   """
   Fetches an object given its ID
@@ -7637,32 +9172,30 @@ input SkillWhereUniqueInput {
   name: String
 }
 
-enum Status {
-  DRAFT
-  POSTED
-  DELETED
-  EDITING
-  EXPIRED
-}
-
 type Subscription {
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   role(where: RoleSubscriptionWhereInput): RoleSubscriptionPayload
   permission(
     where: PermissionSubscriptionWhereInput
   ): PermissionSubscriptionPayload
-  job(where: JobSubscriptionWhereInput): JobSubscriptionPayload
   application(
     where: ApplicationSubscriptionWhereInput
   ): ApplicationSubscriptionPayload
+  applicationNote(
+    where: ApplicationNoteSubscriptionWhereInput
+  ): ApplicationNoteSubscriptionPayload
   favorite(where: FavoriteSubscriptionWhereInput): FavoriteSubscriptionPayload
   company(where: CompanySubscriptionWhereInput): CompanySubscriptionPayload
   branch(where: BranchSubscriptionWhereInput): BranchSubscriptionPayload
   category(where: CategorySubscriptionWhereInput): CategorySubscriptionPayload
   resume(where: ResumeSubscriptionWhereInput): ResumeSubscriptionPayload
+  jobCronTask(
+    where: JobCronTaskSubscriptionWhereInput
+  ): JobCronTaskSubscriptionPayload
   file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
   skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
+  job(where: JobSubscriptionWhereInput): JobSubscriptionPayload
   location(where: LocationSubscriptionWhereInput): LocationSubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
 type User implements Node {
@@ -7775,6 +9308,11 @@ input UserCreateManyWithoutRoleInput {
 input UserCreateManyWithoutSkillsInput {
   create: [UserCreateWithoutSkillsInput!]
   connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutApplicationsInput {
@@ -8470,6 +10008,22 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
+input UserUpdateDataInput {
+  name: String
+  email: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  applications: ApplicationUpdateManyWithoutUserInput
+  jobs: JobUpdateManyWithoutAuthorInput
+  location: LocationUpdateOneWithoutUsersInput
+  skills: SkillUpdateManyWithoutUsersInput
+  favorites: FavoriteUpdateManyWithoutUserInput
+  role: RoleUpdateOneWithoutUsersInput
+  branch: BranchUpdateOneWithoutUsersInput
+  resumes: ResumeUpdateManyWithoutUserInput
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -8553,6 +10107,13 @@ input UserUpdateManyWithoutSkillsInput {
 input UserUpdateManyWithWhereNestedInput {
   where: UserScalarWhereInput!
   data: UserUpdateManyDataInput!
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
 }
 
 input UserUpdateOneRequiredWithoutApplicationsInput {
@@ -8721,6 +10282,11 @@ input UserUpdateWithWhereUniqueWithoutRoleInput {
 input UserUpdateWithWhereUniqueWithoutSkillsInput {
   where: UserWhereUniqueInput!
   data: UserUpdateWithoutSkillsDataInput!
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserUpsertWithoutApplicationsInput {
