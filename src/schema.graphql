@@ -79,8 +79,8 @@ type Mutation {
 
   createCategory(name: String!): Category!
   createSkill(name: String!): Skill!
-  addFavorite(job: JobCreateOneWithoutFavoritesInput!): Favorite
-  deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
+  addFavorite(job: ID!): ID
+  deleteFavorite(job: ID!): ID
   signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
   createResume(path: String!, type: String!, title: String!): Resume!
   login(email: String!, password: String!): User

@@ -656,18 +656,25 @@ const Mutations = {
       return null;
     }
 
-    args.user = { connect: { id: ctx.request.user.id } };
+    const favorites = await ctx.db.query.favorites({
+      where: { user: { id: ctx.request.user.id }, job: { id: args.job } }
+    });
+    const user = { connect: { id: ctx.request.user.id } };
+    const job = { connect: { id: args.job } };
 
-    const result = await ctx.db.mutation.createFavorite(
-      {
-        data: {
-          ...args
-        }
-      },
-      info
-    );
-
-    return result;
+    try {
+      if (favorites.length <= 0) {
+        await ctx.db.mutation.createFavorite({
+          data: {
+            user,
+            job
+          }
+        });
+      }
+      return args.job;
+    } catch (err) {
+      return null;
+    }
   },
 
   async deleteFavorite(parent, args, ctx, info) {
@@ -675,7 +682,24 @@ const Mutations = {
       return null;
     }
 
-    return await ctx.db.mutation.deleteFavorite(args, info);
+    try {
+      const favorites = await ctx.db.query.favorites({
+        where: { user: { id: ctx.request.user.id }, job: { id: args.job } }
+      });
+
+      if (favorites.length > 0) {
+        await ctx.db.mutation.deleteFavorite({
+          where: {
+            id: favorites[0].id
+          }
+        });
+      }
+
+      return args.job;
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   },
   async signFileUpload(parent, args, ctx, info) {
     if (!userExists(ctx)) {
