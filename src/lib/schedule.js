@@ -1,4 +1,4 @@
-const MILISECONDS_INTERVAL = 60 * 60 * 1000;
+const MILISECONDS_INTERVAL = 24 * 60 * 60 * 1000;
 // const MILISECONDS_INTERVAL = 15000;
 
 const scheduleFunction = ({ jobId, cronTaksId, timeObject, db }) => {
