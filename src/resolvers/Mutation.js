@@ -721,10 +721,9 @@ const Mutations = {
     }
 
     const resumeUrl = await sign_s3_read(args.path);
-    const resumeJson = await request(
-      "http://simple-resume-parser-api.herokuapp.com/api/resumes",
-      { url: resumeUrl }
-    );
+    const resumeJson = await request(process.env.RESUME_PARSER_API, {
+      url: resumeUrl
+    });
     const resumeText = `${resumeJson.parts.summary} ${
       resumeJson.parts.projects
     }  ${resumeJson.parts.certification} ${resumeJson.parts.certifications} ${
