@@ -5,14 +5,16 @@ const { randomBytes } = require("crypto");
 const { promisify } = require("util");
 const { can } = require("../lib/auth");
 // const { forwardTo } = require("prisma-binding");
-const { userExists } = require("../lib/utils");
+const { userExists, findKeywords } = require("../lib/utils");
 const { sign_s3_upload } = require("../lib/aws");
 const { transport, makeANiceEmail } = require("../lib/mail");
 const { fetchLocation } = require("../lib/location");
+const request = require("../lib/request");
 const {
   scheduleJobAutoUpdate,
   unscheduleJobAutoUpdate
 } = require("../lib/schedule");
+const { sign_s3_read } = require("../lib/aws");
 
 const Mutations = {
   async createUser(parent, args, ctx, info) {
@@ -718,6 +720,33 @@ const Mutations = {
       return null;
     }
 
+    const resumeUrl = await sign_s3_read(args.path);
+    const resumeJson = await request(
+      "http://simple-resume-parser-api.herokuapp.com/api/resumes",
+      { url: resumeUrl }
+    );
+    const resumeText = `${resumeJson.parts.summary} ${
+      resumeJson.parts.projects
+    }  ${resumeJson.parts.certification} ${resumeJson.parts.certifications} ${
+      resumeJson.parts.positions
+    } ${resumeJson.parts.objective} ${resumeJson.parts.awards} ${
+      resumeJson.parts.skills
+    } ${resumeJson.parts.experience} ${
+      resumeJson.parts.education
+    }`.toLowerCase();
+    const allSkills = await ctx.db.query.skills({}, `{ id name }`);
+
+    const resumeSkills = findKeywords(
+      resumeText,
+      allSkills.map(skill => skill.name)
+    ).filter(skill => skill !== "");
+
+    const filteredSkills = allSkills.filter(skill =>
+      resumeSkills.includes(skill.name)
+    );
+
+    console.log(filteredSkills);
+
     const result = await ctx.db.mutation.createResume(
       {
         data: {
@@ -732,7 +761,8 @@ const Mutations = {
             connect: { id: ctx.request.user.id }
           },
 
-          title: args.title
+          title: args.title,
+          skills: { connect: filteredSkills.map(skill => ({ id: skill.id })) }
         }
       },
       info
@@ -740,6 +770,62 @@ const Mutations = {
 
     return result;
   },
+  // async updateResumes(parent, args, ctx, info) {
+  //   const allResumes = await ctx.db.query.resumes(
+  //     {},
+  //     `{id file { id path} skills { id } }`
+  //   );
+
+  //   try {
+  //     const allSkills = await ctx.db.query.skills({}, `{ id name }`);
+  //     let resumes = {};
+
+  //     allResumes.reverse().forEach((resume, index) => {
+  //       if (resume.skills.length === 0) {
+  //         setTimeout(async () => {
+  //           try {
+  //             const resumeUrl = await sign_s3_read(resume.file.path);
+  //             console.log({ index, resumeUrl });
+  //             const resumeJson = await request(
+  //               "http://simple-resume-parser-api.herokuapp.com/api/resumes",
+  //               { url: resumeUrl }
+  //             );
+  //             console.log(resumeJson);
+  //             const resumeText = `${resumeJson.parts.summary} ${resumeJson.parts.certification} ${resumeJson.parts.projects} ${resumeJson.parts.awards} ${resumeJson.parts.certifications} ${resumeJson.parts.objective} ${resumeJson.parts.skills} ${resumeJson.parts.experience} ${resumeJson.parts.education} ${resumeJson.parts.positions}`.toLowerCase();
+  //             const resumeSkills = findKeywords(
+  //               resumeText,
+  //               allSkills.map(skill => skill.name)
+  //             ).filter(skill => skill !== "");
+
+  //             const filteredSkills = allSkills.filter(skill =>
+  //               resumeSkills.includes(skill.name)
+  //             );
+  //             console.log(filteredSkills);
+  //             const result = await ctx.db.mutation.updateResume(
+  //               {
+  //                 where: { id: resume.id },
+  //                 data: {
+  //                   skills: {
+  //                     set: filteredSkills.map(skill => ({ id: skill.id }))
+  //                   }
+  //                 }
+  //               },
+  //               `{id}`
+  //             );
+
+  //             resume[resume.id] = filteredSkills;
+  //           } catch (err) {
+  //             console.log(index);
+  //           }
+  //         }, index * 100);
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.log("failed");
+  //   }
+
+  //   return allResumes;
+  // },
 
   async createCompany(parent, args, ctx, info) {
     const company = await ctx.db.mutation.createCompany(

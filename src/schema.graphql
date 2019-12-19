@@ -83,6 +83,7 @@ type Mutation {
   deleteFavorite(job: ID!): ID
   signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
   createResume(path: String!, type: String!, title: String!): Resume!
+  updateResumes: [Resume]
   login(email: String!, password: String!): User
   signup(name: String!, password: String!, email: String!): User
   logout: String
