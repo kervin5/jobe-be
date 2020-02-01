@@ -10,6 +10,11 @@ const permissions = shield({
       rules.can("READ", "COMPANY"),
       rules.can("READ", "BRANCH")
     ),
+    user: or(
+      rules.can("READ", "USER"),
+      rules.can("READ", "COMPANY"),
+      rules.can("READ", "BRANCH")
+    ),
     usersConnection: or(
       rules.can("READ", "USER"),
       rules.can("READ", "COMPANY"),
@@ -33,6 +38,7 @@ const permissions = shield({
   },
   Mutation: {
     createUser: rules.can("CREATE", "USER"),
+    updateUser: rules.can("UPDATE", "USER"),
     createJob: rules.can("CREATE", "JOB"),
     updateJob: rules.can("UPDATE", "JOB"),
     deleteJob: rules.can("DELETE", "JOB"),

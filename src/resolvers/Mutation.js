@@ -54,6 +54,26 @@ const Mutations = {
     });
     return user;
   },
+  async updateUser(parent, args, ctx, info) {
+    const name = args.name ? { name: args.name } : {};
+    const branch = args.branch
+      ? {
+          branch: { connect: { id: args.branch } }
+        }
+      : {};
+    const role = args.role ? { role: { connect: { id: args.role } } } : {};
+    return await ctx.db.mutation.updateUser(
+      {
+        where: { id: args.id },
+        data: {
+          ...name,
+          ...branch,
+          ...role
+        }
+      },
+      info
+    );
+  },
 
   async createRole(parent, args, ctx, info) {
     return await ctx.db.mutation.createRole(

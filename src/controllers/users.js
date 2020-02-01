@@ -69,6 +69,14 @@ const me = async (parent, args, ctx, info) => {
   return (await can("READ", "BRANCH", ctx)) ? user : { ...user, branch: null };
 };
 
+const user = async (parent, args, ctx, info) => {
+  if (!ctx.request.user) {
+    return null;
+  }
+
+  return ctx.db.query.user({ where: { id: args.where.id } }, info);
+};
+
 const candidates = async (parent, args, ctx, info) => {
   return await ctx.db.query.users(
     { ...args, where: { ...args.where, role: { name: "candidate" } } },
@@ -84,5 +92,12 @@ const candidatesConnection = async (parent, args, ctx, info) => {
 };
 
 module.exports = {
-  queries: { users, candidates, me, usersConnection, candidatesConnection }
+  queries: {
+    users,
+    user,
+    candidates,
+    me,
+    usersConnection,
+    candidatesConnection
+  }
 };
