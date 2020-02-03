@@ -435,6 +435,31 @@ const Mutations = {
 
     return job;
   },
+  async deleteJob(parent, args, ctx, info) {
+    const jobs = await ctx.db.query.jobs({
+      where: {
+        id: args.id,
+        author: { id: ctx.request.user.id }
+      }
+    });
+
+    if (
+      jobs.length > 0 ||
+      can("UPDATE", "BRANCH", ctx) ||
+      can("UPDATE", "COMPANY", ctx)
+    ) {
+      await ctx.db.mutation.updateManyApplications({
+        where: { job: { id: args.id }, status_not_in: ["ARCHIVED", "HIRED"] },
+        data: { status: "ARCHIVED" }
+      });
+
+      return ctx.db.mutation.updateJob(
+        { where: { id: args.id }, data: { status: "DELETED" } },
+        info
+      );
+    }
+    return null;
+  },
   async updateJob(parent, args, ctx, info) {
     let authorId = ctx.request.user.id;
 
@@ -535,38 +560,7 @@ const Mutations = {
       return null;
     }
   },
-  async deleteJob(parent, args, ctx, info) {
-    const jobs = await ctx.db.query.jobs({
-      where: {
-        id: args.data.id || args.id || args.where.id,
-        author: { id: authorId }
-      }
-    });
 
-    if (
-      jobs.length > 0 ||
-      can("UPDATE", "BRANCH", ctx) ||
-      can("UPDATE", "COMPANY", ctx)
-    ) {
-    }
-    // if (!userExists(ctx)) {
-    //   return null;
-    // }
-
-    // const job = await ctx.db.query.job(
-    //   { where: { id: args.id } },
-    //   `{ id author { id} }`
-    // );
-
-    // if (ctx.request.user.id === job.author.id || can("UPDATE", "BRANCH", ctx)) {
-    //   const result = await ctx.db.mutation.deleteJob({
-    //     where: { id: args.id }
-    //   });
-    //   return result;
-    // }
-
-    // return null;
-  },
   async createApplication(parent, args, ctx, info) {
     if (!userExists(ctx)) {
       return null;

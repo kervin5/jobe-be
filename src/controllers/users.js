@@ -78,15 +78,38 @@ const user = async (parent, args, ctx, info) => {
 };
 
 const candidates = async (parent, args, ctx, info) => {
+  const user = await ctx.db.query.user(
+    { where: { id: ctx.request.user.id } },
+    `{id branch { id }}`
+  );
+
   return await ctx.db.query.users(
-    { ...args, where: { ...args.where, role: { name: "candidate" } } },
+    {
+      ...args,
+      where: {
+        ...args.where,
+        role: { name: "candidate" },
+        applications_some: { job: { branch: { id: user.branch.id } } }
+      }
+    },
     info
   );
 };
 
 const candidatesConnection = async (parent, args, ctx, info) => {
+  const user = await ctx.db.query.user(
+    { where: { id: ctx.request.user.id } },
+    `{id branch { id }}`
+  );
   return await ctx.db.query.usersConnection(
-    { ...args, where: { ...args.where, role: { name: "candidate" } } },
+    {
+      ...args,
+      where: {
+        ...args.where,
+        role: { name: "candidate" },
+        applications_some: { job: { branch: { id: user.branch.id } } }
+      }
+    },
     info
   );
 };
