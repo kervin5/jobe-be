@@ -31,6 +31,7 @@ const Mutations = {
           branch: {
             connect: { id: args.branch }
           },
+          status: "ACTIVE",
           role: { connect: { id: args.role } },
           password: await bcrypt.hash(resetToken + resetTokenExpiry, salt),
           resetToken,
@@ -236,6 +237,7 @@ const Mutations = {
           data: {
             ...args,
             password: await bcrypt.hash(args.password, salt),
+            status: "ACTIVE",
             role: {
               connect: { id: defaultRole.id }
             }
@@ -534,23 +536,36 @@ const Mutations = {
     }
   },
   async deleteJob(parent, args, ctx, info) {
-    if (!userExists(ctx)) {
-      return null;
+    const jobs = await ctx.db.query.jobs({
+      where: {
+        id: args.data.id || args.id || args.where.id,
+        author: { id: authorId }
+      }
+    });
+
+    if (
+      jobs.length > 0 ||
+      can("UPDATE", "BRANCH", ctx) ||
+      can("UPDATE", "COMPANY", ctx)
+    ) {
     }
+    // if (!userExists(ctx)) {
+    //   return null;
+    // }
 
-    const job = await ctx.db.query.job(
-      { where: { id: args.id } },
-      `{ id author { id} }`
-    );
+    // const job = await ctx.db.query.job(
+    //   { where: { id: args.id } },
+    //   `{ id author { id} }`
+    // );
 
-    if (ctx.request.user.id === job.author.id || can("UPDATE", "BRANCH", ctx)) {
-      const result = await ctx.db.mutation.deleteJob({
-        where: { id: args.id }
-      });
-      return result;
-    }
+    // if (ctx.request.user.id === job.author.id || can("UPDATE", "BRANCH", ctx)) {
+    //   const result = await ctx.db.mutation.deleteJob({
+    //     where: { id: args.id }
+    //   });
+    //   return result;
+    // }
 
-    return null;
+    // return null;
   },
   async createApplication(parent, args, ctx, info) {
     if (!userExists(ctx)) {

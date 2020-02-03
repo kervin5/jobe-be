@@ -65,9 +65,7 @@ type Mutation {
   ): Job!
 
   deleteJob(id: ID!): Job
-
   updateJob(where: JobWhereUniqueInput!, data: UpdateJobCustomInput!): Job
-
   createApplication(job: JobCreateOneWithoutApplicationsInput!): Application
   updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
   createApplicationNote(id: ID!, content: String!): ApplicationNote
