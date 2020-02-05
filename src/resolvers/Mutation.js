@@ -609,7 +609,7 @@ const Mutations = {
           } at ${
             job.location.name
           } is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="${
-            process.env.FRONTEND_URL
+            process.env.REGISTER_URL
           }/register/">${process.env.REGISTER_URL}/register/</a>`
         )
       });
