@@ -3,7 +3,7 @@ const { can } = require("../lib/auth");
 const application = async (parent, args, ctx, info) => {
   console.log("called");
   const application = await ctx.db.query.application(
-    { where: { id: args.id } },
+    { where: { id: args.where.id } },
     `{id status}`
   );
   console.log(application);
