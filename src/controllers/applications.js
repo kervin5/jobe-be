@@ -1,12 +1,25 @@
 const { can } = require("../lib/auth");
 
 const application = async (parent, args, ctx, info) => {
-  console.log("called");
   const application = await ctx.db.query.application(
     { where: { id: args.where.id } },
     `{id status}`
   );
-  console.log(application);
+  if (application.status === "NEW") {
+    await ctx.db.mutation.updateApplication({
+      where: { id: application.id },
+      data: { status: "VIEWED" }
+    });
+
+    await ctx.db.mutation.createApplicationNote({
+      data: {
+        content: "VIEWED",
+        user: { connect: { id: ctx.request.user.id } },
+        application: { connect: { id: args.where.id } },
+        type: "STATUS"
+      }
+    });
+  }
   return ctx.db.query.application(args, info);
 };
 
