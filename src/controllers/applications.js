@@ -1,8 +1,14 @@
-const { forwardTo } = require("prisma-binding");
-const { searchBoundary } = require("../lib/location");
 const { can } = require("../lib/auth");
 
-const application = forwardTo("db");
+const application = async (parent, args, ctx, info) => {
+  console.log("called");
+  const application = await ctx.db.query.application(
+    { where: { id: args.id } },
+    `{id status}`
+  );
+  console.log(application);
+  return ctx.db.query.application(args, info);
+};
 
 const applications = async (parent, args, ctx, info) => {
   const user = await ctx.db.query.user(
