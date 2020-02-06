@@ -610,7 +610,9 @@ const Mutations = {
             job.location.name
           } is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="${
             process.env.REGISTER_URL
-          }/register/">${process.env.REGISTER_URL}/register/</a>`
+          }/register?utm_source=myexactjobs&utm_medium=email&utm_campaign=myexactjobs_application&utm_term=My%20Exact%20Jobs&utm_content=My%20Exact%20Jobs%20Application">${
+            process.env.REGISTER_URL
+          }/register/</a>`
         )
       });
 
