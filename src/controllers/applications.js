@@ -13,7 +13,7 @@ const application = async (parent, args, ctx, info) => {
 
     await ctx.db.mutation.createApplicationNote({
       data: {
-        content: "VIEWED - First View",
+        content: "VIEWED",
         user: { connect: { id: ctx.request.user.id } },
         application: { connect: { id: args.where.id } },
         type: "STATUS"
