@@ -44,6 +44,7 @@ type PopularTerm {
 type Mutation {
   createUser(name: String!, email: String!, role: ID!, branch: ID!): User!
   updateUser(id: ID!, name: String, role: ID, branch: ID): User
+  deleteUser(id: ID!): User
 
   createRole(name: String!, permissions: [RolePermissionsInput]): Role!
 

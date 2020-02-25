@@ -55,6 +55,40 @@ const Mutations = {
     });
     return user;
   },
+  async deleteUser(parent, args, ctx, info) {
+    await can("READ", "BRANCH", ctx);
+
+    //get userData
+    const user = await ctx.db.query.user(
+      { where: { id: args.id } },
+      `{id name branch { id }}`
+    );
+
+    const jobs = await ctx.db.query.jobs(
+      { where: { status_not: "DELETED", author: { id: args.id } } },
+      "{id}"
+    );
+
+    if (jobs.length) {
+      //Find next user from the same branch
+      const [coworker] = await ctx.db.query.users({
+        where: { branch: { id: user.branch.id }, id_not: user.id },
+        first: 1
+      });
+
+      await ctx.db.mutation.updateManyJobs({
+        where: { author: { id: user.id } },
+        data: { author: { connect: { id: coworker.id } } }
+      });
+    }
+
+    // console.log(user);
+    // console.log(jobs);
+    return ctx.db.mutation.updateUser({
+      where: { id: user.id },
+      data: { status: "DELETED" }
+    });
+  },
   async updateUser(parent, args, ctx, info) {
     const name = args.name ? { name: args.name } : {};
     const branch = args.branch
@@ -399,9 +433,9 @@ const Mutations = {
     if (
       args.author &&
       args.author !== "" &&
-      (can("READ", "BRANCH", ctx) ||
-        can("READ", "COMPANY", ctx) ||
-        can("READ", "USER", ctx))
+      ((await can("READ", "BRANCH", ctx)) ||
+        (await can("READ", "COMPANY", ctx)) ||
+        (await can("READ", "USER", ctx)))
     ) {
       authorId = args.author;
     } else {
@@ -445,8 +479,8 @@ const Mutations = {
 
     if (
       jobs.length > 0 ||
-      can("UPDATE", "BRANCH", ctx) ||
-      can("UPDATE", "COMPANY", ctx)
+      (await can("UPDATE", "BRANCH", ctx)) ||
+      (await can("UPDATE", "COMPANY", ctx))
     ) {
       await ctx.db.mutation.updateManyApplications({
         where: { job: { id: args.id }, status_not_in: ["ARCHIVED", "HIRED"] },
@@ -466,9 +500,9 @@ const Mutations = {
     if (
       args.data.author &&
       args.data.author !== "" &&
-      (can("READ", "BRANCH", ctx) ||
-        can("READ", "COMPANY", ctx) ||
-        can("READ", "USER", ctx))
+      ((await can("READ", "BRANCH", ctx)) ||
+        (await can("READ", "COMPANY", ctx)) ||
+        (await can("READ", "USER", ctx)))
     ) {
       authorId = args.data.author;
     } else {
@@ -488,8 +522,8 @@ const Mutations = {
 
     if (
       jobs.length > 0 ||
-      can("UPDATE", "BRANCH", ctx) ||
-      can("UPDATE", "COMPANY", ctx)
+      (await can("UPDATE", "BRANCH", ctx)) ||
+      (await can("UPDATE", "COMPANY", ctx))
     ) {
       if (args.data.location) {
         const locationExists = await prisma.exists.Location({

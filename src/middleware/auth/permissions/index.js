@@ -38,6 +38,7 @@ const permissions = shield({
   },
   Mutation: {
     createUser: rules.can("CREATE", "USER"),
+    deleteUser: rules.can("DELETE", "USER"),
     updateUser: rules.can("UPDATE", "USER"),
     createJob: rules.can("CREATE", "JOB"),
     updateJob: rules.can("UPDATE", "JOB"),
