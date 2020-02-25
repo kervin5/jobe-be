@@ -78,19 +78,24 @@ const Mutations = {
 
       if (coworkers.length) {
         const [coworker] = coworkers;
-        await ctx.db.mutation.updateManyJobs({
-          where: { author: { id: user.id } },
-          data: { author: { connect: { id: coworker.id } } }
-        });
+        const result = jobs.map(job =>
+          ctx.db.mutation.updateJob({
+            where: { id: job.id },
+            data: { author: { connect: { id: coworker.id } } }
+          })
+        );
+        await Promise.all(result);
       } else {
         await ctx.db.mutation.updateManyJobs({
           where: { author: { id: user.id } },
           data: {
-            status: "DELETED",
-            applications: {
-              update: [{ where: {}, data: { status: "ARCHIVED" } }]
-            }
+            status: "DELETED"
           }
+        });
+
+        await ctx.db.mutation.updateManyApplications({
+          where: { job: { author: { id: user.id } } },
+          data: { status: "DELETED" }
         });
       }
     }
