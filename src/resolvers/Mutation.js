@@ -71,15 +71,28 @@ const Mutations = {
 
     if (jobs.length) {
       //Find next user from the same branch
-      const [coworker] = await ctx.db.query.users({
+      const coworkers = await ctx.db.query.users({
         where: { branch: { id: user.branch.id }, id_not: user.id },
         first: 1
       });
 
-      await ctx.db.mutation.updateManyJobs({
-        where: { author: { id: user.id } },
-        data: { author: { connect: { id: coworker.id } } }
-      });
+      if (coworkers.length) {
+        const [coworker] = coworkers;
+        await ctx.db.mutation.updateManyJobs({
+          where: { author: { id: user.id } },
+          data: { author: { connect: { id: coworker.id } } }
+        });
+      } else {
+        await ctx.db.mutation.updateManyJobs({
+          where: { author: { id: user.id } },
+          data: {
+            status: "DELETED",
+            applications: {
+              update: [{ where: {}, data: { status: "ARCHIVED" } }]
+            }
+          }
+        });
+      }
     }
 
     // console.log(user);
