@@ -145,8 +145,8 @@ const protectedJobsConnection = async (parent, args, ctx, info) => {
   );
 };
 
-const jobsConnection = async (parent, args, ctx, info) => {
-  return await ctx.db.query.jobsConnection(
+const jobsConnection = (parent, args, ctx, info) => {
+  return ctx.db.query.jobsConnection(
     { ...args, where: { ...args.where, status: "POSTED" } },
     info
   );
