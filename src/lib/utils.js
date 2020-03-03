@@ -11,4 +11,15 @@ function shuffleArray(array) {
   return array;
 }
 
-module.exports = { userExists, shuffleArray };
+function findKeywords(text, keywords) {
+  const cleanText = text.toLowerCase();
+  let result = [];
+  keywords.forEach(word => {
+    if (cleanText.includes(word.toLowerCase().trim())) {
+      result = result.concat(word);
+    }
+  });
+  return result;
+}
+
+module.exports = { userExists, shuffleArray, findKeywords };

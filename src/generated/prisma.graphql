@@ -1,5 +1,5 @@
 # source: https://myexactjobs-prisma-e77cb8d5f9.herokuapp.com/myexactjobs-prisma-prod/prod
-# timestamp: Thu Nov 14 2019 14:53:44 GMT-0800 (Pacific Standard Time)
+# timestamp: Mon Feb 03 2020 10:19:31 GMT-0800 (Pacific Standard Time)
 
 type AggregateApplication {
   count: Int!
@@ -9255,6 +9255,7 @@ type User implements Node {
   ): [Resume!]
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
 }
 
 """
@@ -9280,6 +9281,7 @@ input UserCreateInput {
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -9342,6 +9344,7 @@ input UserCreateWithoutApplicationsInput {
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
@@ -9358,6 +9361,7 @@ input UserCreateWithoutBranchInput {
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -9374,6 +9378,7 @@ input UserCreateWithoutFavoritesInput {
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -9390,6 +9395,7 @@ input UserCreateWithoutJobsInput {
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
   applications: ApplicationCreateManyWithoutUserInput
   location: LocationCreateOneWithoutUsersInput
   skills: SkillCreateManyWithoutUsersInput
@@ -9406,6 +9412,7 @@ input UserCreateWithoutLocationInput {
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   skills: SkillCreateManyWithoutUsersInput
@@ -9422,6 +9429,7 @@ input UserCreateWithoutResumesInput {
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -9438,6 +9446,7 @@ input UserCreateWithoutRoleInput {
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -9454,6 +9463,7 @@ input UserCreateWithoutSkillsInput {
   password: String!
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
   applications: ApplicationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutAuthorInput
   location: LocationCreateOneWithoutUsersInput
@@ -9495,6 +9505,8 @@ enum UserOrderByInput {
   resetToken_DESC
   resetTokenExpiry_ASC
   resetTokenExpiry_DESC
+  status_ASC
+  status_DESC
 }
 
 type UserPreviousValues {
@@ -9506,6 +9518,7 @@ type UserPreviousValues {
   updatedAt: DateTime!
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus!
 }
 
 input UserScalarWhereInput {
@@ -9961,6 +9974,28 @@ input UserScalarWhereInput {
   All values greater than or equal the given value.
   """
   resetTokenExpiry_gte: Float
+  status: UserStatus
+
+  """
+  All values that are not equal to given value.
+  """
+  status_not: UserStatus
+
+  """
+  All values that are contained in given list.
+  """
+  status_in: [UserStatus!]
+
+  """
+  All values that are not contained in given list.
+  """
+  status_not_in: [UserStatus!]
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
 }
 
 type UserSubscriptionPayload {
@@ -10014,6 +10049,7 @@ input UserUpdateDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -10030,6 +10066,7 @@ input UserUpdateInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -10046,6 +10083,7 @@ input UserUpdateManyDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
 }
 
 input UserUpdateManyMutationInput {
@@ -10054,6 +10092,7 @@ input UserUpdateManyMutationInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
 }
 
 input UserUpdateManyWithoutBranchInput {
@@ -10150,6 +10189,7 @@ input UserUpdateWithoutApplicationsDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
@@ -10165,6 +10205,7 @@ input UserUpdateWithoutBranchDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -10180,6 +10221,7 @@ input UserUpdateWithoutFavoritesDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -10195,6 +10237,7 @@ input UserUpdateWithoutJobsDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
   applications: ApplicationUpdateManyWithoutUserInput
   location: LocationUpdateOneWithoutUsersInput
   skills: SkillUpdateManyWithoutUsersInput
@@ -10210,6 +10253,7 @@ input UserUpdateWithoutLocationDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   skills: SkillUpdateManyWithoutUsersInput
@@ -10225,6 +10269,7 @@ input UserUpdateWithoutResumesDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -10240,6 +10285,7 @@ input UserUpdateWithoutRoleDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -10255,6 +10301,7 @@ input UserUpdateWithoutSkillsDataInput {
   password: String
   resetToken: String
   resetTokenExpiry: Float
+  status: UserStatus
   applications: ApplicationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutAuthorInput
   location: LocationUpdateOneWithoutUsersInput
@@ -10786,6 +10833,22 @@ input UserWhereInput {
   All values greater than or equal the given value.
   """
   resetTokenExpiry_gte: Float
+  status: UserStatus
+
+  """
+  All values that are not equal to given value.
+  """
+  status_not: UserStatus
+
+  """
+  All values that are contained in given list.
+  """
+  status_in: [UserStatus!]
+
+  """
+  All values that are not contained in given list.
+  """
+  status_not_in: [UserStatus!]
   applications_every: ApplicationWhereInput
   applications_some: ApplicationWhereInput
   applications_none: ApplicationWhereInput

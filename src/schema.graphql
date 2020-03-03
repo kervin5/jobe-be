@@ -43,6 +43,8 @@ type PopularTerm {
 
 type Mutation {
   createUser(name: String!, email: String!, role: ID!, branch: ID!): User!
+  updateUser(id: ID!, name: String, role: ID, branch: ID): User
+  deleteUser(id: ID!): User
 
   createRole(name: String!, permissions: [RolePermissionsInput]): Role!
 
@@ -64,9 +66,7 @@ type Mutation {
   ): Job!
 
   deleteJob(id: ID!): Job
-
   updateJob(where: JobWhereUniqueInput!, data: UpdateJobCustomInput!): Job
-
   createApplication(job: JobCreateOneWithoutApplicationsInput!): Application
   updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
   createApplicationNote(id: ID!, content: String!): ApplicationNote
@@ -79,10 +79,11 @@ type Mutation {
 
   createCategory(name: String!): Category!
   createSkill(name: String!): Skill!
-  addFavorite(job: JobCreateOneWithoutFavoritesInput!): Favorite
-  deleteFavorite(where: FavoriteWhereUniqueInput!): Favorite
+  addFavorite(job: ID!): ID
+  deleteFavorite(job: ID!): ID
   signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
   createResume(path: String!, type: String!, title: String!): Resume!
+  updateResumes: [Resume]
   login(email: String!, password: String!): User
   signup(name: String!, password: String!, email: String!): User
   logout: String
@@ -108,6 +109,7 @@ type Query {
     first: Int
     last: Int
   ): [User]
+  user(where: UserWhereUniqueInput!): User
   candidates(
     where: UserWhereInput
     orderBy: UserOrderByInput

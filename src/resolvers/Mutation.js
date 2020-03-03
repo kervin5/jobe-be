@@ -5,14 +5,16 @@ const { randomBytes } = require("crypto");
 const { promisify } = require("util");
 const { can } = require("../lib/auth");
 // const { forwardTo } = require("prisma-binding");
-const { userExists } = require("../lib/utils");
+const { userExists, findKeywords } = require("../lib/utils");
 const { sign_s3_upload } = require("../lib/aws");
 const { transport, makeANiceEmail } = require("../lib/mail");
 const { fetchLocation } = require("../lib/location");
+const request = require("../lib/request");
 const {
   scheduleJobAutoUpdate,
   unscheduleJobAutoUpdate
 } = require("../lib/schedule");
+const { sign_s3_read } = require("../lib/aws");
 
 const Mutations = {
   async createUser(parent, args, ctx, info) {
@@ -29,6 +31,7 @@ const Mutations = {
           branch: {
             connect: { id: args.branch }
           },
+          status: "ACTIVE",
           role: { connect: { id: args.role } },
           password: await bcrypt.hash(resetToken + resetTokenExpiry, salt),
           resetToken,
@@ -51,6 +54,78 @@ const Mutations = {
       )
     });
     return user;
+  },
+  async deleteUser(parent, args, ctx, info) {
+    await can("READ", "BRANCH", ctx);
+
+    //get userData
+    const user = await ctx.db.query.user(
+      { where: { id: args.id } },
+      `{id name branch { id }}`
+    );
+
+    const jobs = await ctx.db.query.jobs(
+      { where: { status_not: "DELETED", author: { id: args.id } } },
+      "{id}"
+    );
+
+    if (jobs.length) {
+      //Find next user from the same branch
+      const coworkers = await ctx.db.query.users({
+        where: { branch: { id: user.branch.id }, id_not: user.id },
+        first: 1
+      });
+
+      if (coworkers.length) {
+        const [coworker] = coworkers;
+        const result = jobs.map(job =>
+          ctx.db.mutation.updateJob({
+            where: { id: job.id },
+            data: { author: { connect: { id: coworker.id } } }
+          })
+        );
+        await Promise.all(result);
+      } else {
+        await ctx.db.mutation.updateManyJobs({
+          where: { author: { id: user.id } },
+          data: {
+            status: "DELETED"
+          }
+        });
+
+        await ctx.db.mutation.updateManyApplications({
+          where: { job: { author: { id: user.id } } },
+          data: { status: "DELETED" }
+        });
+      }
+    }
+
+    // console.log(user);
+    // console.log(jobs);
+    return ctx.db.mutation.updateUser({
+      where: { id: user.id },
+      data: { status: "DELETED" }
+    });
+  },
+  async updateUser(parent, args, ctx, info) {
+    const name = args.name ? { name: args.name } : {};
+    const branch = args.branch
+      ? {
+          branch: { connect: { id: args.branch } }
+        }
+      : {};
+    const role = args.role ? { role: { connect: { id: args.role } } } : {};
+    return await ctx.db.mutation.updateUser(
+      {
+        where: { id: args.id },
+        data: {
+          ...name,
+          ...branch,
+          ...role
+        }
+      },
+      info
+    );
   },
 
   async createRole(parent, args, ctx, info) {
@@ -214,6 +289,7 @@ const Mutations = {
           data: {
             ...args,
             password: await bcrypt.hash(args.password, salt),
+            status: "ACTIVE",
             role: {
               connect: { id: defaultRole.id }
             }
@@ -375,9 +451,9 @@ const Mutations = {
     if (
       args.author &&
       args.author !== "" &&
-      (can("READ", "BRANCH", ctx) ||
-        can("READ", "COMPANY", ctx) ||
-        can("READ", "USER", ctx))
+      ((await can("READ", "BRANCH", ctx)) ||
+        (await can("READ", "COMPANY", ctx)) ||
+        (await can("READ", "USER", ctx)))
     ) {
       authorId = args.author;
     } else {
@@ -411,15 +487,40 @@ const Mutations = {
 
     return job;
   },
+  async deleteJob(parent, args, ctx, info) {
+    const jobs = await ctx.db.query.jobs({
+      where: {
+        id: args.id,
+        author: { id: ctx.request.user.id }
+      }
+    });
+
+    if (
+      jobs.length > 0 ||
+      (await can("UPDATE", "BRANCH", ctx)) ||
+      (await can("UPDATE", "COMPANY", ctx))
+    ) {
+      await ctx.db.mutation.updateManyApplications({
+        where: { job: { id: args.id }, status_not_in: ["ARCHIVED", "HIRED"] },
+        data: { status: "ARCHIVED" }
+      });
+
+      return ctx.db.mutation.updateJob(
+        { where: { id: args.id }, data: { status: "DELETED" } },
+        info
+      );
+    }
+    return null;
+  },
   async updateJob(parent, args, ctx, info) {
     let authorId = ctx.request.user.id;
 
     if (
       args.data.author &&
       args.data.author !== "" &&
-      (can("READ", "BRANCH", ctx) ||
-        can("READ", "COMPANY", ctx) ||
-        can("READ", "USER", ctx))
+      ((await can("READ", "BRANCH", ctx)) ||
+        (await can("READ", "COMPANY", ctx)) ||
+        (await can("READ", "USER", ctx)))
     ) {
       authorId = args.data.author;
     } else {
@@ -439,8 +540,8 @@ const Mutations = {
 
     if (
       jobs.length > 0 ||
-      can("UPDATE", "BRANCH", ctx) ||
-      can("UPDATE", "COMPANY", ctx)
+      (await can("UPDATE", "BRANCH", ctx)) ||
+      (await can("UPDATE", "COMPANY", ctx))
     ) {
       if (args.data.location) {
         const locationExists = await prisma.exists.Location({
@@ -511,25 +612,7 @@ const Mutations = {
       return null;
     }
   },
-  async deleteJob(parent, args, ctx, info) {
-    if (!userExists(ctx)) {
-      return null;
-    }
 
-    const job = await ctx.db.query.job(
-      { where: { id: args.id } },
-      `{ id author { id} }`
-    );
-
-    if (ctx.request.user.id === job.author.id || can("UPDATE", "BRANCH", ctx)) {
-      const result = await ctx.db.mutation.deleteJob({
-        where: { id: args.id }
-      });
-      return result;
-    }
-
-    return null;
-  },
   async createApplication(parent, args, ctx, info) {
     if (!userExists(ctx)) {
       return null;
@@ -578,8 +661,10 @@ const Mutations = {
           } at ${
             job.location.name
           } is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="${
-            process.env.FRONTEND_URL
-          }/register/">${process.env.FRONTEND_URL}/register/</a>`
+            process.env.REGISTER_URL
+          }/register?utm_source=myexactjobs&utm_medium=email&utm_campaign=myexactjobs_application&utm_term=My%20Exact%20Jobs&utm_content=My%20Exact%20Jobs%20Application">${
+            process.env.REGISTER_URL
+          }/register/</a>`
         )
       });
 
@@ -656,18 +741,25 @@ const Mutations = {
       return null;
     }
 
-    args.user = { connect: { id: ctx.request.user.id } };
+    const favorites = await ctx.db.query.favorites({
+      where: { user: { id: ctx.request.user.id }, job: { id: args.job } }
+    });
+    const user = { connect: { id: ctx.request.user.id } };
+    const job = { connect: { id: args.job } };
 
-    const result = await ctx.db.mutation.createFavorite(
-      {
-        data: {
-          ...args
-        }
-      },
-      info
-    );
-
-    return result;
+    try {
+      if (favorites.length <= 0) {
+        await ctx.db.mutation.createFavorite({
+          data: {
+            user,
+            job
+          }
+        });
+      }
+      return args.job;
+    } catch (err) {
+      return null;
+    }
   },
 
   async deleteFavorite(parent, args, ctx, info) {
@@ -675,7 +767,24 @@ const Mutations = {
       return null;
     }
 
-    return await ctx.db.mutation.deleteFavorite(args, info);
+    try {
+      const favorites = await ctx.db.query.favorites({
+        where: { user: { id: ctx.request.user.id }, job: { id: args.job } }
+      });
+
+      if (favorites.length > 0) {
+        await ctx.db.mutation.deleteFavorite({
+          where: {
+            id: favorites[0].id
+          }
+        });
+      }
+
+      return args.job;
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
   },
   async signFileUpload(parent, args, ctx, info) {
     if (!userExists(ctx)) {
@@ -694,6 +803,32 @@ const Mutations = {
       return null;
     }
 
+    const resumeUrl = await sign_s3_read(args.path);
+    const resumeJson = await request(process.env.RESUME_PARSER_API, {
+      url: resumeUrl
+    });
+    const resumeText = `${resumeJson.parts.summary} ${
+      resumeJson.parts.projects
+    }  ${resumeJson.parts.certification} ${resumeJson.parts.certifications} ${
+      resumeJson.parts.positions
+    } ${resumeJson.parts.objective} ${resumeJson.parts.awards} ${
+      resumeJson.parts.skills
+    } ${resumeJson.parts.experience} ${
+      resumeJson.parts.education
+    }`.toLowerCase();
+    const allSkills = await ctx.db.query.skills({}, `{ id name }`);
+
+    const resumeSkills = findKeywords(
+      resumeText,
+      allSkills.map(skill => skill.name)
+    ).filter(skill => skill !== "");
+
+    const filteredSkills = allSkills.filter(skill =>
+      resumeSkills.includes(skill.name)
+    );
+
+    console.log(filteredSkills);
+
     const result = await ctx.db.mutation.createResume(
       {
         data: {
@@ -708,7 +843,8 @@ const Mutations = {
             connect: { id: ctx.request.user.id }
           },
 
-          title: args.title
+          title: args.title,
+          skills: { connect: filteredSkills.map(skill => ({ id: skill.id })) }
         }
       },
       info
@@ -716,6 +852,62 @@ const Mutations = {
 
     return result;
   },
+  // async updateResumes(parent, args, ctx, info) {
+  //   const allResumes = await ctx.db.query.resumes(
+  //     {},
+  //     `{id file { id path} skills { id } }`
+  //   );
+
+  //   try {
+  //     const allSkills = await ctx.db.query.skills({}, `{ id name }`);
+  //     let resumes = {};
+
+  //     allResumes.reverse().forEach((resume, index) => {
+  //       if (resume.skills.length === 0) {
+  //         setTimeout(async () => {
+  //           try {
+  //             const resumeUrl = await sign_s3_read(resume.file.path);
+  //             console.log({ index, resumeUrl });
+  //             const resumeJson = await request(
+  //               "http://simple-resume-parser-api.herokuapp.com/api/resumes",
+  //               { url: resumeUrl }
+  //             );
+  //             console.log(resumeJson);
+  //             const resumeText = `${resumeJson.parts.summary} ${resumeJson.parts.certification} ${resumeJson.parts.projects} ${resumeJson.parts.awards} ${resumeJson.parts.certifications} ${resumeJson.parts.objective} ${resumeJson.parts.skills} ${resumeJson.parts.experience} ${resumeJson.parts.education} ${resumeJson.parts.positions}`.toLowerCase();
+  //             const resumeSkills = findKeywords(
+  //               resumeText,
+  //               allSkills.map(skill => skill.name)
+  //             ).filter(skill => skill !== "");
+
+  //             const filteredSkills = allSkills.filter(skill =>
+  //               resumeSkills.includes(skill.name)
+  //             );
+  //             console.log(filteredSkills);
+  //             const result = await ctx.db.mutation.updateResume(
+  //               {
+  //                 where: { id: resume.id },
+  //                 data: {
+  //                   skills: {
+  //                     set: filteredSkills.map(skill => ({ id: skill.id }))
+  //                   }
+  //                 }
+  //               },
+  //               `{id}`
+  //             );
+
+  //             resume[resume.id] = filteredSkills;
+  //           } catch (err) {
+  //             console.log(index);
+  //           }
+  //         }, index * 100);
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.log("failed");
+  //   }
+
+  //   return allResumes;
+  // },
 
   async createCompany(parent, args, ctx, info) {
     const company = await ctx.db.mutation.createCompany(

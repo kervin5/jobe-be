@@ -1,4 +1,4 @@
-const MILISECONDS_INTERVAL = 259200000;
+const MILISECONDS_INTERVAL = 24 * 60 * 60 * 1000;
 // const MILISECONDS_INTERVAL = 15000;
 
 const scheduleFunction = ({ jobId, cronTaksId, timeObject, db }) => {
@@ -41,7 +41,9 @@ const scheduleFunction = ({ jobId, cronTaksId, timeObject, db }) => {
             data: { title: jobData.title }
           });
 
-          console.log(jobId);
+          console.log(jobId, new Date());
+        } else {
+          console.log("failed");
         }
       } else {
         console.log("cleared");
@@ -123,7 +125,7 @@ async function restartJobAutoUpdate(db) {
           timeObject,
           db
         })();
-      }, index * 120000);
+      }, index * 120000 + Math.round(Math.random() * 60000));
     });
 
     return jobCronTasks;
