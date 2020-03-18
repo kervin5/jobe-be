@@ -28,7 +28,22 @@ function createServer() {
     middlewares: [permissions],
     resolvers: {
       Mutation,
-      Query
+      Query,
+      User: {
+        eEmpact: async (parent, args, ctx) => {
+          const res = await fetch("https://api.exactstaff.com/status", {
+            method: "POST",
+            body: JSON.stringify({ email: parent.email }),
+            headers: {
+              "Content-Type": "application/json"
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            }
+          });
+          const { user } = await res.json();
+
+          return { ...user };
+        }
+      }
     },
     resolverValidationOptions: {
       requireResolversForResolveType: false

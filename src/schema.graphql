@@ -41,6 +41,72 @@ type PopularTerm {
   type: String!
 }
 
+type eEmpactStatus {
+  id: String
+  assignments: Int
+}
+
+type User implements Node {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  applications(
+    where: ApplicationWhereInput
+    orderBy: ApplicationOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Application!]
+  jobs(
+    where: JobWhereInput
+    orderBy: JobOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Job!]
+  location: Location
+  skills(
+    where: SkillWhereInput
+    orderBy: SkillOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Skill!]
+  favorites(
+    where: FavoriteWhereInput
+    orderBy: FavoriteOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Favorite!]
+  role: Role
+  branch: Branch
+  resumes(
+    where: ResumeWhereInput
+    orderBy: ResumeOrderByInput
+    skip: Int
+    after: String
+    before: String
+    first: Int
+    last: Int
+  ): [Resume!]
+  resetToken: String
+  resetTokenExpiry: Float
+  status: UserStatus!
+  eEmpact: eEmpactStatus
+}
+
 type Mutation {
   createUser(name: String!, email: String!, role: ID!, branch: ID!): User!
   updateUser(id: ID!, name: String, role: ID, branch: ID): User
