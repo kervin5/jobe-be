@@ -71,13 +71,17 @@ const Mutations = {
 
     if (jobs.length) {
       //Find next user from the same branch
-      const coworkers = await ctx.db.query.users({
-        where: { branch: { id: user.branch.id }, id_not: user.id },
+      const recruiters = await ctx.db.query.users({
+        where: {
+          branch: { id: user.branch.id },
+          id_not: user.id,
+          role: { name: "recruiter" }
+        },
         first: 1
       });
 
-      if (coworkers.length) {
-        const [coworker] = coworkers;
+      if (recruiters.length) {
+        const [coworker] = recruiters;
         const result = jobs.map(job =>
           ctx.db.mutation.updateJob({
             where: { id: job.id },
@@ -86,17 +90,37 @@ const Mutations = {
         );
         await Promise.all(result);
       } else {
-        await ctx.db.mutation.updateManyJobs({
-          where: { author: { id: user.id } },
-          data: {
-            status: "DELETED"
-          }
+        const managers = await ctx.db.query.users({
+          where: {
+            branch: { id: user.branch.id },
+            id_not: user.id,
+            role: { name: "manager" }
+          },
+          first: 1
         });
 
-        await ctx.db.mutation.updateManyApplications({
-          where: { job: { author: { id: user.id } } },
-          data: { status: "DELETED" }
-        });
+        if (managers.length) {
+          const [coworker] = managers;
+          const result = jobs.map(job =>
+            ctx.db.mutation.updateJob({
+              where: { id: job.id },
+              data: { author: { connect: { id: coworker.id } } }
+            })
+          );
+          await Promise.all(result);
+        } else {
+          await ctx.db.mutation.updateManyJobs({
+            where: { author: { id: user.id } },
+            data: {
+              status: "DELETED"
+            }
+          });
+
+          await ctx.db.mutation.updateManyApplications({
+            where: { job: { author: { id: user.id } } },
+            data: { status: "DELETED" }
+          });
+        }
       }
     }
 
