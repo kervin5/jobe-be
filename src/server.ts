@@ -5,7 +5,7 @@ import { createContext } from './context'
 import {permissions} from "./permissions"
 
 const schemaWithMiddleware = applyMiddleware(
-  schema
+  schema, permissions
 )
 
 new ApolloServer({ schema: schemaWithMiddleware, context: createContext }).listen(

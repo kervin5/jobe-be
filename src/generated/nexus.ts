@@ -27,6 +27,10 @@ export interface NexusGenInputs {
   JobWhereUniqueInput: { // input type
     id?: string | null; // String
   }
+  UserWhereUniqueInput: { // input type
+    email?: string | null; // String
+    id?: string | null; // String
+  }
 }
 
 export interface NexusGenEnums {
@@ -52,6 +56,7 @@ export interface NexusGenRootTypes {
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   CategoryWhereUniqueInput: NexusGenInputs['CategoryWhereUniqueInput'];
   JobWhereUniqueInput: NexusGenInputs['JobWhereUniqueInput'];
+  UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
 }
 
 export interface NexusGenFieldTypes {
@@ -76,6 +81,8 @@ export interface NexusGenFieldTypes {
     categories: NexusGenRootTypes['Category'][]; // [Category!]!
     job: NexusGenRootTypes['Job'] | null; // Job
     jobs: NexusGenRootTypes['Job'][]; // [Job!]!
+    user: NexusGenRootTypes['User'] | null; // User
+    users: NexusGenRootTypes['User'][]; // [User!]!
   }
   User: { // field return type
     email: string; // String!
@@ -114,6 +121,16 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
       skip?: number | null; // Int
     }
+    user: { // args
+      where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
+    }
+    users: { // args
+      after?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+      before?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
+    }
   }
 }
 
@@ -124,7 +141,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "AuthPayload" | "Category" | "Job" | "Mutation" | "Query" | "User";
 
-export type NexusGenInputNames = "CategoryWhereUniqueInput" | "JobWhereUniqueInput";
+export type NexusGenInputNames = "CategoryWhereUniqueInput" | "JobWhereUniqueInput" | "UserWhereUniqueInput";
 
 export type NexusGenEnumNames = never;
 

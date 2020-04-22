@@ -236,18 +236,18 @@ model User {
   updatedAt        DateTime @updatedAt()
   applications     Application[]
   jobs             Job[]
-  locationId       String
-  location         Location @relation(fields: [locationId], references: [id])
+  locationId       String? @map("location")
+  location         Location? @relation(fields: [locationId], references: [id])
   skills            Skill[]           @relation(references: [id])
   favorites         Favorite[]
-  roleId             String
+  roleId            String @map("role")
   role             Role          @relation(fields: [roleId], references: [id])
 
-  branchId         String
-  branch           Branch        @relation(fields: [branchId], references: [id])
+  branchId         String? @map("branch")
+  branch           Branch?        @relation(fields: [branchId], references: [id])
 
   resumes           Resume[]
   resetToken       String?
   resetTokenExpiry Float?
-  status           ApplicationStatus @default(ACTIVE)
+  status           UserStatus @default(ACTIVE)
 }

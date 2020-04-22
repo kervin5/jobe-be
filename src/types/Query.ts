@@ -67,5 +67,7 @@ export const Query = queryType({
   t.crud.job()
   t.crud.jobs()
   t.crud.categories()
+  t.crud.user()
+  t.crud.users()
   },
 })

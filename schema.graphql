@@ -36,10 +36,17 @@ type Query {
   categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int, skip: Int): [Category!]!
   job(where: JobWhereUniqueInput!): Job
   jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int): [Job!]!
+  user(where: UserWhereUniqueInput!): User
+  users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int, skip: Int): [User!]!
 }
 
 type User {
   email: String!
   id: String!
   name: String!
+}
+
+input UserWhereUniqueInput {
+  email: String
+  id: String
 }
