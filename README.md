@@ -1,6 +1,6 @@
-# GraphQL Server with Authentication & Permissions
+# GraphQL Apollo Server Example
 
-This example shows how to implement a **GraphQL server with an email-password-based authentication workflow and authentication rules**, based on Prisma, [graphql-yoga](https://github.com/prisma/graphql-yoga), [graphql-shield](https://github.com/maticzav/graphql-shield) & [GraphQL Nexus](https://nexus.js.org/). It is based on a SQLite database, you can find the database file with some dummy data at [`./prisma/dev.db`](./prisma/dev.db).
+This example shows how to implement a **GraphQL server with TypeScript** based on  [Prisma Client](https://github.com/prisma/prisma2/blob/master/docs/prisma-client-js/api.md), [apollo-server](https://www.apollographql.com/docs/apollo-server/) and [GraphQL Nexus](https://nexus.js.org/). It is based on a SQLite database, you can find the database file with some dummy data at [`./prisma/dev.db`](./prisma/dev.db).
 
 ## How to use
 
@@ -15,7 +15,7 @@ git clone git@github.com:prisma/prisma-examples.git --depth=1
 Install npm dependencies:
 
 ```
-cd prisma-examples/typescript/graphql-auth
+cd prisma-examples/typescript/graphql-apollo-server
 npm install
 ```
 
@@ -57,73 +57,29 @@ query {
 
 <Details><Summary><strong>See more API operations</strong></Summary>
 
-### Register a new user
-
-You can send the following mutation in the Playground to sign up a new user and retrieve an authentication token for them:
+### Create a new user
 
 ```graphql
 mutation {
-  signup(name: "Sarah", email: "sarah@prisma.io", password: "graphql") {
-    token
-  }
-}
-```
-
-### Log in an existing user
-
-This mutation will log in an existing user by requesting a new authentication token for them:
-
-```graphql
-mutation {
-  login(email: "sarah@prisma.io", password: "graphql") {
-    token
-  }
-}
-```
-
-### Check whether a user is currently logged in with the `me` query
-
-For this query, you need to make sure a valid authentication token is sent along with the `Bearer`-prefix in the `Authorization` header of the request:
-
-```json
-{
-  "Authorization": "Bearer __YOUR_TOKEN__"
-}
-```
-
-With a real token, this looks similar to this:
-
-```json
-{
-  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjanAydHJyczFmczE1MGEwM3kxaWl6c285IiwiaWF0IjoxNTQzNTA5NjY1fQ.Vx6ad6DuXA0FSQVyaIngOHYVzjKwbwq45flQslnqX04"
-}
-```
-
-Inside the Playground, you can set HTTP headers in the bottom-left corner:
-
-![](https://imgur.com/ToRcCTj.png)
-
-Once you've set the header, you can send the following query to check whether the token is valid:
-
-```graphql
-{
-  me {
+  signupUser(
+    data: {
+      name: "Sarah"
+      email: "sarah@prisma.io"
+    }
+  ) {
     id
-    name
-    email
   }
 }
 ```
 
 ### Create a new draft
 
-You need to be logged in for this query to work, i.e. an authentication token that was retrieved through a `signup` or `login` mutation needs to be added to the `Authorization` header in the GraphQL Playground.
-
 ```graphql
 mutation {
   createDraft(
     title: "Join the Prisma Slack"
     content: "https://slack.prisma.io"
+    authorEmail: "alice@prisma.io"
   ) {
     id
     published
@@ -132,8 +88,6 @@ mutation {
 ```
 
 ### Publish an existing draft
-
-You need to be logged in for this query to work, i.e. an authentication token that was retrieved through a `signup` or `login` mutation needs to be added to the `Authorization` header in the GraphQL Playground. The authentication token must belong to the user who created the post.
 
 ```graphql
 mutation {
@@ -148,15 +102,13 @@ mutation {
 
 ### Search for posts with a specific title or content
 
-You need to be logged in for this query to work, i.e. an authentication token that was retrieved through a `signup` or `login` mutation needs to be added to the `Authorization` header in the GraphQL Playground. 
-
 ```graphql
 {
   filterPosts(searchString: "graphql") {
     id
     title
     content
-    published 
+    published
     author {
       id
       name
@@ -168,11 +120,9 @@ You need to be logged in for this query to work, i.e. an authentication token th
 
 ### Retrieve a single post
 
-You need to be logged in for this query to work, i.e. an authentication token that was retrieved through a `signup` or `login` mutation needs to be added to the `Authorization` header in the GraphQL Playground. 
-
 ```graphql
 {
-  post(id: __POST_ID__) {
+  post(where: { id: __POST_ID__ }) {
     id
     title
     content
@@ -190,11 +140,10 @@ You need to be logged in for this query to work, i.e. an authentication token th
 
 ### Delete a post
 
-You need to be logged in for this query to work, i.e. an authentication token that was retrieved through a `signup` or `login` mutation needs to be added to the `Authorization` header in the GraphQL Playground. The authentication token must belong to the user who created the post.
-
 ```graphql
 mutation {
-  deletePost(id: __POST_ID__) {
+  deleteOnePost(where: {id: __POST_ID__})
+  {
     id
   }
 }
@@ -203,6 +152,7 @@ mutation {
 > **Note**: You need to replace the `__POST_ID__`-placeholder with an actual `id` from a `Post` item. You can find one e.g. using the `filterPosts`-query.
 
 </Details>
+
 
 ## Evolving the app
 
