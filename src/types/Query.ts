@@ -3,6 +3,7 @@ import { getUserId } from '../utils'
 
 export const Query = queryType({
   definition(t) {
+    /*
     t.field('me', {
       type: 'User',
       nullable: true,
@@ -49,15 +50,15 @@ export const Query = queryType({
         })
       },
     })
-
-    t.field('post', {
-      type: 'Post',
+*/
+    t.field('job', {
+      type: 'Job',
       nullable: true,
       args: { id: intArg() },
       resolve: (parent, { id }, ctx) => {
-        return ctx.prisma.post.findOne({
+        return ctx.prisma.job.findOne({
           where: {
-            id: Number(id),
+            id: String(id),
           },
         })
       },

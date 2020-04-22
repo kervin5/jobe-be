@@ -30,6 +30,7 @@ export interface NexusGenRootTypes {
     token: string; // String!
     user: NexusGenRootTypes['User']; // User!
   }
+  Job: client.Job;
   Mutation: {};
   Query: {};
   User: client.User;
@@ -48,18 +49,16 @@ export interface NexusGenFieldTypes {
     token: string; // String!
     user: NexusGenRootTypes['User']; // User!
   }
+  Job: { // field return type
+    id: string; // String!
+    title: string; // String!
+  }
   Mutation: { // field return type
-    createDraft: NexusGenRootTypes['Post']; // Post!
-    deletePost: NexusGenRootTypes['Post'] | null; // Post
     login: NexusGenRootTypes['AuthPayload']; // AuthPayload!
-    publish: NexusGenRootTypes['Post'] | null; // Post
     signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
   }
   Query: { // field return type
-    feed: NexusGenRootTypes['Post'][]; // [Post!]!
-    filterPosts: NexusGenRootTypes['Post'][]; // [Post!]!
-    me: NexusGenRootTypes['User'] | null; // User
-    post: NexusGenRootTypes['Post'] | null; // Post
+    job: NexusGenRootTypes['Job'] | null; // Job
   }
   User: { // field return type
     email: string; // String!
@@ -70,19 +69,9 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Mutation: {
-    createDraft: { // args
-      content?: string | null; // String
-      title: string; // String!
-    }
-    deletePost: { // args
-      id: number; // Int!
-    }
     login: { // args
       email: string; // String!
       password: string; // String!
-    }
-    publish: { // args
-      id?: number | null; // Int
     }
     signup: { // args
       email: string; // String!
@@ -91,10 +80,7 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
-    filterPosts: { // args
-      searchString?: string | null; // String
-    }
-    post: { // args
+    job: { // args
       id?: number | null; // Int
     }
   }
@@ -105,7 +91,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "Mutation" | "Post" | "Query" | "User";
+export type NexusGenObjectNames = "AuthPayload" | "Job" | "Mutation" | "Query" | "User";
 
 export type NexusGenInputNames = never;
 

@@ -54,8 +54,8 @@ export const Mutation = mutationType({
       },
     })
 
-    t.field('createDraft', {
-      type: 'Post',
+    /*t.field('createDraft', {
+      type: 'Job',
       args: {
         title: stringArg({ nullable: false }),
         content: stringArg(),
@@ -97,6 +97,6 @@ export const Mutation = mutationType({
           data: { published: true },
         })
       },
-    })
+    })*/
   },
 })
