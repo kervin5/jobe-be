@@ -139,7 +139,6 @@ model Job {
   locationId                            String @map("location")
   location                              Location @relation(fields: [locationId], references: [id])
 
-
   applications                          Application[]
   categories                            Category[]    @relation(references: [id])
   skills                                Skill[]       @relation(references: [id])
@@ -147,11 +146,11 @@ model Job {
   status                                JobStatus @default(DRAFT)
   favorites                             Favorite[]
 
-  branchId                              String @map("branch")
-  branch                                Branch @relation(fields: [branchId], references: [id])
+  branchId                              String? @map("branch")
+  branch                                Branch? @relation(fields: [branchId], references: [id])
   
-  cronTaskId                            String @map("cronTask")
-  cronTask                              JobCronTask  @relation( fields: [cronTaskId], references: [id])
+  cronTaskId                            String? @map("cronTask")
+  cronTask                              JobCronTask?  @relation( fields: [cronTaskId], references: [id])
 
 }
 

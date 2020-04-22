@@ -5,5 +5,6 @@ export const Job = objectType({
   definition(t) {
     t.model.id()
     t.model.title()
+    t.model.author()
   },
 })

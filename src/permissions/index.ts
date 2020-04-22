@@ -17,6 +17,9 @@ const rules = {
       .author()
     return userId === author.id
   }),
+  allow: rule()(async(parent, args, context)=>{
+    return true;
+  })
 }
 
 export const permissions = shield({
@@ -24,6 +27,7 @@ export const permissions = shield({
     me: rules.isAuthenticatedUser,
     filterPosts: rules.isAuthenticatedUser,
     post: rules.isAuthenticatedUser,*/
+    jobs: rules.allow
   },
   Mutation: {
     /*

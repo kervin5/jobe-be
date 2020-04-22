@@ -7,9 +7,24 @@ type AuthPayload {
   user: User!
 }
 
+type Category {
+  id: String!
+  name: String!
+}
+
+input CategoryWhereUniqueInput {
+  id: String
+  name: String
+}
+
 type Job {
+  author: User!
   id: String!
   title: String!
+}
+
+input JobWhereUniqueInput {
+  id: String
 }
 
 type Mutation {
@@ -18,7 +33,9 @@ type Mutation {
 }
 
 type Query {
-  job(id: Int): Job
+  categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int, skip: Int): [Category!]!
+  job(where: JobWhereUniqueInput!): Job
+  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int): [Job!]!
 }
 
 type User {

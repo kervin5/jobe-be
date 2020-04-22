@@ -8,5 +8,6 @@ export interface Context {
 }
 
 export function createContext(request:any): Context {
-  return { prisma, ...request }
+ 
+  return { prisma, ...request.req }
 }

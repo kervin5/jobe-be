@@ -50,11 +50,11 @@ export const Query = queryType({
         })
       },
     })
-*/
+
     t.field('job', {
       type: 'Job',
       nullable: true,
-      args: { id: intArg() },
+      args: { id: stringArg() },
       resolve: (parent, { id }, ctx) => {
         return ctx.prisma.job.findOne({
           where: {
@@ -63,5 +63,9 @@ export const Query = queryType({
         })
       },
     })
+*/
+  t.crud.job()
+  t.crud.jobs()
+  t.crud.categories()
   },
 })

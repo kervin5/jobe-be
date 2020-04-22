@@ -20,6 +20,13 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  CategoryWhereUniqueInput: { // input type
+    id?: string | null; // String
+    name?: string | null; // String
+  }
+  JobWhereUniqueInput: { // input type
+    id?: string | null; // String
+  }
 }
 
 export interface NexusGenEnums {
@@ -30,6 +37,7 @@ export interface NexusGenRootTypes {
     token: string; // String!
     user: NexusGenRootTypes['User']; // User!
   }
+  Category: client.Category;
   Job: client.Job;
   Mutation: {};
   Query: {};
@@ -42,6 +50,8 @@ export interface NexusGenRootTypes {
 }
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
+  CategoryWhereUniqueInput: NexusGenInputs['CategoryWhereUniqueInput'];
+  JobWhereUniqueInput: NexusGenInputs['JobWhereUniqueInput'];
 }
 
 export interface NexusGenFieldTypes {
@@ -49,7 +59,12 @@ export interface NexusGenFieldTypes {
     token: string; // String!
     user: NexusGenRootTypes['User']; // User!
   }
+  Category: { // field return type
+    id: string; // String!
+    name: string; // String!
+  }
   Job: { // field return type
+    author: NexusGenRootTypes['User']; // User!
     id: string; // String!
     title: string; // String!
   }
@@ -58,7 +73,9 @@ export interface NexusGenFieldTypes {
     signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
   }
   Query: { // field return type
+    categories: NexusGenRootTypes['Category'][]; // [Category!]!
     job: NexusGenRootTypes['Job'] | null; // Job
+    jobs: NexusGenRootTypes['Job'][]; // [Job!]!
   }
   User: { // field return type
     email: string; // String!
@@ -80,8 +97,22 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    categories: { // args
+      after?: NexusGenInputs['CategoryWhereUniqueInput'] | null; // CategoryWhereUniqueInput
+      before?: NexusGenInputs['CategoryWhereUniqueInput'] | null; // CategoryWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
+    }
     job: { // args
-      id?: number | null; // Int
+      where: NexusGenInputs['JobWhereUniqueInput']; // JobWhereUniqueInput!
+    }
+    jobs: { // args
+      after?: NexusGenInputs['JobWhereUniqueInput'] | null; // JobWhereUniqueInput
+      before?: NexusGenInputs['JobWhereUniqueInput'] | null; // JobWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
     }
   }
 }
@@ -91,9 +122,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "AuthPayload" | "Job" | "Mutation" | "Query" | "User";
+export type NexusGenObjectNames = "AuthPayload" | "Category" | "Job" | "Mutation" | "Query" | "User";
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = "CategoryWhereUniqueInput" | "JobWhereUniqueInput";
 
 export type NexusGenEnumNames = never;
 
