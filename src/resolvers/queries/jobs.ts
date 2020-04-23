@@ -1,29 +1,68 @@
-import { searchBoundary } from "../../utils/location";
+import { searchBoundary } from '../../utils/location'
 //const { forwardTo } = require("prisma-binding");
-import { ObjectDefinitionBlock } from "@nexus/schema/dist/definitions/objectType";
+import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
 import { stringArg, arg } from '@nexus/schema'
-//const { can } = require("../lib/auth");
+import { can } from '../../permissions/auth'
 
+export default (t: ObjectDefinitionBlock<'Query'>) => {
+  //Fetch single job
+  t.crud.job()
 
-export default (t:ObjectDefinitionBlock<"Query">) => {
-  t.crud.job();
- // t.crud.jobs({filtering: true, })
- t.list.field('filterPosts', {
-  type: 'Job',
-  args: {
-    where: arg({ type:'JobWhereInput' })
-  },
-  resolve: (parent, args, ctx) => {
-    return ctx.prisma.job.findMany({
-      where: {
-        ...args.where,
-        status: "POSTED"
-      },
-    })
-  },
-})
+  //Fetch list of posted jobs
+  // t.crud.jobs({filtering: true, })
+  t.list.field('jobs', {
+    type: 'Job',
+    args: {
+      where: arg({ type: 'JobWhereInput' }),
+    },
+    resolve: (parent, args, ctx) => {
+      return ctx.prisma.job.findMany({
+        where: {
+          ...args.where,
+          status: 'POSTED',
+        },
+      })
+    },
+  })
+
+  t.list.field('protectedJobs', {
+    type: 'Job',
+    args: {
+      where: arg({ type: 'JobWhereInput' }),
+    },
+    resolve: async (parent, args, ctx) => {
+      const user = await ctx.prisma.user.findOne({
+        where: { id: ctx.request.user.id },
+        include: { branch: { include: { company: true } } },
+      })
+
+      //Gets jobs created by this user by default;
+      let ownerFilter = { author: { id: user?.id } }
+
+      //Define jobs filter based on access level
+      if (await can('READ', 'COMPANY', ctx)) {
+        //Gets all the jobs from the company
+
+        ownerFilter = { branch: { company: { id: user?.branch?.company.id } } }
+      } else if (await can('READ', 'BRANCH', ctx)) {
+        //Gets all the jobs from the branch
+        ownerFilter = { branch: { id: 3 } }
+      }
+
+      return await ctx.db.query.jobs(
+        { ...args, where: { ...args.where, ...ownerFilter } },
+        info,
+      )
+
+      return ctx.prisma.job.findMany({
+        where: {
+          ...args.where,
+          status: 'POSTED',
+        },
+      })
+    },
+  })
 }
-
 
 /*
 const job = forwardTo("db");

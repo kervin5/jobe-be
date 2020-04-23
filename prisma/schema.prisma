@@ -185,7 +185,7 @@ model Location_boundary {
 model Permission {
   id                 String @id @default(cuid())
   object             String
-  roleId               String
+  roleId             String
   role               Role               @relation(fields: [roleId], references: [id])
   actions String[]
 }

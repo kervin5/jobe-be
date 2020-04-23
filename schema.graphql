@@ -69,6 +69,12 @@ type BatchPayload {
   count: Int!
 }
 
+type Branch {
+  company: Company!
+  id: String!
+  name: String!
+}
+
 input BranchFilter {
   every: BranchWhereInput
   none: BranchWhereInput
@@ -90,6 +96,10 @@ input BranchWhereInput {
   users: UserFilter
 }
 
+input BranchWhereUniqueInput {
+  id: String
+}
+
 type Category {
   id: String!
   jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int): [Job!]!
@@ -109,6 +119,12 @@ input CategoryWhereInput {
   name: StringFilter
   NOT: [CategoryWhereInput!]
   OR: [CategoryWhereInput!]
+}
+
+type Company {
+  branches(after: BranchWhereUniqueInput, before: BranchWhereUniqueInput, first: Int, last: Int, skip: Int): [Branch!]!
+  id: String!
+  name: String!
 }
 
 input CompanyFilter {
@@ -322,6 +338,12 @@ input NullableStringFilter {
   startsWith: String
 }
 
+type Permission {
+  actions: [String!]!
+  id: String!
+  object: String!
+}
+
 input Permission_actionsFilter {
   every: Permission_actionsWhereInput
   none: Permission_actionsWhereInput
@@ -355,9 +377,14 @@ input PermissionWhereInput {
   roleId: StringFilter
 }
 
+input PermissionWhereUniqueInput {
+  id: String
+}
+
 type Query {
-  filterPosts(where: JobWhereInput): [Job!]!
   job(where: JobWhereUniqueInput!): Job
+  jobs(where: JobWhereInput): [Job!]!
+  protectedJobs(where: JobWhereInput): [Job!]!
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
 }
 
@@ -381,6 +408,12 @@ input ResumeWhereInput {
   updatedAt: DateTimeFilter
   user: UserWhereInput
   userId: StringFilter
+}
+
+type Role {
+  id: String!
+  name: String!
+  permissions(after: PermissionWhereUniqueInput, before: PermissionWhereUniqueInput, first: Int, last: Int, skip: Int): [Permission!]!
 }
 
 input RoleWhereInput {
@@ -441,6 +474,7 @@ input StringFilter {
 }
 
 type User {
+  branch: Branch
   email: String!
   id: String!
   name: String!
