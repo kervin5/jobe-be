@@ -1,7 +1,7 @@
 import { objectType } from 'nexus'
 
-export const Category = objectType({
-  name: 'Category',
+export const Skill = objectType({
+  name: 'Skill',
   definition(t) {
     t.model.id()
     t.model.name()

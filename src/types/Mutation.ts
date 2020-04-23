@@ -1,7 +1,7 @@
 import { compare, hash } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 import { mutationType, stringArg, intArg } from 'nexus'
-import { APP_SECRET, getUserId } from '../utils'
+import { APP_SECRET, getUserId } from '../utils/utils'
 
 export const Mutation = mutationType({
   definition(t) {
@@ -98,5 +98,6 @@ export const Mutation = mutationType({
         })
       },
     })*/
+    t.crud.updateManySkill()
   },
 })

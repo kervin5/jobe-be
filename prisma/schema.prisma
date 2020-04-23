@@ -169,7 +169,7 @@ model Location {
   latitude          Float
   longitude         Float
   jobs               Job[]
-  boundary Location_boundary[]
+  boundary          Float[]
   users              User[]
 }
 
@@ -187,7 +187,7 @@ model Permission {
   object             String
   roleId               String
   role               Role               @relation(fields: [roleId], references: [id])
-  actions Permission_actions[]
+  actions String[]
 }
 
 model Permission_actions {
