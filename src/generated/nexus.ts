@@ -487,8 +487,8 @@ export interface NexusGenFieldTypes {
     updateManySkill: NexusGenRootTypes['BatchPayload']; // BatchPayload!
   }
   Query: { // field return type
+    filterPosts: NexusGenRootTypes['Job'][]; // [Job!]!
     job: NexusGenRootTypes['Job'] | null; // Job
-    jobs: NexusGenRootTypes['Job'][]; // [Job!]!
     skills: NexusGenRootTypes['Skill'][]; // [Skill!]!
   }
   Skill: { // field return type
@@ -538,6 +538,9 @@ export interface NexusGenArgTypes {
     }
   }
   Query: {
+    filterPosts: { // args
+      where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
+    }
     job: { // args
       where: NexusGenInputs['JobWhereUniqueInput']; // JobWhereUniqueInput!
     }

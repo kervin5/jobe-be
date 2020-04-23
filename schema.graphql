@@ -356,8 +356,8 @@ input PermissionWhereInput {
 }
 
 type Query {
+  filterPosts(where: JobWhereInput): [Job!]!
   job(where: JobWhereUniqueInput!): Job
-  jobs: [Job!]!
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
 }
 

@@ -1,22 +1,27 @@
 import { searchBoundary } from "../../utils/location";
 //const { forwardTo } = require("prisma-binding");
 import { ObjectDefinitionBlock } from "@nexus/schema/dist/definitions/objectType";
-import { stringArg } from 'nexus'
+import { stringArg, arg } from '@nexus/schema'
 //const { can } = require("../lib/auth");
 
 
 export default (t:ObjectDefinitionBlock<"Query">) => {
   t.crud.job();
-  t.list.field('jobs', {
-    type: 'Job',
-    
-    resolve: (parent, args, ctx) => {
-      console.log(args);
-      return ctx.prisma.job.findMany({
-        where: { status: "POSTED"},
-      })
-    },
-  })
+ // t.crud.jobs({filtering: true, })
+ t.list.field('filterPosts', {
+  type: 'Job',
+  args: {
+    where: arg({ type:'JobWhereInput' })
+  },
+  resolve: (parent, args, ctx) => {
+    return ctx.prisma.job.findMany({
+      where: {
+        ...args.where,
+        status: "POSTED"
+      },
+    })
+  },
+})
 }
 
 
