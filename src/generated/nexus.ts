@@ -516,7 +516,10 @@ export interface NexusGenFieldTypes {
   Query: { // field return type
     job: NexusGenRootTypes['Job'] | null; // Job
     jobs: NexusGenRootTypes['Job'][]; // [Job!]!
+    jobsConnection: number; // Int!
     protectedJobs: NexusGenRootTypes['Job'][]; // [Job!]!
+    protectedJobsConnection: number; // Int!
+    searchJobs: NexusGenRootTypes['Job'][]; // [Job!]!
     skills: NexusGenRootTypes['Skill'][]; // [Skill!]!
   }
   Role: { // field return type
@@ -587,7 +590,21 @@ export interface NexusGenArgTypes {
     jobs: { // args
       where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
     }
+    jobsConnection: { // args
+      where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
+    }
     protectedJobs: { // args
+      where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
+    }
+    protectedJobsConnection: { // args
+      where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
+    }
+    searchJobs: { // args
+      location?: string | null; // String
+      perPage?: number | null; // Int
+      query?: string | null; // String
+      radius?: number | null; // Int
+      skip?: number | null; // Int
       where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
     }
     skills: { // args

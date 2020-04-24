@@ -1,0 +1,253 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
+}
+
+enum ApplicationStatus {
+  NEW
+  VIEWED
+  REVIEWING
+  CONTACTED
+  HIRED
+  ARCHIVED
+}
+
+enum ApplicationNoteType {
+  NOTE
+  STATUS
+}
+
+enum JobStatus {
+  DRAFT
+  POSTED
+  DELETED
+  EDITING
+  EXPIRED
+  PENDING
+}
+
+
+model Application {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+ 
+  resumeId        String @map("resume")
+  resume          Resume @relation(fields: [resumeId], references: [id])
+  
+  jobId           String @map("job")
+  job             Job    @relation(fields: [jobId], references: [id])
+ 
+  status          ApplicationStatus @default(NEW)
+
+  applicantId     String @map("applicant")
+  applicant       User   @relation(fields: [applicantId], references: [id])
+
+  notes ApplicationNote[]
+}
+
+model ApplicationNote {
+  id          String   @id @default(cuid())
+
+  userId      String @map("user")
+  user        User   @relation(fields: [userId], references: [id])
+
+  applicationId String @map("application")
+  application Application @relation(fields: [applicationId], references: [id])
+
+  content     String
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  type        ApplicationNoteType @default(NOTE)
+}
+
+model Branch {
+  id          String  @id @default(cuid())
+  name        String
+
+  companyId   String @map("company")
+  company     Company  @relation(fields: [companyId], references: [id])
+
+  locationId    String? @map("location")
+  location    Location? @relation(fields: [locationId], references: [id])
+
+  description String?
+
+  jobs         Job[]  
+  users        User[]
+}
+
+
+model Category {
+  id   String @id @default(cuid())
+  name String @unique
+  jobs  Job[]  @relation(references: [id])
+}
+
+model Company {
+  id          String  @id @default(cuid())
+  name        String
+  description String
+  locationId  String? @map("location")
+  location    Location? @relation(fields: [locationId], references: [id])
+  branches      Branch[]
+}
+
+model Favorite {
+  id   String  @id @default(cuid())
+  userId String @map("user")
+  user User @relation(fields: [userId], references: [id])
+
+  jobId  String @map("job")
+  job Job  @relation(fields: [jobId], references: [id])
+}
+
+model File {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  mimetype  String
+  path      String   @unique
+}
+
+model Job {
+  id                                    String      @id @default(cuid())
+  createdAt                             DateTime    @default(now())
+  updatedAt                             DateTime    @updatedAt
+  title                                 String
+  compensationType                      String @default("hourly")
+  description                           String
+  disclaimer                            String?
+  type                                  String
+  maxCompensation                       Float
+  minCompensation                       Float
+
+  authorId                              String @map("author")
+  author                                User   @relation(fields: [authorId], references: [id])
+
+  locationId                            String @map("location")
+  location                              Location @relation(fields: [locationId], references: [id])
+
+  applications                          Application[]
+  categories                            Category[]    @relation(references: [id])
+  skills                                Skill[]       @relation(references: [id])
+  
+  status                                JobStatus @default(DRAFT)
+  favorites                             Favorite[]
+
+  branchId                              String? @map("branch")
+  branch                                Branch? @relation(fields: [branchId], references: [id])
+  
+  cronTaskId                            String? @map("cronTask")
+  cronTask                              JobCronTask?  @relation( fields: [cronTaskId], references: [id])
+
+}
+
+model JobCronTask {
+  id                            String   @id @default(cuid())
+  job                           Job    
+  lastRun                       DateTime
+  nextRun                       DateTime
+  objectId                      String   @unique
+  result                        String
+}
+
+model Location {
+  id                String  @id @default(now())
+  name              String
+  latitude          Float
+  longitude         Float
+  jobs               Job[]
+  boundary          Float[]
+  users              User[]
+}
+
+model Location_boundary {
+  nodeId   String
+  position Int
+  value    Float
+  Location Location @relation(fields: [nodeId], references: [id])
+
+  @@id([nodeId, position])
+}
+
+model Permission {
+  id                 String @id @default(cuid())
+  object             String
+  roleId             String
+  role               Role               @relation(fields: [roleId], references: [id])
+  actions String[]
+}
+
+model Permission_actions {
+  nodeId     String
+  position   Int
+  value      String
+  Permission Permission @relation(fields: [nodeId], references: [id])
+
+  @@id([nodeId, position])
+}
+
+model Resume {
+  id          String        @id @default(cuid())
+  title       String
+  fileId      String
+  file        File         @relation(fields: [fileId], references: [id])
+  userId        String
+  user        User         @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime  @updatedAt
+  applications Application[]
+  skills       Skill[]       @relation(references: [id])
+}
+
+model Role {
+  id         String       @id @default(cuid())
+  name       String       
+  permissions Permission[]
+  users       User[]
+}
+
+model Skill {
+  id     String   @id
+  name   String   @unique
+  jobs   Job[]    @relation(references: [id])
+  resumes Resume[] @relation(references: [id])
+  users   User[]   @relation(references: [id])
+}
+
+model User {
+  id               String            @id @default(cuid())
+  name             String
+  email            String            @unique
+  password         String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt()
+  applications     Application[]
+  jobs             Job[]
+  locationId       String? @map("location")
+  location         Location? @relation(fields: [locationId], references: [id])
+  skills            Skill[]           @relation(references: [id])
+  favorites         Favorite[]
+  roleId            String @map("role")
+  role             Role          @relation(fields: [roleId], references: [id])
+
+  branchId         String? @map("branch")
+  branch           Branch?        @relation(fields: [branchId], references: [id])
+
+  resumes           Resume[]
+  resetToken       String?
+  resetTokenExpiry Float?
+  status           UserStatus @default(ACTIVE)
+}
