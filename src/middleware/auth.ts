@@ -1,16 +1,16 @@
 import jwt from 'jsonwebtoken'
+import { Request } from 'express'
+
 // const config = require('config');
 
-module.exports = function (req, res, next) {
+export default function auth(req: Request, res, next) {
   const token =
-    req.cookies.token ||
-    (req.headers['authorization']
-      ? req.headers.authorization.split(' ')[1]
-      : null)
+    req.cookies?.token ||
+    (req.headers.authorization ? req.headers.authorization : null)
   // if (!token) return res.status(401).send({error: 'Access denied.'});
-
   try {
-    const decoded = jwt.verify(token, process.env.APP_SECRET)
+    const key: string = process.env.APP_SECRET ?? ''
+    const decoded = jwt.verify(token, key)
     req.user = decoded
   } catch (ex) {
     //TODO: Handle missing AUTH

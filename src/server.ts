@@ -6,6 +6,7 @@ import { applyMiddleware } from 'graphql-middleware'
 import { schema } from './schema'
 import { createContext } from './context'
 import { permissions } from './permissions'
+import auth from './middleware/auth'
 
 dotenv.config()
 
@@ -14,7 +15,7 @@ const PORT = process.env.PORT ?? 4000
 const app = express()
 
 app.use(cookieParser())
-app.use()
+app.use(auth)
 
 const schemaWithMiddleware = applyMiddleware(schema, permissions)
 

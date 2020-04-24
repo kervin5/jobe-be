@@ -161,6 +161,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       where: arg({ type: 'JobWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
+      console.log(Object.keys(ctx))
       const user = await ctx.prisma.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },

@@ -17,22 +17,28 @@ const rules = {
       .author()
     return userId === author.id
   }),
-  allow: rule()(async(parent, args, context)=>{
-    return true;
-  })
+  allow: rule()(async (parent, args, context) => {
+    return true
+  }),
 }
 
-export const permissions = shield({
-  Query: {/*
+export const permissions = shield(
+  {
+    Query: {
+      /*
     me: rules.isAuthenticatedUser,
     filterPosts: rules.isAuthenticatedUser,
     post: rules.isAuthenticatedUser,*/
-    jobs: rules.allow
-  },
-  Mutation: {
-    /*
+      //jobs: rules.allow,
+    },
+    Mutation: {
+      /*
     createDraft: rules.isAuthenticatedUser,
     deletePost: rules.isPostOwner,
     publish: rules.isPostOwner,*/
+    },
   },
-})
+  {
+    allowExternalErrors: true,
+  },
+)
