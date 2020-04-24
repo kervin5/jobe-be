@@ -1,0 +1,11 @@
+import { objectType } from '@nexus/schema'
+
+export const Job = objectType({
+  name: 'Job',
+  definition(t) {
+    t.model.id()
+    t.model.title()
+    t.model.author()
+    t.model.skills()
+  },
+})
