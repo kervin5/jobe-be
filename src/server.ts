@@ -1,7 +1,7 @@
 import { ApolloServer } from 'apollo-server'
 import { applyMiddleware } from 'graphql-middleware'
 import { schema } from './schema'
-import { createContext, Context } from './context'
+import { createContext } from './context'
 import { permissions } from './permissions'
 
 const injectUser = async (resolve, root, args, context, info) => {
