@@ -387,7 +387,7 @@ type Query {
   jobsConnection(where: JobWhereInput): Int!
   protectedJobs(where: JobWhereInput): [Job!]!
   protectedJobsConnection(where: JobWhereInput): Int!
-  searchJobs(location: String, perPage: Int, query: String, radius: Int, skip: Int, where: JobWhereInput): [Job!]!
+  searchJobs(location: String, perPage: Int, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
 }
 
