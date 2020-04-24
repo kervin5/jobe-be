@@ -15,3 +15,5 @@ export function getUserId(context: Context) {
     return verifiedToken && verifiedToken.userId
   }
 }
+
+export function injectUserId(context: any) {}
