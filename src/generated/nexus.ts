@@ -504,8 +504,7 @@ export interface NexusGenFieldTypes {
     title: string; // String!
   }
   Mutation: { // field return type
-    login: NexusGenRootTypes['AuthPayload']; // AuthPayload!
-    signup: NexusGenRootTypes['AuthPayload']; // AuthPayload!
+    login: NexusGenRootTypes['User']; // User!
     updateManySkill: NexusGenRootTypes['BatchPayload']; // BatchPayload!
   }
   Permission: { // field return type
@@ -571,11 +570,6 @@ export interface NexusGenArgTypes {
   Mutation: {
     login: { // args
       email: string; // String!
-      password: string; // String!
-    }
-    signup: { // args
-      email: string; // String!
-      name?: string | null; // String
       password: string; // String!
     }
     updateManySkill: { // args

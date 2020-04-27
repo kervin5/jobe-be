@@ -3,8 +3,12 @@ import { sign } from 'jsonwebtoken'
 import { mutationType, stringArg, intArg } from '@nexus/schema'
 import { APP_SECRET, getUserId } from '../utils/utils'
 
+import users from '../resolvers/mutations/users'
+
 export const Mutation = mutationType({
   definition(t) {
+    users(t)
+    /*
     t.field('signup', {
       type: 'AuthPayload',
       args: {
@@ -54,7 +58,7 @@ export const Mutation = mutationType({
       },
     })
 
-    /*t.field('createDraft', {
+    t.field('createDraft', {
       type: 'Job',
       args: {
         title: stringArg({ nullable: false }),
