@@ -34,9 +34,9 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       // 3. generate the JWT Token
       const token = jwt.sign({ id: user.id }, process.env.APP_SECRET)
 
-      ctx.response.header('token', token)
+      ctx.response.header('token', `Bearer ${token}`)
 
-      ctx.response.cookie('token', token, {
+      ctx.response.cookie('token', `Bearer ${token}`, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365,
         path: '/',

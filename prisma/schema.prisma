@@ -173,31 +173,31 @@ model Location {
   users              User[]
 }
 
-model Location_boundary {
-  nodeId   String
-  position Int
-  value    Float
-  Location Location @relation(fields: [nodeId], references: [id])
+//model Location_boundary {
+  
+//  position Int
+  //value    Float
+ // locationId String @map("location")
+ // location Location @relation(fields: [locationId], references: [id])
 
-  @@id([nodeId, position])
-}
+  //@@id([locationId, position])
+//}
 
 model Permission {
   id                 String @id @default(cuid())
   object             String
-  roleId             String
+  roleId               String @map("role")
   role               Role               @relation(fields: [roleId], references: [id])
   actions String[]
 }
 
-model Permission_actions {
-  nodeId     String
-  position   Int
-  value      String
-  Permission Permission @relation(fields: [nodeId], references: [id])
-
-  @@id([nodeId, position])
-}
+//model Permission_actions {
+  //position   Int
+  //value      String
+  //permissionId     String @map("permission")
+  //permission Permission @relation(fields: [permissionId], references: [id])
+  //@@id([permissionId, position])
+//}
 
 model Resume {
   id          String        @id @default(cuid())
@@ -228,7 +228,7 @@ model Skill {
 }
 
 model User {
-  id               String            @id @default(cuid())
+  id               String      @id @default(cuid())
   name             String
   email            String            @unique
   password         String

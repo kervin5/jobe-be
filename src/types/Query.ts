@@ -1,11 +1,13 @@
 import { intArg, queryType, stringArg } from '@nexus/schema'
-import { getUserId } from '../utils/utils'
+import { getUserId } from '../permissions/auth'
 
-import jobs from "../resolvers/queries/jobs";
+import jobs from '../resolvers/queries/jobs'
+import users from '../resolvers/queries/users'
 
 export const Query = queryType({
   definition(t) {
-    jobs(t);
+    jobs(t)
+    users(t)
     /*
     t.field('me', {
       type: 'User',
@@ -73,7 +75,6 @@ export const Query = queryType({
   t.crud.user()
   t.crud.users()
   */
- t.crud.skills()
- 
+    t.crud.skills()
   },
 })

@@ -2,13 +2,8 @@ import { searchBoundary } from '../../utils/location'
 //const { forwardTo } = require("prisma-binding");
 import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
 import { stringArg, arg, intArg } from '@nexus/schema'
+import { UserAccessFilter } from './users'
 import { can } from '../../permissions/auth'
-
-interface JobFilter {
-  branch?: object
-  company?: object
-  author?: object
-}
 
 export default (t: ObjectDefinitionBlock<'Query'>) => {
   //Fetch single job
@@ -43,7 +38,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       })
 
       //Gets jobs created by this user by default;
-      let ownerFilter: JobFilter = { author: { id: user?.id } }
+      let ownerFilter: UserAccessFilter = { author: { id: user?.id } }
 
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
@@ -161,7 +156,6 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       where: arg({ type: 'JobWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
-      console.log(Object.keys(ctx))
       const user = await ctx.prisma.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },

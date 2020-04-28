@@ -1,10 +1,12 @@
 import { rule, shield } from 'graphql-shield'
-import { getUserId } from '../utils/utils'
+import { getUserId, can } from '../permissions/auth'
+import { Context } from '../context'
 
 const rules = {
   isAuthenticatedUser: rule()((parent, args, context) => {
-    const userId = getUserId(context)
-    return Boolean(userId)
+    const user = getUserId(context.request)
+
+    return Boolean(user && user.id)
   }),
   isPostOwner: rule()(async (parent, { id }, context) => {
     const userId = getUserId(context)
@@ -17,9 +19,10 @@ const rules = {
       .author()
     return userId === author.id
   }),
-  allow: rule()(async (parent, args, context) => {
-    return true
-  }),
+  can: (action: string, object: string) =>
+    rule(action, object, { cache: 'contextual' })(
+      async (parent, args, ctx, info) => bool,
+    ),
 }
 
 export const permissions = shield(
@@ -30,6 +33,8 @@ export const permissions = shield(
     filterPosts: rules.isAuthenticatedUser,
     post: rules.isAuthenticatedUser,*/
       //jobs: rules.allow,
+      protectedJobs: rules.isAuthenticatedUser,
+      protectedJobsConnection: rules.isAuthenticatedUser,
     },
     Mutation: {
       /*

@@ -28,6 +28,6 @@ server.applyMiddleware({ app })
 
 app.listen({ port: PORT }, () =>
   console.log(
-    `🚀 Server ready at: http://localhost:4000${server.graphqlPath}\n⭐️ See sample queries: http://pris.ly/e/ts/graphql-apollo-server#using-the-graphql-api`,
+    `🚀 Server ready at: http://localhost:${PORT}${server.graphqlPath}\n⭐️ See sample queries: http://pris.ly/e/ts/graphql-apollo-server#using-the-graphql-api`,
   ),
 )

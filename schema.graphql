@@ -198,17 +198,6 @@ input FloatFilter {
   notIn: [Float!]
 }
 
-input IntFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: Int
-  notIn: [Int!]
-}
-
 type Job {
   author: User!
   id: String!
@@ -276,22 +265,6 @@ input JobWhereUniqueInput {
   id: String
 }
 
-input Location_boundaryFilter {
-  every: Location_boundaryWhereInput
-  none: Location_boundaryWhereInput
-  some: Location_boundaryWhereInput
-}
-
-input Location_boundaryWhereInput {
-  AND: [Location_boundaryWhereInput!]
-  Location: LocationWhereInput
-  nodeId: StringFilter
-  NOT: [Location_boundaryWhereInput!]
-  OR: [Location_boundaryWhereInput!]
-  position: IntFilter
-  value: FloatFilter
-}
-
 input LocationWhereInput {
   AND: [LocationWhereInput!]
   branch: BranchFilter
@@ -299,7 +272,6 @@ input LocationWhereInput {
   id: StringFilter
   jobs: JobFilter
   latitude: FloatFilter
-  location_boundary: Location_boundaryFilter
   longitude: FloatFilter
   name: StringFilter
   NOT: [LocationWhereInput!]
@@ -338,25 +310,8 @@ input NullableStringFilter {
 }
 
 type Permission {
-  actions: [String!]!
   id: String!
   object: String!
-}
-
-input Permission_actionsFilter {
-  every: Permission_actionsWhereInput
-  none: Permission_actionsWhereInput
-  some: Permission_actionsWhereInput
-}
-
-input Permission_actionsWhereInput {
-  AND: [Permission_actionsWhereInput!]
-  nodeId: StringFilter
-  NOT: [Permission_actionsWhereInput!]
-  OR: [Permission_actionsWhereInput!]
-  Permission: PermissionWhereInput
-  position: IntFilter
-  value: StringFilter
 }
 
 input PermissionFilter {
@@ -371,7 +326,6 @@ input PermissionWhereInput {
   NOT: [PermissionWhereInput!]
   object: StringFilter
   OR: [PermissionWhereInput!]
-  permission_actions: Permission_actionsFilter
   role: RoleWhereInput
   roleId: StringFilter
 }
@@ -388,6 +342,8 @@ type Query {
   protectedJobsConnection(where: JobWhereInput): Int!
   searchJobs(location: String, perPage: Int, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
+  user(where: UserWhereInput): User!
+  users(after: String, before: String, first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
 }
 
 input ResumeFilter {
