@@ -1,6 +1,15 @@
 import { verify } from 'jsonwebtoken'
 import { Context } from '../context'
-import { Request, request } from 'express'
+import { Request } from 'express'
+
+interface Token {
+  id: string
+}
+
+export interface IUserCan {
+  action: string
+  object: string
+}
 
 export async function can(action: string, object: string, ctx: Context) {
   try {
@@ -19,10 +28,6 @@ export async function can(action: string, object: string, ctx: Context) {
     console.log(ex)
     return false
   }
-}
-
-interface Token {
-  id: string
 }
 
 export function getUserId(req: Request) {

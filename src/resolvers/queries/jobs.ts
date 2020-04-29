@@ -162,7 +162,9 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       })
 
       //Gets jobs created by this user by default;
-      let ownerFilter: JobFilter = { author: { id: ctx.request.user.id } }
+      let ownerFilter: UserAccessFilter = {
+        author: { id: ctx.request.user.id },
+      }
 
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {

@@ -48,7 +48,7 @@ model Application {
   jobId           String @map("job")
   job             Job    @relation(fields: [jobId], references: [id])
  
-  status          ApplicationStatus @default(NEW)
+  status          ApplicationStatus @default(NEW) 
 
   applicantId     String @map("applicant")
   applicant       User   @relation(fields: [applicantId], references: [id])
@@ -228,9 +228,9 @@ model Skill {
 }
 
 model User {
-  id               String      @id @default(cuid())
+  id               String      @id @default(cuid()) 
   name             String
-  email            String            @unique
+  email            String      @unique
   password         String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt()

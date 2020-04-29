@@ -2,10 +2,22 @@
 ### Do not make changes to this file directly
 
 
+type Application {
+  applicant: User!
+  id: String!
+  job: Job!
+  status: ApplicationStatus!
+}
+
 input ApplicationFilter {
   every: ApplicationWhereInput
   none: ApplicationWhereInput
   some: ApplicationWhereInput
+}
+
+type ApplicationNote {
+  application: Application!
+  id: String!
 }
 
 input ApplicationNoteFilter {
@@ -335,15 +347,21 @@ input PermissionWhereUniqueInput {
 }
 
 type Query {
+  application(location: String, perPage: Int, query: String, radius: Int = 5, skip: Int, where: ApplicationWhereInput): Application
+  candidates(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
+  candidatesConnection(where: UserWhereInput): Int!
   job(where: JobWhereUniqueInput!): Job
   jobs(where: JobWhereInput): [Job!]!
   jobsConnection(where: JobWhereInput): Int!
+  me: User
   protectedJobs(where: JobWhereInput): [Job!]!
   protectedJobsConnection(where: JobWhereInput): Int!
+  roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, skip: Int): [Role!]!
   searchJobs(location: String, perPage: Int, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
-  user(where: UserWhereInput): User!
-  users(after: String, before: String, first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
+  user(where: UserWhereUniqueInput!): User
+  users(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
+  usersConnection(where: UserWhereInput): Int!
 }
 
 input ResumeFilter {
@@ -382,6 +400,10 @@ input RoleWhereInput {
   OR: [RoleWhereInput!]
   permissions: PermissionFilter
   users: UserFilter
+}
+
+input RoleWhereUniqueInput {
+  id: String
 }
 
 type Skill {
@@ -435,6 +457,7 @@ type User {
   branch: Branch
   email: String!
   id: String!
+  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int): [Job!]!
   name: String!
 }
 
@@ -475,4 +498,9 @@ input UserWhereInput {
   skills: SkillFilter
   status: UserStatus
   updatedAt: DateTimeFilter
+}
+
+input UserWhereUniqueInput {
+  email: String
+  id: String
 }

@@ -1,5 +1,5 @@
-import { rule, shield } from 'graphql-shield'
-import { getUserId, can } from '../permissions/auth'
+import { rule, shield, and } from 'graphql-shield'
+import { getUserId, can, IUserCan } from '../permissions/auth'
 import { Context } from '../context'
 
 const rules = {
@@ -19,22 +19,47 @@ const rules = {
       .author()
     return userId === author.id
   }),
-  can: (action: string, object: string) =>
-    rule(action, object, { cache: 'contextual' })(
-      async (parent, args, ctx, info) => bool,
-    ),
+  can: (userPermission: IUserCan) =>
+    rule({ cache: 'contextual' })(async (parent, args, ctx, info) => {
+      return !!(await can(userPermission.action, userPermission.object, ctx))
+    }),
 }
 
 export const permissions = shield(
   {
     Query: {
+      me: rules.isAuthenticatedUser,
       /*
     me: rules.isAuthenticatedUser,
     filterPosts: rules.isAuthenticatedUser,
     post: rules.isAuthenticatedUser,*/
       //jobs: rules.allow,
+      roles: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'READ', object: 'ROLE' }),
+      ),
       protectedJobs: rules.isAuthenticatedUser,
       protectedJobsConnection: rules.isAuthenticatedUser,
+      user: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'READ', object: 'USER' }),
+      ),
+      users: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'READ', object: 'USER' }),
+      ),
+      usersConnection: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'READ', object: 'USER' }),
+      ),
+      candidates: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'JOB' }),
+      ),
+      cadidatesConnection: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'JOB' }),
+      ),
     },
     Mutation: {
       /*

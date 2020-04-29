@@ -3,11 +3,15 @@ import { getUserId } from '../permissions/auth'
 
 import jobs from '../resolvers/queries/jobs'
 import users from '../resolvers/queries/users'
+import roles from '../resolvers/queries/roles'
+import applications from '../resolvers/queries/applications'
 
 export const Query = queryType({
   definition(t) {
     jobs(t)
     users(t)
+    roles(t)
+    applications(t)
     /*
     t.field('me', {
       type: 'User',

@@ -6,26 +6,27 @@ export interface UserAccessFilter {
   branch?: object
   company?: object
   author?: object
+  id?: string
 }
 
 export default (t: ObjectDefinitionBlock<'Query'>) => {
-  t.field('user', {
+  t.field('me', {
     type: 'User',
-    args: {
-      where: arg({ type: 'UserWhereInput' }),
-    },
+    nullable: true,
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.user.findOne({ where: { id: args.where?.id } })
+      return ctx.prisma.user.findOne({
+        where: { id: ctx.request.user.id },
+      })
     },
   })
+
+  t.crud.user()
   //Fetch all users
   t.list.field('users', {
     type: 'User',
     args: {
       where: arg({ type: 'UserWhereInput' }),
       skip: intArg(),
-      after: stringArg(),
-      before: stringArg(),
       first: intArg(),
       last: intArg(),
     },
@@ -50,8 +51,95 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       }
 
       return ctx.prisma.user.findMany({
-        ...args,
         where: { ...args.where, ...usersFilter },
+        last: args.last,
+        first: args.first,
+      })
+    },
+  })
+
+  t.int('usersConnection', {
+    args: {
+      where: arg({ type: 'UserWhereInput' }),
+    },
+    resolve: async (parent, args, ctx) => {
+      const user = await ctx.prisma.user.findOne({
+        where: { id: ctx.request.user.id },
+        include: { branch: { include: { company: true } } },
+      })
+
+      //Gets jobs created by this user by default;
+      let ownerFilter: UserAccessFilter = { id: ctx.request.user.id }
+      // let ownerFilter: UserAccessFilter = { author: { id: ctx.request.user.id } }
+
+      //Define jobs filter based on access level
+      if (await can('READ', 'COMPANY', ctx)) {
+        //Gets all the jobs from the company
+        ownerFilter = { branch: { company: { id: user?.branch?.company.id } } }
+      } else if (await can('READ', 'BRANCH', ctx)) {
+        //Gets all the jobs from the branch
+        ownerFilter = { branch: { id: user?.branch?.id } }
+      }
+      return await ctx.prisma.user.count({
+        where: { ...args.where, ...ownerFilter },
+      })
+    },
+  })
+
+  t.list.field('candidates', {
+    type: 'User',
+    args: {
+      where: arg({ type: 'UserWhereInput' }),
+      skip: intArg(),
+      first: intArg(),
+      last: intArg(),
+    },
+    resolve: async (parent, args, ctx) => {
+      const requesterData = await ctx.prisma.user.findOne({
+        where: { id: ctx.request.user.id },
+        include: { branch: { include: { company: true } } },
+      })
+
+      let usersFilter: UserAccessFilter = {
+        branch: { id: requesterData?.branch?.id },
+      }
+
+      if (await can('READ', 'COMPANY', ctx)) {
+        usersFilter = {
+          branch: { company: { id: requesterData?.branch?.company.id } },
+        }
+      }
+
+      if (await can('READ', 'USER', ctx)) {
+        usersFilter = {}
+      }
+
+      return ctx.prisma.user.findMany({
+        where: { ...args.where, ...usersFilter, role: { name: 'candidate' } },
+
+        last: args.last,
+        first: args.first,
+      })
+    },
+  })
+
+  t.int('candidatesConnection', {
+    args: {
+      where: arg({ type: 'UserWhereInput' }),
+    },
+    resolve: async (parent, args, ctx) => {
+      const user = await ctx.prisma.user.findOne({
+        where: { id: ctx.request.user.id },
+        include: { branch: { include: { company: true } } },
+      })
+
+      //TODO: Refactor hard code name of role
+      return await ctx.prisma.user.count({
+        where: {
+          ...args.where,
+          role: { name: 'candidate' },
+          applications: { some: { job: { branch: { id: user?.branch?.id } } } },
+        },
       })
     },
   })
