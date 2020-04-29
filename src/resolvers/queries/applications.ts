@@ -8,7 +8,7 @@ import { can } from '../../permissions/auth'
 export default (t: ObjectDefinitionBlock<'Query'>) => {
   // t.crud.application()
 
-  t.field('application', {
+  t.field('applicationOther', {
     type: 'Application',
     nullable: true,
     args: {

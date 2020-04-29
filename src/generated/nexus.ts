@@ -62,7 +62,6 @@ export interface NexusGenInputs {
   }
   ApplicationWhereUniqueInput: { // input type
     id?: string | null; // String
-    status?: NexusGenEnums['ApplicationStatus'] | null; // ApplicationStatus
   }
   BranchFilter: { // input type
     every?: NexusGenInputs['BranchWhereInput'] | null; // BranchWhereInput
@@ -448,9 +447,11 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 export interface NexusGenFieldTypes {
   Application: { // field return type
     applicant: NexusGenRootTypes['User']; // User!
+    createdAt: any; // DateTime!
     id: string; // String!
     job: NexusGenRootTypes['Job']; // Job!
     status: NexusGenEnums['ApplicationStatus']; // ApplicationStatus!
+    updatedAt: any; // DateTime!
   }
   ApplicationNote: { // field return type
     application: NexusGenRootTypes['Application']; // Application!
@@ -494,6 +495,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     application: NexusGenRootTypes['Application'] | null; // Application
+    applicationOther: NexusGenRootTypes['Application'] | null; // Application
     candidates: NexusGenRootTypes['User'][]; // [User!]!
     candidatesConnection: number; // Int!
     job: NexusGenRootTypes['Job'] | null; // Job
@@ -569,6 +571,9 @@ export interface NexusGenArgTypes {
   Query: {
     application: { // args
       where: NexusGenInputs['ApplicationWhereUniqueInput']; // ApplicationWhereUniqueInput!
+    }
+    applicationOther: { // args
+      where?: NexusGenInputs['ApplicationWhereUniqueInput'] | null; // ApplicationWhereUniqueInput
     }
     candidates: { // args
       first?: number | null; // Int

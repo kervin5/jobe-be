@@ -7,5 +7,7 @@ export const Application = objectType({
     t.model.applicant()
     t.model.job()
     t.model.status()
+    t.model.updatedAt()
+    t.model.createdAt()
   },
 })

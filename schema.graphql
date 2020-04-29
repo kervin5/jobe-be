@@ -4,9 +4,11 @@
 
 type Application {
   applicant: User!
+  createdAt: DateTime!
   id: String!
   job: Job!
   status: ApplicationStatus!
+  updatedAt: DateTime!
 }
 
 input ApplicationFilter {
@@ -74,7 +76,6 @@ input ApplicationWhereInput {
 
 input ApplicationWhereUniqueInput {
   id: String
-  status: ApplicationStatus
 }
 
 type AuthPayload {
@@ -353,6 +354,7 @@ input PermissionWhereUniqueInput {
 
 type Query {
   application(where: ApplicationWhereUniqueInput!): Application
+  applicationOther(where: ApplicationWhereUniqueInput): Application
   candidates(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
   candidatesConnection(where: UserWhereInput): Int!
   job(where: JobWhereUniqueInput!): Job
