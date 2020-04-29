@@ -56,7 +56,7 @@ export const permissions = shield(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'JOB' }),
       ),
-      cadidatesConnection: and(
+      candidatesConnection: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'JOB' }),
       ),

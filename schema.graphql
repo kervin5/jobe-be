@@ -72,6 +72,11 @@ input ApplicationWhereInput {
   updatedAt: DateTimeFilter
 }
 
+input ApplicationWhereUniqueInput {
+  id: String
+  status: ApplicationStatus
+}
+
 type AuthPayload {
   token: String!
   user: User!
@@ -347,7 +352,7 @@ input PermissionWhereUniqueInput {
 }
 
 type Query {
-  application(location: String, perPage: Int, query: String, radius: Int = 5, skip: Int, where: ApplicationWhereInput): Application
+  application(where: ApplicationWhereUniqueInput!): Application
   candidates(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
   candidatesConnection(where: UserWhereInput): Int!
   job(where: JobWhereUniqueInput!): Job

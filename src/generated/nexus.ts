@@ -60,6 +60,10 @@ export interface NexusGenInputs {
     status?: NexusGenEnums['ApplicationStatus'] | null; // ApplicationStatus
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
+  ApplicationWhereUniqueInput: { // input type
+    id?: string | null; // String
+    status?: NexusGenEnums['ApplicationStatus'] | null; // ApplicationStatus
+  }
   BranchFilter: { // input type
     every?: NexusGenInputs['BranchWhereInput'] | null; // BranchWhereInput
     none?: NexusGenInputs['BranchWhereInput'] | null; // BranchWhereInput
@@ -400,6 +404,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   ApplicationNoteFilter: NexusGenInputs['ApplicationNoteFilter'];
   ApplicationNoteWhereInput: NexusGenInputs['ApplicationNoteWhereInput'];
   ApplicationWhereInput: NexusGenInputs['ApplicationWhereInput'];
+  ApplicationWhereUniqueInput: NexusGenInputs['ApplicationWhereUniqueInput'];
   BranchFilter: NexusGenInputs['BranchFilter'];
   BranchWhereInput: NexusGenInputs['BranchWhereInput'];
   BranchWhereUniqueInput: NexusGenInputs['BranchWhereUniqueInput'];
@@ -563,12 +568,7 @@ export interface NexusGenArgTypes {
   }
   Query: {
     application: { // args
-      location?: string | null; // String
-      perPage?: number | null; // Int
-      query?: string | null; // String
-      radius?: number | null; // Int
-      skip?: number | null; // Int
-      where?: NexusGenInputs['ApplicationWhereInput'] | null; // ApplicationWhereInput
+      where: NexusGenInputs['ApplicationWhereUniqueInput']; // ApplicationWhereUniqueInput!
     }
     candidates: { // args
       first?: number | null; // Int
@@ -665,7 +665,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "Application" | "ApplicationNote" | "AuthPayload" | "BatchPayload" | "Branch" | "Category" | "Company" | "Job" | "Mutation" | "Permission" | "Query" | "Role" | "Skill" | "User";
 
-export type NexusGenInputNames = "ApplicationFilter" | "ApplicationNoteFilter" | "ApplicationNoteWhereInput" | "ApplicationWhereInput" | "BranchFilter" | "BranchWhereInput" | "BranchWhereUniqueInput" | "CategoryFilter" | "CategoryWhereInput" | "CompanyFilter" | "CompanyWhereInput" | "DateTimeFilter" | "FavoriteFilter" | "FavoriteWhereInput" | "FileWhereInput" | "FloatFilter" | "JobCronTaskWhereInput" | "JobFilter" | "JobWhereInput" | "JobWhereUniqueInput" | "LocationWhereInput" | "NullableFloatFilter" | "NullableStringFilter" | "PermissionFilter" | "PermissionWhereInput" | "PermissionWhereUniqueInput" | "ResumeFilter" | "ResumeWhereInput" | "RoleWhereInput" | "RoleWhereUniqueInput" | "SkillFilter" | "SkillUpdateManyMutationInput" | "SkillWhereInput" | "SkillWhereUniqueInput" | "StringFilter" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "ApplicationFilter" | "ApplicationNoteFilter" | "ApplicationNoteWhereInput" | "ApplicationWhereInput" | "ApplicationWhereUniqueInput" | "BranchFilter" | "BranchWhereInput" | "BranchWhereUniqueInput" | "CategoryFilter" | "CategoryWhereInput" | "CompanyFilter" | "CompanyWhereInput" | "DateTimeFilter" | "FavoriteFilter" | "FavoriteWhereInput" | "FileWhereInput" | "FloatFilter" | "JobCronTaskWhereInput" | "JobFilter" | "JobWhereInput" | "JobWhereUniqueInput" | "LocationWhereInput" | "NullableFloatFilter" | "NullableStringFilter" | "PermissionFilter" | "PermissionWhereInput" | "PermissionWhereUniqueInput" | "ResumeFilter" | "ResumeWhereInput" | "RoleWhereInput" | "RoleWhereUniqueInput" | "SkillFilter" | "SkillUpdateManyMutationInput" | "SkillWhereInput" | "SkillWhereUniqueInput" | "StringFilter" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 
 export type NexusGenEnumNames = "ApplicationNoteType" | "ApplicationStatus" | "JobStatus" | "UserStatus";
 

@@ -6,20 +6,19 @@ import { UserAccessFilter } from './users'
 import { can } from '../../permissions/auth'
 
 export default (t: ObjectDefinitionBlock<'Query'>) => {
+  t.crud.application()
+  /*
   t.field('application', {
     type: 'Application',
     nullable: true,
     args: {
-      radius: intArg({ nullable: true, default: 5 }),
-      location: stringArg({ nullable: true }),
-      query: stringArg(),
       where: arg({ type: 'ApplicationWhereInput' }),
-      perPage: intArg({ nullable: true }),
-      skip: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
+      const applicationId = args.where?.id ? args.where.id : ''
+
       const application = await ctx.prisma.application.findOne({
-        where: { id: args.where?.id ?? '' },
+        where: { id: applicationId },
       })
 
       if (application?.status === 'NEW') {
@@ -37,7 +36,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
           },
         })
       }
-      return null
+      return ctx.prisma.application.findOne(args)
     },
-  })
+  })*/
 }
