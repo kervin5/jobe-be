@@ -49,7 +49,7 @@ model Application {
   jobId           String @map("job")
   job             Job    @relation(fields: [jobId], references: [id])
  
-  status          ApplicationStatus @default(NEW) @unique
+  status          ApplicationStatus @default(NEW) 
 
   applicantId     String @map("applicant")
   applicant       User   @relation(fields: [applicantId], references: [id])

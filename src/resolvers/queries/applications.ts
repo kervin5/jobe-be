@@ -6,13 +6,13 @@ import { UserAccessFilter } from './users'
 import { can } from '../../permissions/auth'
 
 export default (t: ObjectDefinitionBlock<'Query'>) => {
-  t.crud.application()
-  /*
+  // t.crud.application()
+
   t.field('application', {
     type: 'Application',
     nullable: true,
     args: {
-      where: arg({ type: 'ApplicationWhereInput' }),
+      where: arg({ type: 'ApplicationWhereUniqueInput' }),
     },
     resolve: async (parent, args, ctx) => {
       const applicationId = args.where?.id ? args.where.id : ''
@@ -38,5 +38,5 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       }
       return ctx.prisma.application.findOne(args)
     },
-  })*/
+  })
 }
