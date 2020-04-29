@@ -1,4 +1,4 @@
-import { objectType } from '@nexus/schema'
+import { objectType, inputObjectType } from '@nexus/schema'
 
 export const Application = objectType({
   name: 'Application',
@@ -9,5 +9,12 @@ export const Application = objectType({
     t.model.status()
     t.model.updatedAt()
     t.model.createdAt()
+  },
+})
+
+export const UniqueApplicationInputType = inputObjectType({
+  name: 'UniqueApplicationInputType',
+  definition(t) {
+    t.string('id', { required: true })
   },
 })

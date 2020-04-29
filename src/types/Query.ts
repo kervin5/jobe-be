@@ -79,6 +79,6 @@ export const Query = queryType({
   t.crud.user()
   t.crud.users()
   */
-    t.crud.skills()
+    // t.crud.skills()
   },
 })

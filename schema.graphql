@@ -74,10 +74,6 @@ input ApplicationWhereInput {
   updatedAt: DateTimeFilter
 }
 
-input ApplicationWhereUniqueInput {
-  id: String
-}
-
 type AuthPayload {
   token: String!
   user: User!
@@ -353,8 +349,10 @@ input PermissionWhereUniqueInput {
 }
 
 type Query {
-  application(where: ApplicationWhereUniqueInput!): Application
-  applicationOther(where: ApplicationWhereUniqueInput): Application
+  application(where: UniqueApplicationInputType!): Application
+  applicationNotes(id: String): [ApplicationNote!]!
+  applications(where: ApplicationWhereInput): [Application!]!
+  applicationsConnection(where: ApplicationWhereInput): Int!
   candidates(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
   candidatesConnection(where: UserWhereInput): Int!
   job(where: JobWhereUniqueInput!): Job
@@ -365,7 +363,6 @@ type Query {
   protectedJobsConnection(where: JobWhereInput): Int!
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, skip: Int): [Role!]!
   searchJobs(location: String, perPage: Int, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
-  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
   user(where: UserWhereUniqueInput!): User
   users(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
   usersConnection(where: UserWhereInput): Int!
@@ -458,6 +455,10 @@ input StringFilter {
   not: String
   notIn: [String!]
   startsWith: String
+}
+
+input UniqueApplicationInputType {
+  id: String!
 }
 
 type User {
