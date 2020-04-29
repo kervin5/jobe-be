@@ -1,5 +1,3 @@
-import { searchBoundary } from '../../utils/location'
-//const { forwardTo } = require("prisma-binding");
 import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
 import { stringArg, arg, intArg, inputObjectType } from '@nexus/schema'
 import { UserAccessFilter } from './users'

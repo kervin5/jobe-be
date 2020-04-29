@@ -60,6 +60,8 @@ export const permissions = shield(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'JOB' }),
       ),
+      branches: rules.isAuthenticatedUser,
+      getSignedFileUrl: rules.isAuthenticatedUser,
     },
     Mutation: {
       /*

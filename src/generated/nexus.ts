@@ -95,6 +95,10 @@ export interface NexusGenInputs {
     NOT?: NexusGenInputs['CategoryWhereInput'][] | null; // [CategoryWhereInput!]
     OR?: NexusGenInputs['CategoryWhereInput'][] | null; // [CategoryWhereInput!]
   }
+  CategoryWhereUniqueInput: { // input type
+    id?: string | null; // String
+    name?: string | null; // String
+  }
   CompanyFilter: { // input type
     every?: NexusGenInputs['CompanyWhereInput'] | null; // CompanyWhereInput
     none?: NexusGenInputs['CompanyWhereInput'] | null; // CompanyWhereInput
@@ -216,6 +220,9 @@ export interface NexusGenInputs {
     NOT?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
     OR?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
     users?: NexusGenInputs['UserFilter'] | null; // UserFilter
+  }
+  LocationWhereUniqueInput: { // input type
+    id?: string | null; // String
   }
   NullableFloatFilter: { // input type
     equals?: number | null; // Float
@@ -383,7 +390,9 @@ export interface NexusGenRootTypes {
   Branch: client.Branch;
   Category: client.Category;
   Company: client.Company;
+  File: client.File;
   Job: client.Job;
+  Location: client.Location;
   Mutation: {};
   Permission: client.Permission;
   Query: {};
@@ -408,6 +417,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   BranchWhereUniqueInput: NexusGenInputs['BranchWhereUniqueInput'];
   CategoryFilter: NexusGenInputs['CategoryFilter'];
   CategoryWhereInput: NexusGenInputs['CategoryWhereInput'];
+  CategoryWhereUniqueInput: NexusGenInputs['CategoryWhereUniqueInput'];
   CompanyFilter: NexusGenInputs['CompanyFilter'];
   CompanyWhereInput: NexusGenInputs['CompanyWhereInput'];
   DateTimeFilter: NexusGenInputs['DateTimeFilter'];
@@ -420,6 +430,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   JobWhereInput: NexusGenInputs['JobWhereInput'];
   JobWhereUniqueInput: NexusGenInputs['JobWhereUniqueInput'];
   LocationWhereInput: NexusGenInputs['LocationWhereInput'];
+  LocationWhereUniqueInput: NexusGenInputs['LocationWhereUniqueInput'];
   NullableFloatFilter: NexusGenInputs['NullableFloatFilter'];
   NullableStringFilter: NexusGenInputs['NullableStringFilter'];
   PermissionFilter: NexusGenInputs['PermissionFilter'];
@@ -479,11 +490,22 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     name: string; // String!
   }
+  File: { // field return type
+    id: string; // String!
+  }
   Job: { // field return type
     author: NexusGenRootTypes['User']; // User!
     id: string; // String!
     skills: NexusGenRootTypes['Skill'][]; // [Skill!]!
     title: string; // String!
+  }
+  Location: { // field return type
+    boundary: number[]; // [Float!]!
+    id: string; // String!
+    jobs: NexusGenRootTypes['Job'][]; // [Job!]!
+    latitude: number; // Float!
+    longitude: number; // Float!
+    name: string; // String!
   }
   Mutation: { // field return type
     login: NexusGenRootTypes['User']; // User!
@@ -498,16 +520,23 @@ export interface NexusGenFieldTypes {
     applicationNotes: NexusGenRootTypes['ApplicationNote'][]; // [ApplicationNote!]!
     applications: NexusGenRootTypes['Application'][]; // [Application!]!
     applicationsConnection: number; // Int!
+    branches: NexusGenRootTypes['Branch'][]; // [Branch!]!
     candidates: NexusGenRootTypes['User'][]; // [User!]!
     candidatesConnection: number; // Int!
+    categories: NexusGenRootTypes['Category'][]; // [Category!]!
+    category: NexusGenRootTypes['Category'] | null; // Category
+    getSignedFileUrl: string | null; // String
     job: NexusGenRootTypes['Job'] | null; // Job
     jobs: NexusGenRootTypes['Job'][]; // [Job!]!
     jobsConnection: number; // Int!
+    location: NexusGenRootTypes['Location'] | null; // Location
+    locations: NexusGenRootTypes['Location'][]; // [Location!]!
     me: NexusGenRootTypes['User'] | null; // User
     protectedJobs: NexusGenRootTypes['Job'][]; // [Job!]!
     protectedJobsConnection: number; // Int!
     roles: NexusGenRootTypes['Role'][]; // [Role!]!
     searchJobs: NexusGenRootTypes['Job'][]; // [Job!]!
+    skills: NexusGenRootTypes['Skill'][]; // [Skill!]!
     user: NexusGenRootTypes['User'] | null; // User
     users: NexusGenRootTypes['User'][]; // [User!]!
     usersConnection: number; // Int!
@@ -559,6 +588,15 @@ export interface NexusGenArgTypes {
       skip?: number | null; // Int
     }
   }
+  Location: {
+    jobs: { // args
+      after?: NexusGenInputs['JobWhereUniqueInput'] | null; // JobWhereUniqueInput
+      before?: NexusGenInputs['JobWhereUniqueInput'] | null; // JobWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
+    }
+  }
   Mutation: {
     login: { // args
       email: string; // String!
@@ -582,6 +620,9 @@ export interface NexusGenArgTypes {
     applicationsConnection: { // args
       where?: NexusGenInputs['ApplicationWhereInput'] | null; // ApplicationWhereInput
     }
+    branches: { // args
+      where?: NexusGenInputs['BranchWhereInput'] | null; // BranchWhereInput
+    }
     candidates: { // args
       first?: number | null; // Int
       last?: number | null; // Int
@@ -591,6 +632,19 @@ export interface NexusGenArgTypes {
     candidatesConnection: { // args
       where?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     }
+    categories: { // args
+      after?: NexusGenInputs['CategoryWhereUniqueInput'] | null; // CategoryWhereUniqueInput
+      before?: NexusGenInputs['CategoryWhereUniqueInput'] | null; // CategoryWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
+    }
+    category: { // args
+      where: NexusGenInputs['CategoryWhereUniqueInput']; // CategoryWhereUniqueInput!
+    }
+    getSignedFileUrl: { // args
+      AWSUrl: string; // String!
+    }
     job: { // args
       where: NexusGenInputs['JobWhereUniqueInput']; // JobWhereUniqueInput!
     }
@@ -599,6 +653,16 @@ export interface NexusGenArgTypes {
     }
     jobsConnection: { // args
       where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
+    }
+    location: { // args
+      where: NexusGenInputs['LocationWhereUniqueInput']; // LocationWhereUniqueInput!
+    }
+    locations: { // args
+      after?: NexusGenInputs['LocationWhereUniqueInput'] | null; // LocationWhereUniqueInput
+      before?: NexusGenInputs['LocationWhereUniqueInput'] | null; // LocationWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
     }
     protectedJobs: { // args
       where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
@@ -620,6 +684,13 @@ export interface NexusGenArgTypes {
       radius?: number | null; // Int
       skip?: number | null; // Int
       where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
+    }
+    skills: { // args
+      after?: NexusGenInputs['SkillWhereUniqueInput'] | null; // SkillWhereUniqueInput
+      before?: NexusGenInputs['SkillWhereUniqueInput'] | null; // SkillWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
     }
     user: { // args
       where: NexusGenInputs['UserWhereUniqueInput']; // UserWhereUniqueInput!
@@ -668,9 +739,9 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Application" | "ApplicationNote" | "AuthPayload" | "BatchPayload" | "Branch" | "Category" | "Company" | "Job" | "Mutation" | "Permission" | "Query" | "Role" | "Skill" | "User";
+export type NexusGenObjectNames = "Application" | "ApplicationNote" | "AuthPayload" | "BatchPayload" | "Branch" | "Category" | "Company" | "File" | "Job" | "Location" | "Mutation" | "Permission" | "Query" | "Role" | "Skill" | "User";
 
-export type NexusGenInputNames = "ApplicationFilter" | "ApplicationNoteFilter" | "ApplicationNoteWhereInput" | "ApplicationWhereInput" | "BranchFilter" | "BranchWhereInput" | "BranchWhereUniqueInput" | "CategoryFilter" | "CategoryWhereInput" | "CompanyFilter" | "CompanyWhereInput" | "DateTimeFilter" | "FavoriteFilter" | "FavoriteWhereInput" | "FileWhereInput" | "FloatFilter" | "JobCronTaskWhereInput" | "JobFilter" | "JobWhereInput" | "JobWhereUniqueInput" | "LocationWhereInput" | "NullableFloatFilter" | "NullableStringFilter" | "PermissionFilter" | "PermissionWhereInput" | "PermissionWhereUniqueInput" | "ResumeFilter" | "ResumeWhereInput" | "RoleWhereInput" | "RoleWhereUniqueInput" | "SkillFilter" | "SkillUpdateManyMutationInput" | "SkillWhereInput" | "SkillWhereUniqueInput" | "StringFilter" | "UniqueApplicationInputType" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "ApplicationFilter" | "ApplicationNoteFilter" | "ApplicationNoteWhereInput" | "ApplicationWhereInput" | "BranchFilter" | "BranchWhereInput" | "BranchWhereUniqueInput" | "CategoryFilter" | "CategoryWhereInput" | "CategoryWhereUniqueInput" | "CompanyFilter" | "CompanyWhereInput" | "DateTimeFilter" | "FavoriteFilter" | "FavoriteWhereInput" | "FileWhereInput" | "FloatFilter" | "JobCronTaskWhereInput" | "JobFilter" | "JobWhereInput" | "JobWhereUniqueInput" | "LocationWhereInput" | "LocationWhereUniqueInput" | "NullableFloatFilter" | "NullableStringFilter" | "PermissionFilter" | "PermissionWhereInput" | "PermissionWhereUniqueInput" | "ResumeFilter" | "ResumeWhereInput" | "RoleWhereInput" | "RoleWhereUniqueInput" | "SkillFilter" | "SkillUpdateManyMutationInput" | "SkillWhereInput" | "SkillWhereUniqueInput" | "StringFilter" | "UniqueApplicationInputType" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 
 export type NexusGenEnumNames = "ApplicationNoteType" | "ApplicationStatus" | "JobStatus" | "UserStatus";
 

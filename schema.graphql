@@ -135,6 +135,11 @@ input CategoryWhereInput {
   OR: [CategoryWhereInput!]
 }
 
+input CategoryWhereUniqueInput {
+  id: String
+  name: String
+}
+
 type Company {
   branches(after: BranchWhereUniqueInput, before: BranchWhereUniqueInput, first: Int, last: Int, skip: Int): [Branch!]!
   id: String!
@@ -187,6 +192,10 @@ input FavoriteWhereInput {
   OR: [FavoriteWhereInput!]
   user: UserWhereInput
   userId: StringFilter
+}
+
+type File {
+  id: String!
 }
 
 input FileWhereInput {
@@ -279,6 +288,15 @@ input JobWhereUniqueInput {
   id: String
 }
 
+type Location {
+  boundary: [Float!]!
+  id: String!
+  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int): [Job!]!
+  latitude: Float!
+  longitude: Float!
+  name: String!
+}
+
 input LocationWhereInput {
   AND: [LocationWhereInput!]
   branch: BranchFilter
@@ -291,6 +309,10 @@ input LocationWhereInput {
   NOT: [LocationWhereInput!]
   OR: [LocationWhereInput!]
   users: UserFilter
+}
+
+input LocationWhereUniqueInput {
+  id: String
 }
 
 type Mutation {
@@ -353,16 +375,23 @@ type Query {
   applicationNotes(id: String): [ApplicationNote!]!
   applications(where: ApplicationWhereInput): [Application!]!
   applicationsConnection(where: ApplicationWhereInput): Int!
+  branches(where: BranchWhereInput): [Branch!]!
   candidates(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
   candidatesConnection(where: UserWhereInput): Int!
+  categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int, skip: Int): [Category!]!
+  category(where: CategoryWhereUniqueInput!): Category
+  getSignedFileUrl(AWSUrl: String!): String
   job(where: JobWhereUniqueInput!): Job
   jobs(where: JobWhereInput): [Job!]!
   jobsConnection(where: JobWhereInput): Int!
+  location(where: LocationWhereUniqueInput!): Location
+  locations(after: LocationWhereUniqueInput, before: LocationWhereUniqueInput, first: Int, last: Int, skip: Int): [Location!]!
   me: User
   protectedJobs(where: JobWhereInput): [Job!]!
   protectedJobsConnection(where: JobWhereInput): Int!
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, skip: Int): [Role!]!
   searchJobs(location: String, perPage: Int, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
+  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
   user(where: UserWhereUniqueInput!): User
   users(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
   usersConnection(where: UserWhereInput): Int!
