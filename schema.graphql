@@ -495,7 +495,7 @@ input StringFilter {
 
 type Term {
   id: String!
-  token: String!
+  label: String!
   type: String!
 }
 

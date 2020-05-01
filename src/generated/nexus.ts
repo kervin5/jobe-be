@@ -404,7 +404,7 @@ export interface NexusGenRootTypes {
   Skill: client.Skill;
   Term: { // root type
     id: string; // String!
-    token: string; // String!
+    label: string; // String!
     type: string; // String!
   }
   User: client.User;
@@ -568,7 +568,7 @@ export interface NexusGenFieldTypes {
   }
   Term: { // field return type
     id: string; // String!
-    token: string; // String!
+    label: string; // String!
     type: string; // String!
   }
   User: { // field return type
