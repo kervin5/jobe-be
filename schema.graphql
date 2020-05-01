@@ -315,6 +315,11 @@ input LocationWhereUniqueInput {
   id: String
 }
 
+type MapboxLocation {
+  id: String!
+  name: String!
+}
+
 type Mutation {
   login(email: String!, password: String!): User!
   updateManySkill(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
@@ -386,7 +391,9 @@ type Query {
   jobsConnection(where: JobWhereInput): Int!
   location(where: LocationWhereUniqueInput!): Location
   locations(after: LocationWhereUniqueInput, before: LocationWhereUniqueInput, first: Int, last: Int, skip: Int): [Location!]!
+  mapBoxLocation(query: String): MapboxLocation!
   me: User
+  popularTerms: [Term!]!
   protectedJobs(where: JobWhereInput): [Job!]!
   protectedJobsConnection(where: JobWhereInput): Int!
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, skip: Int): [Role!]!
@@ -484,6 +491,12 @@ input StringFilter {
   not: String
   notIn: [String!]
   startsWith: String
+}
+
+type Term {
+  id: String!
+  token: String!
+  type: String!
 }
 
 input UniqueApplicationInputType {

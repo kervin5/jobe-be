@@ -8,6 +8,16 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     args: {
       AWSUrl: stringArg({ required: true }),
     },
-    resolve: async (parent, args, ctx) => sign_s3_read(args.AWSUrl ?? ''),
+
+    resolve: async (parent, args, ctx) => {
+      const [file] = await ctx.prisma.file.findMany({
+        where: { path: { endsWith: args.AWSUrl } },
+      })
+
+      if (file) {
+        return await sign_s3_read(file.path)
+      }
+      return null
+    },
   })
 }

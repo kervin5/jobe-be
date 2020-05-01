@@ -69,7 +69,7 @@ export const sign_s3_read = async (filePath: string) => {
     Expires: 500,
     signature: 'v4',
   }
-  return ''
+
   // Make a request to the S3 API to get a signed URL which we can use to upload our file
   try {
     const signedUrl = await s3.getSignedUrl('getObject', s3Params)

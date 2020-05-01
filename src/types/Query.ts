@@ -10,6 +10,7 @@ import locations from '../resolvers/queries/locations'
 import categories from '../resolvers/queries/categories'
 import skills from '../resolvers/queries/skills'
 import files from '../resolvers/queries/files'
+import terms from '../resolvers/queries/terms'
 
 export const Query = queryType({
   definition(t) {
@@ -22,6 +23,7 @@ export const Query = queryType({
     categories(t)
     skills(t)
     files(t)
+    terms(t)
     /*
     t.field('me', {
       type: 'User',

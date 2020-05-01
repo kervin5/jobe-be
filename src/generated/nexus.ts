@@ -393,11 +393,20 @@ export interface NexusGenRootTypes {
   File: client.File;
   Job: client.Job;
   Location: client.Location;
+  MapboxLocation: { // root type
+    id: string; // String!
+    name: string; // String!
+  }
   Mutation: {};
   Permission: client.Permission;
   Query: {};
   Role: client.Role;
   Skill: client.Skill;
+  Term: { // root type
+    id: string; // String!
+    token: string; // String!
+    type: string; // String!
+  }
   User: client.User;
   String: string;
   Int: number;
@@ -507,6 +516,10 @@ export interface NexusGenFieldTypes {
     longitude: number; // Float!
     name: string; // String!
   }
+  MapboxLocation: { // field return type
+    id: string; // String!
+    name: string; // String!
+  }
   Mutation: { // field return type
     login: NexusGenRootTypes['User']; // User!
     updateManySkill: NexusGenRootTypes['BatchPayload']; // BatchPayload!
@@ -531,7 +544,9 @@ export interface NexusGenFieldTypes {
     jobsConnection: number; // Int!
     location: NexusGenRootTypes['Location'] | null; // Location
     locations: NexusGenRootTypes['Location'][]; // [Location!]!
+    mapBoxLocation: NexusGenRootTypes['MapboxLocation']; // MapboxLocation!
     me: NexusGenRootTypes['User'] | null; // User
+    popularTerms: NexusGenRootTypes['Term'][]; // [Term!]!
     protectedJobs: NexusGenRootTypes['Job'][]; // [Job!]!
     protectedJobsConnection: number; // Int!
     roles: NexusGenRootTypes['Role'][]; // [Role!]!
@@ -550,6 +565,11 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     jobs: NexusGenRootTypes['Job'][]; // [Job!]!
     name: string; // String!
+  }
+  Term: { // field return type
+    id: string; // String!
+    token: string; // String!
+    type: string; // String!
   }
   User: { // field return type
     branch: NexusGenRootTypes['Branch'] | null; // Branch
@@ -664,6 +684,9 @@ export interface NexusGenArgTypes {
       last?: number | null; // Int
       skip?: number | null; // Int
     }
+    mapBoxLocation: { // args
+      query?: string | null; // String
+    }
     protectedJobs: { // args
       where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
     }
@@ -739,7 +762,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Application" | "ApplicationNote" | "AuthPayload" | "BatchPayload" | "Branch" | "Category" | "Company" | "File" | "Job" | "Location" | "Mutation" | "Permission" | "Query" | "Role" | "Skill" | "User";
+export type NexusGenObjectNames = "Application" | "ApplicationNote" | "AuthPayload" | "BatchPayload" | "Branch" | "Category" | "Company" | "File" | "Job" | "Location" | "MapboxLocation" | "Mutation" | "Permission" | "Query" | "Role" | "Skill" | "Term" | "User";
 
 export type NexusGenInputNames = "ApplicationFilter" | "ApplicationNoteFilter" | "ApplicationNoteWhereInput" | "ApplicationWhereInput" | "BranchFilter" | "BranchWhereInput" | "BranchWhereUniqueInput" | "CategoryFilter" | "CategoryWhereInput" | "CategoryWhereUniqueInput" | "CompanyFilter" | "CompanyWhereInput" | "DateTimeFilter" | "FavoriteFilter" | "FavoriteWhereInput" | "FileWhereInput" | "FloatFilter" | "JobCronTaskWhereInput" | "JobFilter" | "JobWhereInput" | "JobWhereUniqueInput" | "LocationWhereInput" | "LocationWhereUniqueInput" | "NullableFloatFilter" | "NullableStringFilter" | "PermissionFilter" | "PermissionWhereInput" | "PermissionWhereUniqueInput" | "ResumeFilter" | "ResumeWhereInput" | "RoleWhereInput" | "RoleWhereUniqueInput" | "SkillFilter" | "SkillUpdateManyMutationInput" | "SkillWhereInput" | "SkillWhereUniqueInput" | "StringFilter" | "UniqueApplicationInputType" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 

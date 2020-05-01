@@ -11,3 +11,11 @@ export const Location = objectType({
     t.model.boundary()
   },
 })
+
+export const MapboxLocation = objectType({
+  name: 'MapboxLocation',
+  definition(t) {
+    t.string('id')
+    t.string('name')
+  },
+})
