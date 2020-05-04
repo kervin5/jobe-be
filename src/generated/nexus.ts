@@ -284,6 +284,10 @@ export interface NexusGenInputs {
     user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     userId?: NexusGenInputs['StringFilter'] | null; // StringFilter
   }
+  RolePermissionsInputType: { // input type
+    actions?: string[] | null; // [String!]
+    object: string; // String!
+  }
   RoleWhereInput: { // input type
     AND?: NexusGenInputs['RoleWhereInput'][] | null; // [RoleWhereInput!]
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
@@ -334,6 +338,20 @@ export interface NexusGenInputs {
   }
   UniqueApplicationInputType: { // input type
     id: string; // String!
+  }
+  UpdateJobCustomInput: { // input type
+    author?: string | null; // String
+    categories?: string[] | null; // [String!]
+    compensationType?: string | null; // String
+    description?: string | null; // String
+    disclaimer?: string | null; // String
+    location?: string | null; // String
+    maxCompensation?: number | null; // Float
+    minCompensation?: number | null; // Float
+    skills?: string[] | null; // [String!]
+    status?: NexusGenEnums['JobStatus'] | null; // JobStatus
+    title?: string | null; // String
+    type?: string | null; // String
   }
   UserFilter: { // input type
     every?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
@@ -447,6 +465,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   PermissionWhereUniqueInput: NexusGenInputs['PermissionWhereUniqueInput'];
   ResumeFilter: NexusGenInputs['ResumeFilter'];
   ResumeWhereInput: NexusGenInputs['ResumeWhereInput'];
+  RolePermissionsInputType: NexusGenInputs['RolePermissionsInputType'];
   RoleWhereInput: NexusGenInputs['RoleWhereInput'];
   RoleWhereUniqueInput: NexusGenInputs['RoleWhereUniqueInput'];
   SkillFilter: NexusGenInputs['SkillFilter'];
@@ -455,6 +474,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   SkillWhereUniqueInput: NexusGenInputs['SkillWhereUniqueInput'];
   StringFilter: NexusGenInputs['StringFilter'];
   UniqueApplicationInputType: NexusGenInputs['UniqueApplicationInputType'];
+  UpdateJobCustomInput: NexusGenInputs['UpdateJobCustomInput'];
   UserFilter: NexusGenInputs['UserFilter'];
   UserWhereInput: NexusGenInputs['UserWhereInput'];
   UserWhereUniqueInput: NexusGenInputs['UserWhereUniqueInput'];
@@ -521,8 +541,22 @@ export interface NexusGenFieldTypes {
     name: string; // String!
   }
   Mutation: { // field return type
+    createApplicationnew: NexusGenRootTypes['Application'] | null; // Application
+    createCategory: NexusGenRootTypes['Category'] | null; // Category
+    createJob: NexusGenRootTypes['Job'] | null; // Job
+    createLocation: NexusGenRootTypes['Location'] | null; // Location
+    createRole: NexusGenRootTypes['Role'] | null; // Role
+    createSkill: NexusGenRootTypes['Skill'] | null; // Skill
+    createUser: NexusGenRootTypes['User']; // User!
+    deleteJob: NexusGenRootTypes['Job'] | null; // Job
+    deleteUser: NexusGenRootTypes['User'] | null; // User
     login: NexusGenRootTypes['User']; // User!
+    logout: string | null; // String
+    signup: NexusGenRootTypes['User']; // User!
+    updateJob: NexusGenRootTypes['Job'] | null; // Job
     updateManySkill: NexusGenRootTypes['BatchPayload']; // BatchPayload!
+    updateRole: NexusGenRootTypes['Role'] | null; // Role
+    updateUser: NexusGenRootTypes['User'] | null; // User
   }
   Permission: { // field return type
     id: string; // String!
@@ -618,13 +652,75 @@ export interface NexusGenArgTypes {
     }
   }
   Mutation: {
+    createCategory: { // args
+      name: string; // String!
+    }
+    createJob: { // args
+      author?: string | null; // String
+      categories: string[]; // [String!]!
+      compensationType: string; // String!
+      description: string; // String!
+      disclaimer?: string | null; // String
+      isRecurring?: boolean | null; // Boolean
+      location?: string | null; // String
+      maxCompensation?: number | null; // Float
+      minCompensation: number; // Float!
+      skills: string[]; // [String!]!
+      title: string; // String!
+      type: string; // String!
+    }
+    createLocation: { // args
+      boundary: number[]; // [Float!]!
+      latitude: number; // Float!
+      longitude: number; // Float!
+      name: string; // String!
+    }
+    createRole: { // args
+      name: string; // String!
+      permissions?: NexusGenInputs['RolePermissionsInputType'][] | null; // [RolePermissionsInputType!]
+    }
+    createSkill: { // args
+      name: string; // String!
+    }
+    createUser: { // args
+      branch?: string | null; // ID
+      email: string; // String!
+      name: string; // String!
+      role?: string | null; // ID
+    }
+    deleteJob: { // args
+      id: string; // ID!
+    }
+    deleteUser: { // args
+      id?: string | null; // ID
+    }
     login: { // args
       email: string; // String!
       password: string; // String!
     }
+    signup: { // args
+      email: string; // String!
+      name: string; // String!
+      password: string; // String!
+    }
+    updateJob: { // args
+      data: NexusGenInputs['UpdateJobCustomInput']; // UpdateJobCustomInput!
+      where: NexusGenInputs['JobWhereUniqueInput']; // JobWhereUniqueInput!
+    }
     updateManySkill: { // args
       data: NexusGenInputs['SkillUpdateManyMutationInput']; // SkillUpdateManyMutationInput!
       where?: NexusGenInputs['SkillWhereInput'] | null; // SkillWhereInput
+    }
+    updateRole: { // args
+      id: string; // ID!
+      name?: string | null; // String
+      permissions?: NexusGenInputs['RolePermissionsInputType'][] | null; // [RolePermissionsInputType!]
+    }
+    updateUser: { // args
+      branch?: string | null; // ID
+      id: string; // ID!
+      name?: string | null; // String
+      role?: string | null; // ID
     }
   }
   Query: {
@@ -764,7 +860,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "Application" | "ApplicationNote" | "AuthPayload" | "BatchPayload" | "Branch" | "Category" | "Company" | "File" | "Job" | "Location" | "MapboxLocation" | "Mutation" | "Permission" | "Query" | "Role" | "Skill" | "Term" | "User";
 
-export type NexusGenInputNames = "ApplicationFilter" | "ApplicationNoteFilter" | "ApplicationNoteWhereInput" | "ApplicationWhereInput" | "BranchFilter" | "BranchWhereInput" | "BranchWhereUniqueInput" | "CategoryFilter" | "CategoryWhereInput" | "CategoryWhereUniqueInput" | "CompanyFilter" | "CompanyWhereInput" | "DateTimeFilter" | "FavoriteFilter" | "FavoriteWhereInput" | "FileWhereInput" | "FloatFilter" | "JobCronTaskWhereInput" | "JobFilter" | "JobWhereInput" | "JobWhereUniqueInput" | "LocationWhereInput" | "LocationWhereUniqueInput" | "NullableFloatFilter" | "NullableStringFilter" | "PermissionFilter" | "PermissionWhereInput" | "PermissionWhereUniqueInput" | "ResumeFilter" | "ResumeWhereInput" | "RoleWhereInput" | "RoleWhereUniqueInput" | "SkillFilter" | "SkillUpdateManyMutationInput" | "SkillWhereInput" | "SkillWhereUniqueInput" | "StringFilter" | "UniqueApplicationInputType" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "ApplicationFilter" | "ApplicationNoteFilter" | "ApplicationNoteWhereInput" | "ApplicationWhereInput" | "BranchFilter" | "BranchWhereInput" | "BranchWhereUniqueInput" | "CategoryFilter" | "CategoryWhereInput" | "CategoryWhereUniqueInput" | "CompanyFilter" | "CompanyWhereInput" | "DateTimeFilter" | "FavoriteFilter" | "FavoriteWhereInput" | "FileWhereInput" | "FloatFilter" | "JobCronTaskWhereInput" | "JobFilter" | "JobWhereInput" | "JobWhereUniqueInput" | "LocationWhereInput" | "LocationWhereUniqueInput" | "NullableFloatFilter" | "NullableStringFilter" | "PermissionFilter" | "PermissionWhereInput" | "PermissionWhereUniqueInput" | "ResumeFilter" | "ResumeWhereInput" | "RolePermissionsInputType" | "RoleWhereInput" | "RoleWhereUniqueInput" | "SkillFilter" | "SkillUpdateManyMutationInput" | "SkillWhereInput" | "SkillWhereUniqueInput" | "StringFilter" | "UniqueApplicationInputType" | "UpdateJobCustomInput" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 
 export type NexusGenEnumNames = "ApplicationNoteType" | "ApplicationStatus" | "JobStatus" | "UserStatus";
 

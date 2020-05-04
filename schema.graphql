@@ -321,8 +321,22 @@ type MapboxLocation {
 }
 
 type Mutation {
+  createApplicationnew: Application
+  createCategory(name: String!): Category
+  createJob(author: String, categories: [String!]!, compensationType: String!, description: String!, disclaimer: String, isRecurring: Boolean, location: String, maxCompensation: Float, minCompensation: Float!, skills: [String!]!, title: String!, type: String!): Job
+  createLocation(boundary: [Float!]!, latitude: Float!, longitude: Float!, name: String!): Location
+  createRole(name: String!, permissions: [RolePermissionsInputType!]): Role
+  createSkill(name: String!): Skill
+  createUser(branch: ID, email: String!, name: String!, role: ID): User!
+  deleteJob(id: ID!): Job
+  deleteUser(id: ID): User
   login(email: String!, password: String!): User!
+  logout: String
+  signup(email: String!, name: String!, password: String!): User!
+  updateJob(data: UpdateJobCustomInput!, where: JobWhereUniqueInput!): Job
   updateManySkill(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
+  updateRole(id: ID!, name: String, permissions: [RolePermissionsInputType!]): Role
+  updateUser(branch: ID, id: ID!, name: String, role: ID): User
 }
 
 input NullableFloatFilter {
@@ -432,6 +446,11 @@ type Role {
   permissions(after: PermissionWhereUniqueInput, before: PermissionWhereUniqueInput, first: Int, last: Int, skip: Int): [Permission!]!
 }
 
+input RolePermissionsInputType {
+  actions: [String!]
+  object: String!
+}
+
 input RoleWhereInput {
   AND: [RoleWhereInput!]
   id: StringFilter
@@ -501,6 +520,21 @@ type Term {
 
 input UniqueApplicationInputType {
   id: String!
+}
+
+input UpdateJobCustomInput {
+  author: String
+  categories: [String!]
+  compensationType: String
+  description: String
+  disclaimer: String
+  location: String
+  maxCompensation: Float
+  minCompensation: Float
+  skills: [String!]
+  status: JobStatus
+  title: String
+  type: String
 }
 
 type User {

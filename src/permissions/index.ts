@@ -68,6 +68,10 @@ export const permissions = shield(
     createDraft: rules.isAuthenticatedUser,
     deletePost: rules.isPostOwner,
     publish: rules.isPostOwner,*/
+      createJob: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'JOB' }),
+      ),
     },
   },
   {

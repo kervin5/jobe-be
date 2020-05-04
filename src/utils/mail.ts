@@ -2,16 +2,14 @@ const nodemailer = require('nodemailer')
 let aws = require('aws-sdk')
 
 // configure AWS SDK
-aws.config({
-  accessKeyId: process.env.AWS_SES_AccessKey,
-  secretAccessKey: process.env.AWS_SES_SecretKey,
-  region: 'us-east-1',
-})
 
 // create Nodemailer SES transport
 export const transport = nodemailer.createTransport({
   SES: new aws.SES({
     apiVersion: '2010-12-01',
+    accessKeyId: process.env.AWS_SES_AccessKey,
+    secretAccessKey: process.env.AWS_SES_SecretKey,
+    region: 'us-east-1',
   }),
   sendingRate: 14,
 })

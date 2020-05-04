@@ -18,8 +18,8 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createUser', {
     type: 'User',
     args: {
-      name: stringArg(),
-      email: stringArg(),
+      name: stringArg({ required: true }),
+      email: stringArg({ required: true }),
       role: idArg(),
       branch: idArg(),
     },
@@ -54,40 +54,281 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       })
       return user
     },
-  }),
-    t.field('login', {
-      type: 'User',
-      args: {
-        email: stringArg({ nullable: false }),
-        password: stringArg({ nullable: false }),
-      },
-      resolve: async (_parent, { email, password }, ctx) => {
-        const user = await ctx.prisma.user.findOne({
-          where: {
-            email,
+  })
+  t.field('signup', {
+    type: 'User',
+    args: {
+      name: stringArg({ required: true }),
+      password: stringArg({ required: true }),
+      email: stringArg({ required: true }),
+    },
+    resolve: async (parent, args, ctx) => {
+      const salt = await genSalt(10)
+
+      let usersCount = await ctx.prisma.user.count()
+
+      //A role must exist in the database
+      let [defaultRole] = await ctx.prisma.role.findMany({
+        where: { name: 'candidate' },
+      })
+
+      if (!defaultRole) {
+        defaultRole = await ctx.prisma.role.create({
+          data: {
+            name: 'candidate',
+            permissions: {
+              create: [
+                {
+                  object: 'JOB',
+                  actions: { set: ['READ'] },
+                },
+                {
+                  object: 'APPLICATION',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+                {
+                  object: 'FAVORITE',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+                {
+                  object: 'RESUME',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+              ],
+            },
           },
         })
-        if (!user) {
-          throw new Error(`No user found for email: ${email}`)
-        }
-        const passwordValid = await compare(password, user.password)
-        if (!passwordValid) {
-          throw new Error('Invalid password')
-        }
-        // 3. generate the JWT Token
-        const token = jwt.sign({ id: user.id }, process.env.APP_SECRET)
+      }
 
-        ctx.response.header('token', `Bearer ${token}`)
+      if (!!usersCount) {
+        defaultRole = await ctx.prisma.role.create({
+          data: {
+            name: 'administrator',
+            permissions: {
+              create: [
+                {
+                  object: 'USER',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+                {
+                  object: 'ROLE',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+                {
+                  object: 'PERMISSION',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+                {
+                  object: 'SKILL',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+                {
+                  object: 'CATEGORY',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+                {
+                  object: 'BRANCH',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+                {
+                  object: 'COMPANY',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
 
-        ctx.response.cookie('token', `Bearer ${token}`, {
-          httpOnly: true,
-          maxAge: 1000 * 60 * 60 * 24 * 365,
-          path: '/',
+                {
+                  object: 'RESUME',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+                {
+                  object: 'FAVORITE',
+                  actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+                },
+              ],
+            },
+          },
+        })
+      }
+
+      try {
+        const user = await ctx.prisma.user.create({
+          data: {
+            ...args,
+            password: await hash(args.password, salt),
+            status: 'ACTIVE',
+            role: {
+              connect: { id: defaultRole.id },
+            },
+          },
+          include: { role: true },
         })
 
+        const token = jwt.sign({ id: user.id }, process.env.APP_SECRET)
+        // 4. Set the cookie with the token
+        ctx.response.header('token', token)
+        ctx.response.cookie('token', token, {
+          httpOnly: true,
+          maxAge: 1000 * 60 * 60 * 24 * 365,
+        })
+        // console.log(user);
         return user
-      },
-    })
+      } catch (error) {
+        throw new Error(`An user with this email already exists`)
+      }
+    },
+  })
+
+  t.field('login', {
+    type: 'User',
+    args: {
+      email: stringArg({ nullable: false }),
+      password: stringArg({ nullable: false }),
+    },
+    resolve: async (_parent, { email, password }, ctx) => {
+      const user = await ctx.prisma.user.findOne({
+        where: {
+          email,
+        },
+      })
+      if (!user) {
+        throw new Error(`No user found for email: ${email}`)
+      }
+      const passwordValid = await compare(password, user.password)
+      if (!passwordValid) {
+        throw new Error('Invalid password')
+      }
+      // 3. generate the JWT Token
+      const token = jwt.sign({ id: user.id }, process.env.APP_SECRET)
+
+      ctx.response.header('token', `Bearer ${token}`)
+
+      ctx.response.cookie('token', `Bearer ${token}`, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 365,
+        path: '/',
+      })
+
+      return user
+    },
+  })
+
+  t.string('logout', {
+    nullable: true,
+    resolve: async (parent, args, ctx) => {
+      ctx.response.clearCookie('token')
+      return 'log out'
+    },
+  })
+
+  t.field('deleteUser', {
+    type: 'User',
+    nullable: true,
+    args: {
+      id: idArg(),
+    },
+    resolve: async (parent, args, ctx) => {
+      await can('READ', 'BRANCH', ctx)
+
+      //get userData
+      const user = await ctx.prisma.user.findOne({
+        where: { id: args.id },
+        include: { branch: true },
+      })
+
+      const jobs = await ctx.prisma.job.findMany({
+        where: { status: { not: 'DELETED' }, author: { id: args.id } },
+      })
+
+      if (jobs.length) {
+        //Find next user from the same branch
+        const recruiters = await ctx.prisma.user.findMany({
+          where: {
+            branch: { id: user?.branch?.id },
+            id: { not: user?.id },
+            role: { name: 'recruiter' },
+          },
+          first: 1,
+        })
+
+        if (recruiters.length) {
+          const [coworker] = recruiters
+          const result = jobs.map((job) =>
+            ctx.prisma.job.update({
+              where: { id: job.id },
+              data: { author: { connect: { id: coworker.id } } },
+            }),
+          )
+          await Promise.all(result)
+        } else {
+          const managers = await ctx.prisma.user.findMany({
+            where: {
+              branch: { id: user?.branch?.id },
+              id: { not: user?.id },
+              role: { name: 'manager' },
+            },
+            first: 1,
+          })
+
+          if (managers.length) {
+            const [coworker] = managers
+            const result = jobs.map((job) =>
+              ctx.prisma.job.update({
+                where: { id: job.id },
+                data: { author: { connect: { id: coworker.id } } },
+              }),
+            )
+            await Promise.all(result)
+          } else {
+            await ctx.prisma.job.updateMany({
+              where: { author: { id: user?.id } },
+              data: {
+                status: 'DELETED',
+              },
+            })
+
+            await ctx.prisma.application.updateMany({
+              where: { job: { author: { id: user?.id } } },
+              data: { status: 'ARCHIVED' },
+            })
+          }
+        }
+      }
+
+      // console.log(user);
+      // console.log(jobs);
+      return ctx.prisma.user.update({
+        where: { id: user?.id },
+        data: { status: 'DELETED' },
+      })
+    },
+  })
+
+  t.field('updateUser', {
+    type: 'User',
+    nullable: true,
+    args: {
+      id: idArg({ required: true }),
+      name: stringArg(),
+      branch: idArg(),
+      role: idArg(),
+    },
+    resolve: async (parent, args, ctx) => {
+      const name = args.name ? { name: args.name } : {}
+      const branch = args.branch
+        ? {
+            branch: { connect: { id: args.branch } },
+          }
+        : {}
+      const role = args.role ? { role: { connect: { id: args.role } } } : {}
+      return ctx.prisma.user.update({
+        where: { id: args.id },
+        data: {
+          ...name,
+          ...branch,
+          ...role,
+        },
+      })
+    },
+  })
 }
 
 function titleCase(str: string = '') {
@@ -97,3 +338,59 @@ function titleCase(str: string = '') {
   }
   return string.join(' ')
 }
+
+/*
+permissions: {
+  create: [
+    {
+      object: 'JOB',
+      actions: {
+        set: ['CREATE', 'READ', 'UPDATE', 'DELETE', 'PUBLISH'],
+      },
+    },
+    {
+      object: 'APPLICATION',
+      actions: {
+        set: ['CREATE', 'READ', 'UPDATE', 'DELETE'],
+      },
+    },
+    {
+      object: 'USER',
+      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+    },
+    {
+      object: 'ROLE',
+      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+    },
+    {
+      object: 'PERMISSION',
+      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+    },
+    {
+      object: 'SKILL',
+      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+    },
+    {
+      object: 'CATEGORY',
+      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+    },
+    {
+      object: 'BRANCH',
+      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+    },
+    {
+      object: 'COMPANY',
+      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+    },
+    ,
+    {
+      object: 'RESUME',
+      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+    },
+    {
+      object: 'FAVORITE',
+      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
+    },
+  ],
+},
+*/

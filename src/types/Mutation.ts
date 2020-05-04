@@ -1,12 +1,22 @@
-import { compare, hash } from 'bcryptjs'
-import { sign } from 'jsonwebtoken'
-import { mutationType, stringArg, intArg } from '@nexus/schema'
+import { mutationType } from '@nexus/schema'
 
 import users from '../resolvers/mutations/users'
+import locations from '../resolvers/mutations/locations'
+import roles from '../resolvers/mutations/roles'
+import categories from '../resolvers/mutations/categories'
+import skills from '../resolvers/mutations/skills'
+import jobs from '../resolvers/mutations/jobs'
+import applications from '../resolvers/mutations/applications'
 
 export const Mutation = mutationType({
   definition(t) {
     users(t)
+    locations(t)
+    roles(t)
+    categories(t)
+    skills(t)
+    jobs(t)
+    applications(t)
     /*
     t.field('signup', {
       type: 'AuthPayload',

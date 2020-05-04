@@ -18,3 +18,14 @@ export const UniqueApplicationInputType = inputObjectType({
     t.string('id', { required: true })
   },
 })
+
+/*
+export const ApplicationCreateInpuType = inputObjectType({
+  name: 'ApplicationCreateInpuType',
+  definition(t) {
+    t.field('job', {
+      type: 'string',
+    })
+  },
+})
+*/
