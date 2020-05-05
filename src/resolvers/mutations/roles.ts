@@ -14,14 +14,18 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       }),
     },
     resolve: async (parent, args, ctx) => {
+      const rolePermissions = args.permissions?.map(
+        (permission: IRolePermission) => ({
+          object: permission.object,
+          actions: { set: permission.actions },
+        }),
+      )
+
       return await ctx.prisma.role.create({
         data: {
           name: args.name,
           permissions: {
-            create: args.permissions?.map((permission: IRolePermission) => ({
-              object: permission.object,
-              actions: { set: permission.actions },
-            })),
+            create: rolePermissions,
           },
         },
       })
@@ -49,7 +53,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
             delete: role?.permissions.map((permission) => ({
               id: permission.id,
             })),
-            create: args.permissions.map((permission: IRolePermission) => ({
+            create: args.permissions?.map((permission: IRolePermission) => ({
               object: permission.object,
               actions: { set: permission.actions },
             })),
@@ -64,5 +68,5 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
 
 interface IRolePermission {
   object: string
-  actions: string[]
+  actions?: string[] | null
 }

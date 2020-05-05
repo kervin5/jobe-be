@@ -475,9 +475,9 @@ export interface NexusGenRootTypes {
     name: string; // String!
   }
   SignedFileUploadRequest: { // root type
-    acl: string; // String!
-    signedRequest: string; // String!
-    url: string; // String!
+    acl?: string | null; // String
+    signedRequest?: string | null; // String
+    url?: string | null; // String
   }
   Skill: { // root type
     id: string; // String!
@@ -655,7 +655,7 @@ export interface NexusGenFieldTypes {
     signFileUpload: NexusGenRootTypes['SignedFileUploadRequest'] | null; // SignedFileUploadRequest
     signup: NexusGenRootTypes['User']; // User!
     unschedule: string | null; // String
-    updateApplicationStatus: NexusGenRootTypes['Application']; // Application!
+    updateApplicationStatus: NexusGenRootTypes['Application'] | null; // Application
     updateJob: NexusGenRootTypes['Job'] | null; // Job
     updateRole: NexusGenRootTypes['Role'] | null; // Role
     updateUser: NexusGenRootTypes['User'] | null; // User
@@ -703,9 +703,9 @@ export interface NexusGenFieldTypes {
     permissions: NexusGenRootTypes['Permission'][]; // [Permission!]!
   }
   SignedFileUploadRequest: { // field return type
-    acl: string; // String!
-    signedRequest: string; // String!
-    url: string; // String!
+    acl: string | null; // String
+    signedRequest: string | null; // String
+    url: string | null; // String
   }
   Skill: { // field return type
     id: string; // String!

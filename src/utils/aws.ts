@@ -18,7 +18,7 @@ export const sign_s3_upload = async ({
 }: {
   fileName: string
   fileType: string
-}) => {
+}): Promise<ISignedFile> => {
   // console.log(process.env.AWSAccessKeyId,process.env.AWSSecretKey);
   const uniquefolder = 'resumes/' + uuid.v4() + fileName.replace(' ', '-')
   const s3 = new aws.S3({
@@ -50,7 +50,7 @@ export const sign_s3_upload = async ({
     }
   } catch (err) {
     console.log(err)
-    returnData = { success: false, error: err }
+    returnData = { success: false, error: err, data: null }
   }
 
   return returnData
@@ -58,8 +58,14 @@ export const sign_s3_upload = async ({
 
 interface ISignedFile {
   success: boolean
-  data?: object
+  data: IsuccessSignedFile | null
   error?: object
+}
+
+interface IsuccessSignedFile {
+  acl: string
+  signedRequest: string
+  url: string
 }
 
 export const sign_s3_read = async (filePath: string) => {

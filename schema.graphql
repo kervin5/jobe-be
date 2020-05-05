@@ -377,7 +377,7 @@ type Mutation {
   signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
   signup(email: String!, name: String!, password: String!): User!
   unschedule(id: String!): String
-  updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application!
+  updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
   updateJob(data: UpdateJobCustomInput!, where: JobWhereUniqueInput!): Job
   updateRole(id: ID!, name: String, permissions: [RolePermissionsInputType!]): Role
   updateUser(branch: ID, id: ID!, name: String, role: ID): User
@@ -520,9 +520,9 @@ input RoleWhereUniqueInput {
 }
 
 type SignedFileUploadRequest {
-  acl: String!
-  signedRequest: String!
-  url: String!
+  acl: String
+  signedRequest: String
+  url: String
 }
 
 type Skill {

@@ -1,5 +1,5 @@
 import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, arg, idArg, floatArg } from '@nexus/schema'
+import { stringArg, floatArg } from '@nexus/schema'
 
 export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createLocation', {
@@ -20,9 +20,4 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       })
     },
   })
-}
-
-interface IRolePermission {
-  object: string
-  actions: string[]
 }

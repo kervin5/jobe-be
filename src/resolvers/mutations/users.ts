@@ -376,7 +376,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       // 3. Check if its expired
       const [user] = await ctx.prisma.user.findMany({
         where: {
-          resetToken: args.resetToken,
+          resetToken: args.token,
           resetTokenExpiry: { gte: Date.now() - 3600000 },
         },
       })

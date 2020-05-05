@@ -64,6 +64,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
 
   t.field('updateApplicationStatus', {
     type: 'Application',
+    nullable: true,
     args: {
       id: idArg({ required: true }),
       status: arg({ type: 'ApplicationStatus', required: true }),

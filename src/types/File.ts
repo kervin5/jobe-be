@@ -13,8 +13,8 @@ export const File = objectType({
 export const SignedFileUploadRequest = objectType({
   name: 'SignedFileUploadRequest',
   definition(t) {
-    t.string('signedRequest')
-    t.string('url')
-    t.string('acl')
+    t.string('signedRequest', { nullable: true })
+    t.string('url', { nullable: true })
+    t.string('acl', { nullable: true })
   },
 })
