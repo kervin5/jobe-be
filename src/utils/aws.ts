@@ -26,7 +26,7 @@ export const sign_s3_upload = async ({
     accessKeyId: process.env.AWSAccessKeyId,
     secretAccessKey: process.env.AWSSecretKey,
   }) // Create a new instance of S3
-  let returnData = {}
+  let returnData: ISignedFile
 
   // Set up the payload of what we are sending to the S3 api
   const s3Params = {
@@ -54,6 +54,12 @@ export const sign_s3_upload = async ({
   }
 
   return returnData
+}
+
+interface ISignedFile {
+  success: boolean
+  data?: object
+  error?: object
 }
 
 export const sign_s3_read = async (filePath: string) => {

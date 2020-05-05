@@ -177,6 +177,12 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
+type Favorite {
+  id: String!
+  job: Job!
+  user: User!
+}
+
 input FavoriteFilter {
   every: FavoriteWhereInput
   none: FavoriteWhereInput
@@ -321,18 +327,23 @@ type MapboxLocation {
 }
 
 type Mutation {
-  createApplicationnew: Application
+  addFavorite(job: ID!): ID
+  createApplication(job: ID!): Application
+  createApplicationNote(content: String!, id: ID!): ApplicationNote
   createCategory(name: String!): Category
   createJob(author: String, categories: [String!]!, compensationType: String!, description: String!, disclaimer: String, isRecurring: Boolean, location: String, maxCompensation: Float, minCompensation: Float!, skills: [String!]!, title: String!, type: String!): Job
   createLocation(boundary: [Float!]!, latitude: Float!, longitude: Float!, name: String!): Location
   createRole(name: String!, permissions: [RolePermissionsInputType!]): Role
   createSkill(name: String!): Skill
   createUser(branch: ID, email: String!, name: String!, role: ID): User!
+  deleteFavorite(job: ID!): ID
   deleteJob(id: ID!): Job
   deleteUser(id: ID): User
   login(email: String!, password: String!): User!
   logout: String
+  signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
   signup(email: String!, name: String!, password: String!): User!
+  updateApplicationStatus(id: ID!, status: String!): Application!
   updateJob(data: UpdateJobCustomInput!, where: JobWhereUniqueInput!): Job
   updateManySkill(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
   updateRole(id: ID!, name: String, permissions: [RolePermissionsInputType!]): Role
@@ -418,6 +429,12 @@ type Query {
   usersConnection(where: UserWhereInput): Int!
 }
 
+type Resume {
+  file: File!
+  id: String!
+  user: User!
+}
+
 input ResumeFilter {
   every: ResumeWhereInput
   none: ResumeWhereInput
@@ -463,6 +480,12 @@ input RoleWhereInput {
 
 input RoleWhereUniqueInput {
   id: String
+}
+
+type SignedFileUploadRequest {
+  acl: String!
+  signedRequest: String!
+  url: String!
 }
 
 type Skill {

@@ -6,3 +6,12 @@ export const File = objectType({
     t.model.id()
   },
 })
+
+export const SignedFileUploadRequest = objectType({
+  name: 'SignedFileUploadRequest',
+  definition(t) {
+    t.string('signedRequest')
+    t.string('url')
+    t.string('acl')
+  },
+})

@@ -15,6 +15,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       return ctx.prisma.location.create({
         data: {
           ...args,
+          boundary: { set: args.boundary },
         },
       })
     },

@@ -72,6 +72,8 @@ export const permissions = shield(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'JOB' }),
       ),
+      createApplication: rules.isAuthenticatedUser,
+      createResume: rules.isAuthenticatedUser,
     },
   },
   {

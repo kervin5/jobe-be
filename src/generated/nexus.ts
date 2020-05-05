@@ -408,6 +408,7 @@ export interface NexusGenRootTypes {
   Branch: client.Branch;
   Category: client.Category;
   Company: client.Company;
+  Favorite: client.Favorite;
   File: client.File;
   Job: client.Job;
   Location: client.Location;
@@ -418,7 +419,13 @@ export interface NexusGenRootTypes {
   Mutation: {};
   Permission: client.Permission;
   Query: {};
+  Resume: client.Resume;
   Role: client.Role;
+  SignedFileUploadRequest: { // root type
+    acl: string; // String!
+    signedRequest: string; // String!
+    url: string; // String!
+  }
   Skill: client.Skill;
   Term: { // root type
     id: string; // String!
@@ -519,6 +526,11 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     name: string; // String!
   }
+  Favorite: { // field return type
+    id: string; // String!
+    job: NexusGenRootTypes['Job']; // Job!
+    user: NexusGenRootTypes['User']; // User!
+  }
   File: { // field return type
     id: string; // String!
   }
@@ -541,18 +553,23 @@ export interface NexusGenFieldTypes {
     name: string; // String!
   }
   Mutation: { // field return type
-    createApplicationnew: NexusGenRootTypes['Application'] | null; // Application
+    addFavorite: string | null; // ID
+    createApplication: NexusGenRootTypes['Application'] | null; // Application
+    createApplicationNote: NexusGenRootTypes['ApplicationNote'] | null; // ApplicationNote
     createCategory: NexusGenRootTypes['Category'] | null; // Category
     createJob: NexusGenRootTypes['Job'] | null; // Job
     createLocation: NexusGenRootTypes['Location'] | null; // Location
     createRole: NexusGenRootTypes['Role'] | null; // Role
     createSkill: NexusGenRootTypes['Skill'] | null; // Skill
     createUser: NexusGenRootTypes['User']; // User!
+    deleteFavorite: string | null; // ID
     deleteJob: NexusGenRootTypes['Job'] | null; // Job
     deleteUser: NexusGenRootTypes['User'] | null; // User
     login: NexusGenRootTypes['User']; // User!
     logout: string | null; // String
+    signFileUpload: NexusGenRootTypes['SignedFileUploadRequest'] | null; // SignedFileUploadRequest
     signup: NexusGenRootTypes['User']; // User!
+    updateApplicationStatus: NexusGenRootTypes['Application']; // Application!
     updateJob: NexusGenRootTypes['Job'] | null; // Job
     updateManySkill: NexusGenRootTypes['BatchPayload']; // BatchPayload!
     updateRole: NexusGenRootTypes['Role'] | null; // Role
@@ -590,10 +607,20 @@ export interface NexusGenFieldTypes {
     users: NexusGenRootTypes['User'][]; // [User!]!
     usersConnection: number; // Int!
   }
+  Resume: { // field return type
+    file: NexusGenRootTypes['File']; // File!
+    id: string; // String!
+    user: NexusGenRootTypes['User']; // User!
+  }
   Role: { // field return type
     id: string; // String!
     name: string; // String!
     permissions: NexusGenRootTypes['Permission'][]; // [Permission!]!
+  }
+  SignedFileUploadRequest: { // field return type
+    acl: string; // String!
+    signedRequest: string; // String!
+    url: string; // String!
   }
   Skill: { // field return type
     id: string; // String!
@@ -652,6 +679,16 @@ export interface NexusGenArgTypes {
     }
   }
   Mutation: {
+    addFavorite: { // args
+      job: string; // ID!
+    }
+    createApplication: { // args
+      job: string; // ID!
+    }
+    createApplicationNote: { // args
+      content: string; // String!
+      id: string; // ID!
+    }
     createCategory: { // args
       name: string; // String!
     }
@@ -688,6 +725,9 @@ export interface NexusGenArgTypes {
       name: string; // String!
       role?: string | null; // ID
     }
+    deleteFavorite: { // args
+      job: string; // ID!
+    }
     deleteJob: { // args
       id: string; // ID!
     }
@@ -698,10 +738,18 @@ export interface NexusGenArgTypes {
       email: string; // String!
       password: string; // String!
     }
+    signFileUpload: { // args
+      fileName: string; // String!
+      fileType: string; // String!
+    }
     signup: { // args
       email: string; // String!
       name: string; // String!
       password: string; // String!
+    }
+    updateApplicationStatus: { // args
+      id: string; // ID!
+      status: string; // String!
     }
     updateJob: { // args
       data: NexusGenInputs['UpdateJobCustomInput']; // UpdateJobCustomInput!
@@ -858,7 +906,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Application" | "ApplicationNote" | "AuthPayload" | "BatchPayload" | "Branch" | "Category" | "Company" | "File" | "Job" | "Location" | "MapboxLocation" | "Mutation" | "Permission" | "Query" | "Role" | "Skill" | "Term" | "User";
+export type NexusGenObjectNames = "Application" | "ApplicationNote" | "AuthPayload" | "BatchPayload" | "Branch" | "Category" | "Company" | "Favorite" | "File" | "Job" | "Location" | "MapboxLocation" | "Mutation" | "Permission" | "Query" | "Resume" | "Role" | "SignedFileUploadRequest" | "Skill" | "Term" | "User";
 
 export type NexusGenInputNames = "ApplicationFilter" | "ApplicationNoteFilter" | "ApplicationNoteWhereInput" | "ApplicationWhereInput" | "BranchFilter" | "BranchWhereInput" | "BranchWhereUniqueInput" | "CategoryFilter" | "CategoryWhereInput" | "CategoryWhereUniqueInput" | "CompanyFilter" | "CompanyWhereInput" | "DateTimeFilter" | "FavoriteFilter" | "FavoriteWhereInput" | "FileWhereInput" | "FloatFilter" | "JobCronTaskWhereInput" | "JobFilter" | "JobWhereInput" | "JobWhereUniqueInput" | "LocationWhereInput" | "LocationWhereUniqueInput" | "NullableFloatFilter" | "NullableStringFilter" | "PermissionFilter" | "PermissionWhereInput" | "PermissionWhereUniqueInput" | "ResumeFilter" | "ResumeWhereInput" | "RolePermissionsInputType" | "RoleWhereInput" | "RoleWhereUniqueInput" | "SkillFilter" | "SkillUpdateManyMutationInput" | "SkillWhereInput" | "SkillWhereUniqueInput" | "StringFilter" | "UniqueApplicationInputType" | "UpdateJobCustomInput" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 

@@ -221,7 +221,7 @@ model Role {
 }
 
 model Skill {
-  id     String   @id
+  id     String   @id @default(cuid()) 
   name   String   @unique
   jobs   Job[]    @relation(references: [id])
   resumes Resume[] @relation(references: [id])

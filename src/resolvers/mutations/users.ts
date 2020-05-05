@@ -329,6 +329,82 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       })
     },
   })
+
+  t.string('requestReset', {
+    args: { email: stringArg({ required: true }) },
+    resolve: async (parent, args, ctx) => {
+      const user = await ctx.prisma.user.findOne({
+        where: { email: args.email },
+      })
+      if (!user) throw new Error('Invalid user')
+
+      const randomBytesPromisified = promisify(randomBytes)
+      const resetToken = (await randomBytesPromisified(20)).toString('hex')
+      const resetTokenExpiry = Date.now() + 3600000 // 1 hour from now
+
+      const res = await ctx.prisma.user.update({
+        where: { email: args.email },
+        data: { resetToken, resetTokenExpiry },
+      })
+
+      const mailRes = await transport.sendMail({
+        from: 'noreply@myexactjobs.com',
+        to: user.email,
+        subject: 'Your Password Reset Token',
+        html: makeANiceEmail(
+          `Your password Reset Token is here! \n\n <a href="${process.env.FRONTEND_URL}/user/password/reset?resetToken=${resetToken}">Click Here to Reset</a>`,
+        ),
+      })
+
+      return args.email
+    },
+  })
+
+  t.field('resetPassword', {
+    type: 'User',
+    args: {
+      token: stringArg({ required: true }),
+      password: stringArg({ required: true }),
+      confirmPassword: stringArg({ required: true }),
+    },
+    resolve: async (parent, args, ctx) => {
+      // 1. Check if the passwords match
+      if (args.password !== args.confirmPassword) {
+        throw new Error("Passwords don't match!")
+      }
+      // 2. Check if its a legit reset token
+      // 3. Check if its expired
+      const [user] = await ctx.prisma.user.findMany({
+        where: {
+          resetToken: args.resetToken,
+          resetTokenExpiry: { gte: Date.now() - 3600000 },
+        },
+      })
+
+      if (!user) throw new Error('This token is either invalid or expired!')
+      // 4. Hash their new password
+      const password = await hash(args.password, 10)
+      // 5. Save the new password to the user and remove old reset token fields
+      const updatedUser = await ctx.prisma.user.update({
+        where: { email: user.email },
+        data: {
+          password,
+          resetToken: null,
+          resetTokenExpiry: null,
+        },
+      })
+      // 6. Generate JWT
+      const token = jwt.sign({ id: updatedUser.id }, process.env.APP_SECRET)
+      // 7. Set the JWT cookie
+      ctx.response.cookie('token', token, {
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 24 * 365,
+      })
+      // 8. Return the new user
+      return updatedUser
+      // 9. Amazing
+    },
+  })
 }
 
 function titleCase(str: string = '') {
@@ -338,59 +414,3 @@ function titleCase(str: string = '') {
   }
   return string.join(' ')
 }
-
-/*
-permissions: {
-  create: [
-    {
-      object: 'JOB',
-      actions: {
-        set: ['CREATE', 'READ', 'UPDATE', 'DELETE', 'PUBLISH'],
-      },
-    },
-    {
-      object: 'APPLICATION',
-      actions: {
-        set: ['CREATE', 'READ', 'UPDATE', 'DELETE'],
-      },
-    },
-    {
-      object: 'USER',
-      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
-    },
-    {
-      object: 'ROLE',
-      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
-    },
-    {
-      object: 'PERMISSION',
-      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
-    },
-    {
-      object: 'SKILL',
-      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
-    },
-    {
-      object: 'CATEGORY',
-      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
-    },
-    {
-      object: 'BRANCH',
-      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
-    },
-    {
-      object: 'COMPANY',
-      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
-    },
-    ,
-    {
-      object: 'RESUME',
-      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
-    },
-    {
-      object: 'FAVORITE',
-      actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
-    },
-  ],
-},
-*/
