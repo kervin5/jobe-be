@@ -13,5 +13,6 @@ export const User = objectType({
     t.model.role()
     t.model.location()
     t.model.applications()
+    t.model.createdAt()
   },
 })

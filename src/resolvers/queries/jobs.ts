@@ -63,7 +63,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       location: stringArg({ nullable: true }),
       query: stringArg(),
       where: arg({ type: 'JobWhereInput' }),
-      perPage: intArg({ nullable: true }),
+      first: intArg({ nullable: true }),
       skip: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
@@ -90,7 +90,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
             ...args.where,
             status: 'POSTED',
           },
-          ...(args.perPage ? { perPage: args.perPage, skip: args.skip } : {}),
+          ...(args.first ? { first: args.first, skip: args.skip } : {}),
           orderBy: { updatedAt: 'desc' },
         })
       }

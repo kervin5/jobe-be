@@ -420,6 +420,7 @@ export interface NexusGenRootTypes {
     user: NexusGenRootTypes['User']; // User!
   }
   Branch: { // root type
+    description?: string | null; // String
     id: string; // String!
     name: string; // String!
   }
@@ -442,12 +443,15 @@ export interface NexusGenRootTypes {
     path: string; // String!
   }
   Job: { // root type
+    createdAt: any; // DateTime!
     description: string; // String!
+    disclaimer?: string | null; // String
     id: string; // String!
     maxCompensation: number; // Float!
     minCompensation: number; // Float!
     status: NexusGenEnums['JobStatus']; // JobStatus!
     title: string; // String!
+    type: string; // String!
     updatedAt: any; // DateTime!
   }
   Location: { // root type
@@ -463,6 +467,7 @@ export interface NexusGenRootTypes {
   }
   Mutation: {};
   Permission: { // root type
+    actions: string[]; // [String!]!
     id: string; // String!
     object: string; // String!
   }
@@ -489,6 +494,7 @@ export interface NexusGenRootTypes {
     type: string; // String!
   }
   User: { // root type
+    createdAt: any; // DateTime!
     email: string; // String!
     id: string; // String!
     name: string; // String!
@@ -577,6 +583,7 @@ export interface NexusGenFieldTypes {
   }
   Branch: { // field return type
     company: NexusGenRootTypes['Company']; // Company!
+    description: string | null; // String
     id: string; // String!
     jobs: NexusGenRootTypes['Job'][]; // [Job!]!
     name: string; // String!
@@ -609,7 +616,10 @@ export interface NexusGenFieldTypes {
     applications: NexusGenRootTypes['Application'][]; // [Application!]!
     author: NexusGenRootTypes['User']; // User!
     branch: NexusGenRootTypes['Branch'] | null; // Branch
+    categories: NexusGenRootTypes['Category'][]; // [Category!]!
+    createdAt: any; // DateTime!
     description: string; // String!
+    disclaimer: string | null; // String
     favorites: NexusGenRootTypes['Favorite'][]; // [Favorite!]!
     id: string; // String!
     location: NexusGenRootTypes['Location']; // Location!
@@ -618,6 +628,7 @@ export interface NexusGenFieldTypes {
     skills: NexusGenRootTypes['Skill'][]; // [Skill!]!
     status: NexusGenEnums['JobStatus']; // JobStatus!
     title: string; // String!
+    type: string; // String!
     updatedAt: any; // DateTime!
   }
   Location: { // field return type
@@ -661,6 +672,7 @@ export interface NexusGenFieldTypes {
     updateUser: NexusGenRootTypes['User'] | null; // User
   }
   Permission: { // field return type
+    actions: string[]; // [String!]!
     id: string; // String!
     object: string; // String!
   }
@@ -722,6 +734,7 @@ export interface NexusGenFieldTypes {
   User: { // field return type
     applications: NexusGenRootTypes['Application'][]; // [Application!]!
     branch: NexusGenRootTypes['Branch'] | null; // Branch
+    createdAt: any; // DateTime!
     email: string; // String!
     favorites: NexusGenRootTypes['Favorite'][]; // [Favorite!]!
     id: string; // String!
@@ -781,6 +794,13 @@ export interface NexusGenArgTypes {
     applications: { // args
       after?: NexusGenInputs['ApplicationWhereUniqueInput'] | null; // ApplicationWhereUniqueInput
       before?: NexusGenInputs['ApplicationWhereUniqueInput'] | null; // ApplicationWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
+    }
+    categories: { // args
+      after?: NexusGenInputs['CategoryWhereUniqueInput'] | null; // CategoryWhereUniqueInput
+      before?: NexusGenInputs['CategoryWhereUniqueInput'] | null; // CategoryWhereUniqueInput
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int
@@ -995,8 +1015,8 @@ export interface NexusGenArgTypes {
       skip?: number | null; // Int
     }
     searchJobs: { // args
+      first?: number | null; // Int
       location?: string | null; // String
-      perPage?: number | null; // Int
       query?: string | null; // String
       radius?: number | null; // Int
       skip?: number | null; // Int

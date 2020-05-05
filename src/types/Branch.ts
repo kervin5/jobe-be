@@ -8,5 +8,6 @@ export const Branch = objectType({
     t.model.company()
     t.model.users()
     t.model.jobs()
+    t.model.description()
   },
 })

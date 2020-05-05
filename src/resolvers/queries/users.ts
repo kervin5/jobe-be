@@ -1,6 +1,7 @@
 import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
 import { stringArg, arg, intArg } from '@nexus/schema'
 import { can } from '../../permissions/auth'
+import { debug } from '@prisma/client/runtime'
 
 export interface UserAccessFilter {
   branch?: object
@@ -14,9 +15,14 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     type: 'User',
     nullable: true,
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.user.findOne({
+      if (!ctx.request.user) {
+        return null
+      }
+      const user = await ctx.prisma.user.findOne({
         where: { id: ctx.request.user.id },
       })
+
+      return user?.id ? user : null
     },
   })
 

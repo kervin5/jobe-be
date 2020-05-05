@@ -93,6 +93,7 @@ type AuthPayload {
 
 type Branch {
   company: Company!
+  description: String
   id: String!
   jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int): [Job!]!
   name: String!
@@ -250,7 +251,10 @@ type Job {
   applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, skip: Int): [Application!]!
   author: User!
   branch: Branch
+  categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int, skip: Int): [Category!]!
+  createdAt: DateTime!
   description: String!
+  disclaimer: String
   favorites(after: FavoriteWhereUniqueInput, before: FavoriteWhereUniqueInput, first: Int, last: Int, skip: Int): [Favorite!]!
   id: String!
   location: Location!
@@ -259,6 +263,7 @@ type Job {
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
   status: JobStatus!
   title: String!
+  type: String!
   updatedAt: DateTime!
 }
 
@@ -409,6 +414,7 @@ input NullableStringFilter {
 }
 
 type Permission {
+  actions: [String!]!
   id: String!
   object: String!
 }
@@ -455,7 +461,7 @@ type Query {
   protectedJobs(where: JobWhereInput): [Job!]!
   protectedJobsConnection(where: JobWhereInput): Int!
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, skip: Int): [Role!]!
-  searchJobs(location: String, perPage: Int, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
+  searchJobs(first: Int, location: String, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
   user(where: UserWhereUniqueInput!): User
   users(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
@@ -597,6 +603,7 @@ input UpdateJobCustomInput {
 type User {
   applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, skip: Int): [Application!]!
   branch: Branch
+  createdAt: DateTime!
   email: String!
   favorites(after: FavoriteWhereUniqueInput, before: FavoriteWhereUniqueInput, first: Int, last: Int, skip: Int): [Favorite!]!
   id: String!

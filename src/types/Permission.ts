@@ -6,5 +6,6 @@ export const Permission = objectType({
     t.model.id()
 
     t.model.object()
+    t.model.actions()
   },
 })

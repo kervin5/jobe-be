@@ -16,6 +16,10 @@ export const Job = objectType({
     t.model.maxCompensation()
     t.model.minCompensation()
     t.model.updatedAt()
+    t.model.createdAt()
+    t.model.type()
+    t.model.disclaimer()
+    t.model.categories()
   },
 })
 

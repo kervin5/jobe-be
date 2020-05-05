@@ -28,7 +28,7 @@ const rules = {
 export const permissions = shield(
   {
     Query: {
-      me: rules.isAuthenticatedUser,
+      // me: rules.isAuthenticatedUser,
       /*
     me: rules.isAuthenticatedUser,
     filterPosts: rules.isAuthenticatedUser,

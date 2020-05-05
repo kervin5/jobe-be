@@ -1,5 +1,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
+import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import { ApolloServer } from 'apollo-server-express'
 import { applyMiddleware } from 'graphql-middleware'
@@ -14,6 +15,7 @@ const PORT = process.env.PORT ?? 4000
 
 const app = express()
 
+app.use(cors({ credentials: true }))
 app.use(cookieParser())
 app.use(auth)
 
