@@ -7,14 +7,18 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     nullable: true,
     args: {
       name: stringArg({ required: true }),
-      permissions: arg({ type: 'RolePermissionsInputType', list: true }),
+      permissions: arg({
+        type: 'RolePermissionsInputType',
+        list: true,
+        required: true,
+      }),
     },
     resolve: async (parent, args, ctx) => {
       return await ctx.prisma.role.create({
         data: {
           name: args.name,
           permissions: {
-            create: args.permissions.map((permission: IRolePermission) => ({
+            create: args.permissions?.map((permission: IRolePermission) => ({
               object: permission.object,
               actions: { set: permission.actions },
             })),

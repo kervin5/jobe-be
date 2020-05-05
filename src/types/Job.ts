@@ -7,6 +7,7 @@ export const Job = objectType({
     t.model.title()
     t.model.author()
     t.model.skills()
+    t.model.status()
   },
 })
 
@@ -23,7 +24,7 @@ export const UpdateJobCustomInput = inputObjectType({
     t.string('location')
     t.string('categories', { list: true })
     t.string('skills', { list: true })
-    t.field('status', { type: 'JobStatus' })
+    // t.field('status', { type: ';' })
     t.string('author')
   },
 })

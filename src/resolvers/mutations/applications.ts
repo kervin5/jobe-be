@@ -1,5 +1,5 @@
 import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { idArg, stringArg } from '@nexus/schema'
+import { idArg, stringArg, arg } from '@nexus/schema'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
 export default (t: ObjectDefinitionBlock<'Mutation'>) => {
@@ -32,7 +32,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
               id: args.job,
             },
           },
-          user: { connect: { id: ctx.request.user.id } },
+          applicant: { connect: { id: ctx.request.user.id } },
         },
       })
 
@@ -66,7 +66,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'Application',
     args: {
       id: idArg({ required: true }),
-      status: stringArg({ required: true }),
+      status: arg({ type: 'ApplicationStatus', required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
       try {
