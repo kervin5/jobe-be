@@ -14,11 +14,11 @@ import terms from '../resolvers/queries/terms'
 
 export const Query = queryType({
   definition(t) {
-    //jobs(t)
-    //users(t)
+    jobs(t)
+    users(t)
     roles(t)
-    //applications(t)
-    //branches(t)
+    applications(t)
+    branches(t)
     locations(t)
     categories(t)
     skills(t)

@@ -4,6 +4,9 @@ export const File = objectType({
   name: 'File',
   definition(t) {
     t.model.id()
+    t.model.createdAt()
+    t.model.mimetype()
+    t.model.path()
   },
 })
 

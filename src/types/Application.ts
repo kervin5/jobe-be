@@ -9,6 +9,8 @@ export const Application = objectType({
     t.model.status()
     t.model.updatedAt()
     t.model.createdAt()
+    t.model.resume()
+    t.model.notes()
   },
 })
 

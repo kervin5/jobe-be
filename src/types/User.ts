@@ -8,5 +8,10 @@ export const User = objectType({
     t.model.email()
     t.model.branch()
     t.model.jobs()
+    t.model.favorites()
+    t.model.resumes()
+    t.model.role()
+    t.model.location()
+    t.model.applications()
   },
 })

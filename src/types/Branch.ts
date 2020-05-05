@@ -6,5 +6,7 @@ export const Branch = objectType({
     t.model.id()
     t.model.name()
     t.model.company()
+    t.model.users()
+    t.model.jobs()
   },
 })

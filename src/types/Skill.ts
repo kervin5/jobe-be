@@ -5,6 +5,8 @@ export const Skill = objectType({
   definition(t) {
     t.model.id()
     t.model.name()
-    t.model.jobs()
+    t.model.jobs({ filtering: true })
+    t.model.users()
+    t.model.resumes({ filtering: true })
   },
 })
