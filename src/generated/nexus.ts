@@ -557,8 +557,10 @@ export interface NexusGenFieldTypes {
     createApplication: NexusGenRootTypes['Application'] | null; // Application
     createApplicationNote: NexusGenRootTypes['ApplicationNote'] | null; // ApplicationNote
     createCategory: NexusGenRootTypes['Category'] | null; // Category
+    createCompany: NexusGenRootTypes['Company'] | null; // Company
     createJob: NexusGenRootTypes['Job'] | null; // Job
     createLocation: NexusGenRootTypes['Location'] | null; // Location
+    createResume: NexusGenRootTypes['Resume'] | null; // Resume
     createRole: NexusGenRootTypes['Role'] | null; // Role
     createSkill: NexusGenRootTypes['Skill'] | null; // Skill
     createUser: NexusGenRootTypes['User']; // User!
@@ -567,8 +569,12 @@ export interface NexusGenFieldTypes {
     deleteUser: NexusGenRootTypes['User'] | null; // User
     login: NexusGenRootTypes['User']; // User!
     logout: string | null; // String
+    requestReset: string; // String!
+    resetPassword: NexusGenRootTypes['User']; // User!
+    schedule: string | null; // String
     signFileUpload: NexusGenRootTypes['SignedFileUploadRequest'] | null; // SignedFileUploadRequest
     signup: NexusGenRootTypes['User']; // User!
+    unschedule: string | null; // String
     updateApplicationStatus: NexusGenRootTypes['Application']; // Application!
     updateJob: NexusGenRootTypes['Job'] | null; // Job
     updateManySkill: NexusGenRootTypes['BatchPayload']; // BatchPayload!
@@ -692,6 +698,10 @@ export interface NexusGenArgTypes {
     createCategory: { // args
       name: string; // String!
     }
+    createCompany: { // args
+      description: string; // String!
+      name: string; // String!
+    }
     createJob: { // args
       author?: string | null; // String
       categories: string[]; // [String!]!
@@ -711,6 +721,11 @@ export interface NexusGenArgTypes {
       latitude: number; // Float!
       longitude: number; // Float!
       name: string; // String!
+    }
+    createResume: { // args
+      path: string; // String!
+      title: string; // String!
+      type: string; // String!
     }
     createRole: { // args
       name: string; // String!
@@ -738,6 +753,17 @@ export interface NexusGenArgTypes {
       email: string; // String!
       password: string; // String!
     }
+    requestReset: { // args
+      email: string; // String!
+    }
+    resetPassword: { // args
+      confirmPassword: string; // String!
+      password: string; // String!
+      token: string; // String!
+    }
+    schedule: { // args
+      id: string; // String!
+    }
     signFileUpload: { // args
       fileName: string; // String!
       fileType: string; // String!
@@ -746,6 +772,9 @@ export interface NexusGenArgTypes {
       email: string; // String!
       name: string; // String!
       password: string; // String!
+    }
+    unschedule: { // args
+      id: string; // String!
     }
     updateApplicationStatus: { // args
       id: string; // ID!

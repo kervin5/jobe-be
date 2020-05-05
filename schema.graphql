@@ -331,8 +331,10 @@ type Mutation {
   createApplication(job: ID!): Application
   createApplicationNote(content: String!, id: ID!): ApplicationNote
   createCategory(name: String!): Category
+  createCompany(description: String!, name: String!): Company
   createJob(author: String, categories: [String!]!, compensationType: String!, description: String!, disclaimer: String, isRecurring: Boolean, location: String, maxCompensation: Float, minCompensation: Float!, skills: [String!]!, title: String!, type: String!): Job
   createLocation(boundary: [Float!]!, latitude: Float!, longitude: Float!, name: String!): Location
+  createResume(path: String!, title: String!, type: String!): Resume
   createRole(name: String!, permissions: [RolePermissionsInputType!]): Role
   createSkill(name: String!): Skill
   createUser(branch: ID, email: String!, name: String!, role: ID): User!
@@ -341,8 +343,12 @@ type Mutation {
   deleteUser(id: ID): User
   login(email: String!, password: String!): User!
   logout: String
+  requestReset(email: String!): String!
+  resetPassword(confirmPassword: String!, password: String!, token: String!): User!
+  schedule(id: String!): String
   signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
   signup(email: String!, name: String!, password: String!): User!
+  unschedule(id: String!): String
   updateApplicationStatus(id: ID!, status: String!): Application!
   updateJob(data: UpdateJobCustomInput!, where: JobWhereUniqueInput!): Job
   updateManySkill(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
