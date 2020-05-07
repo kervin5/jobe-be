@@ -32,20 +32,21 @@ export async function can(action: string, object: string, ctx: Context) {
 
 export function getUserId(req: Request) {
   const token = getUserToken(req)
-
   if (token) {
-    const decoded = verify(token, process.env.APP_SECRET ?? '') as Token
+    const decoded = verify(token, process.env.APP_SECRET) as Token
     return decoded
   }
 }
 
 export function getUserToken(req: Request) {
-  const Authorization =
+  const authorization =
     req.cookies?.token ||
-    (req.headers.authorization ? req.headers.authorization : null)
+    (req.headers.Authorization
+      ? req.headers.Authorization
+      : req.headers.authorization || null)
 
-  if (Authorization) {
-    const token = Authorization.replace('Bearer ', '')
+  if (authorization) {
+    const token = authorization.replace('Bearer ', '')
     return token
   } else {
     return null
