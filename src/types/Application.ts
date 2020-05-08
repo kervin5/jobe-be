@@ -1,10 +1,10 @@
-import { objectType, inputObjectType } from '@nexus/schema'
+import { objectType, inputObjectType, enumType } from '@nexus/schema'
 
 export const Application = objectType({
   name: 'Application',
   definition(t) {
     t.model.id()
-    t.model.applicant()
+    t.model.user()
     t.model.job()
     t.model.status()
     t.model.updatedAt()

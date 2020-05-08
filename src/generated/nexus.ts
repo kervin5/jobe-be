@@ -48,8 +48,6 @@ export interface NexusGenInputs {
   }
   ApplicationWhereInput: { // input type
     AND?: NexusGenInputs['ApplicationWhereInput'][] | null; // [ApplicationWhereInput!]
-    applicant?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
-    applicantId?: NexusGenInputs['StringFilter'] | null; // StringFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
     job?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
@@ -61,6 +59,8 @@ export interface NexusGenInputs {
     resumeId?: NexusGenInputs['StringFilter'] | null; // StringFilter
     status?: NexusGenEnums['ApplicationStatus'] | null; // ApplicationStatus
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
+    user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    userId?: NexusGenInputs['StringFilter'] | null; // StringFilter
   }
   ApplicationWhereUniqueInput: { // input type
     id?: string | null; // String
@@ -562,7 +562,6 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 
 export interface NexusGenFieldTypes {
   Application: { // field return type
-    applicant: NexusGenRootTypes['User']; // User!
     createdAt: any; // DateTime!
     id: string; // String!
     job: NexusGenRootTypes['Job']; // Job!
@@ -570,6 +569,7 @@ export interface NexusGenFieldTypes {
     resume: NexusGenRootTypes['Resume']; // Resume!
     status: NexusGenEnums['ApplicationStatus']; // ApplicationStatus!
     updatedAt: any; // DateTime!
+    user: NexusGenRootTypes['User']; // User!
   }
   ApplicationNote: { // field return type
     application: NexusGenRootTypes['Application']; // Application!
@@ -972,6 +972,7 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int
+      where?: NexusGenInputs['CategoryWhereInput'] | null; // CategoryWhereInput
     }
     category: { // args
       where: NexusGenInputs['CategoryWhereUniqueInput']; // CategoryWhereUniqueInput!
@@ -1083,6 +1084,7 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int
+      where?: NexusGenInputs['ApplicationWhereInput'] | null; // ApplicationWhereInput
     }
     favorites: { // args
       after?: NexusGenInputs['FavoriteWhereUniqueInput'] | null; // FavoriteWhereUniqueInput
@@ -1090,6 +1092,7 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int
+      where?: NexusGenInputs['FavoriteWhereInput'] | null; // FavoriteWhereInput
     }
     jobs: { // args
       after?: NexusGenInputs['JobWhereUniqueInput'] | null; // JobWhereUniqueInput
@@ -1097,6 +1100,7 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int
+      where?: NexusGenInputs['JobWhereInput'] | null; // JobWhereInput
     }
     resumes: { // args
       after?: NexusGenInputs['ResumeWhereUniqueInput'] | null; // ResumeWhereUniqueInput

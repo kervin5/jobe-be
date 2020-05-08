@@ -51,8 +51,8 @@ model Application {
  
   status          ApplicationStatus @default(NEW) 
 
-  applicantId     String @map("applicant")
-  applicant       User   @relation(fields: [applicantId], references: [id])
+  userId     String @map("user")
+  user       User   @relation(fields: [userId], references: [id])
 
   notes ApplicationNote[]
 }

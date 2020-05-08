@@ -32,7 +32,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
               id: args.job,
             },
           },
-          applicant: { connect: { id: ctx.request.user.id } },
+          user: { connect: { id: ctx.request.user.id } },
         },
       })
 

@@ -24,6 +24,7 @@ export const Query = queryType({
     skills(t)
     files(t)
     terms(t)
+
     /*
     t.field('me', {
       type: 'User',
