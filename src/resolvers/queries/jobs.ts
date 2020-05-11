@@ -4,6 +4,7 @@ import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType
 import { stringArg, arg, intArg } from '@nexus/schema'
 import { UserAccessFilter } from './users'
 import { can } from '../../permissions/auth'
+import { OrderByArg } from '@prisma/client'
 
 export default (t: ObjectDefinitionBlock<'Query'>) => {
   //Fetch single job
@@ -30,6 +31,8 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     type: 'Job',
     args: {
       where: arg({ type: 'JobWhereInput' }),
+      first: intArg({ nullable: true }),
+      skip: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.prisma.user.findOne({
@@ -52,6 +55,8 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
 
       return ctx.prisma.job.findMany({
         where: { ...args.where, ...ownerFilter },
+        orderBy: { updatedAt: 'desc' },
+        ...(args.first ? { first: args.first, skip: args.skip } : {}),
       })
     },
   })
@@ -134,7 +139,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
           ...args.where,
           status: 'POSTED',
         },
-        ...(args.perPage ? { perPage: args.perPage, skip: args.skip } : {}),
+        ...(args.first ? { first: args.first, skip: args.skip } : {}),
         orderBy: { updatedAt: 'desc' },
       })
     },

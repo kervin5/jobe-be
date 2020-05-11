@@ -1,4 +1,4 @@
-import { objectType, inputObjectType } from '@nexus/schema'
+import { objectType, inputObjectType, extendInputType } from '@nexus/schema'
 
 export const Job = objectType({
   name: 'Job',
@@ -20,6 +20,7 @@ export const Job = objectType({
     t.model.type()
     t.model.disclaimer()
     t.model.categories()
+    t.model.cronTask()
   },
 })
 
@@ -38,5 +39,35 @@ export const UpdateJobCustomInput = inputObjectType({
     t.string('skills', { list: true })
     t.field('status', { type: 'JobStatus' })
     t.string('author')
+  },
+})
+
+export const JobWherInputWithStatus = extendInputType({
+  type: 'JobWhereInput',
+  definition: (t) => {
+    t.field('status', {
+      type: 'JobStatusFilter',
+      nullable: true,
+    })
+  },
+})
+
+export const JobStatusFilter = inputObjectType({
+  name: 'JobStatusFilter',
+  definition(t) {
+    t.field('in', {
+      type: 'JobStatus',
+      list: true,
+      nullable: true,
+    })
+    t.field('not_in', {
+      type: 'JobStatus',
+      list: true,
+      nullable: true,
+    })
+    t.field('equals', {
+      type: 'JobStatus',
+      nullable: true,
+    })
   },
 })

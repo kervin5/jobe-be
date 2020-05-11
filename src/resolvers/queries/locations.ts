@@ -10,7 +10,7 @@ interface IMapboxLocation {
 export default (t: ObjectDefinitionBlock<'Query'>) => {
   t.crud.location()
   t.crud.locations()
-  t.field('mapBoxLocation', {
+  t.field('mapBoxLocations', {
     type: 'MapboxLocation',
     args: {
       query: stringArg(),

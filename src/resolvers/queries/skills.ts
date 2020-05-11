@@ -1,5 +1,5 @@
 import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
 
 export default (t: ObjectDefinitionBlock<'Query'>) => {
-  t.crud.skills()
+  t.crud.skills({ filtering: true, ordering: true })
 }

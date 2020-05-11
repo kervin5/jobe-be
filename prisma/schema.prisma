@@ -203,9 +203,9 @@ model Permission {
 model Resume {
   id          String        @id @default(cuid())
   title       String
-  fileId      String
+  fileId      String       @map("file")
   file        File         @relation(fields: [fileId], references: [id])
-  userId        String
+  userId      String        @map("user")
   user        User         @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime  @updatedAt

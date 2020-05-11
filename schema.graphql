@@ -65,6 +65,12 @@ enum ApplicationStatus {
   VIEWED
 }
 
+input ApplicationStatusFilter {
+  equals: ApplicationStatus
+  in: [ApplicationStatus!]
+  not_in: [ApplicationStatus!]
+}
+
 input ApplicationWhereInput {
   AND: [ApplicationWhereInput!]
   createdAt: DateTimeFilter
@@ -76,7 +82,7 @@ input ApplicationWhereInput {
   OR: [ApplicationWhereInput!]
   resume: ResumeWhereInput
   resumeId: StringFilter
-  status: ApplicationStatus
+  status: ApplicationStatusFilter
   updatedAt: DateTimeFilter
   user: UserWhereInput
   userId: StringFilter
@@ -253,6 +259,7 @@ type Job {
   branch: Branch
   categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int, skip: Int): [Category!]!
   createdAt: DateTime!
+  cronTask: JobCronTask
   description: String!
   disclaimer: String
   favorites(after: FavoriteWhereUniqueInput, before: FavoriteWhereUniqueInput, first: Int, last: Int, skip: Int): [Favorite!]!
@@ -265,6 +272,10 @@ type Job {
   title: String!
   type: String!
   updatedAt: DateTime!
+}
+
+type JobCronTask {
+  id: String!
 }
 
 input JobCronTaskWhereInput {
@@ -294,6 +305,12 @@ enum JobStatus {
   POSTED
 }
 
+input JobStatusFilter {
+  equals: JobStatus
+  in: [JobStatus!]
+  not_in: [JobStatus!]
+}
+
 input JobWhereInput {
   AND: [JobWhereInput!]
   applications: ApplicationFilter
@@ -317,7 +334,7 @@ input JobWhereInput {
   NOT: [JobWhereInput!]
   OR: [JobWhereInput!]
   skills: SkillFilter
-  status: JobStatus
+  status: JobStatusFilter
   title: StringFilter
   type: StringFilter
   updatedAt: DateTimeFilter
@@ -413,6 +430,11 @@ input NullableStringFilter {
   startsWith: String
 }
 
+enum OrderByArg {
+  asc
+  desc
+}
+
 type Permission {
   actions: [String!]!
   id: String!
@@ -442,7 +464,7 @@ input PermissionWhereUniqueInput {
 type Query {
   application(where: UniqueApplicationInputType!): Application
   applicationNotes(id: String): [ApplicationNote!]!
-  applications(where: ApplicationWhereInput): [Application!]!
+  applications(first: Int, skip: Int, where: ApplicationWhereInput): [Application!]!
   applicationsConnection(where: ApplicationWhereInput): Int!
   branches(where: BranchWhereInput): [Branch!]!
   candidates(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
@@ -455,22 +477,26 @@ type Query {
   jobsConnection(where: JobWhereInput): Int!
   location(where: LocationWhereUniqueInput!): Location
   locations(after: LocationWhereUniqueInput, before: LocationWhereUniqueInput, first: Int, last: Int, skip: Int): [Location!]!
-  mapBoxLocation(query: String): MapboxLocation!
+  mapBoxLocations(query: String): MapboxLocation!
   me: User
   popularTerms: [Term!]!
-  protectedJobs(where: JobWhereInput): [Job!]!
+  protectedJobs(first: Int, skip: Int, where: JobWhereInput): [Job!]!
   protectedJobsConnection(where: JobWhereInput): Int!
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, skip: Int): [Role!]!
   searchJobs(first: Int, location: String, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
-  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
+  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, orderBy: SkillOrderByInput, skip: Int, where: SkillWhereInput): [Skill!]!
   user(where: UserWhereUniqueInput!): User
   users(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
   usersConnection(where: UserWhereInput): Int!
 }
 
 type Resume {
+  createdAt: DateTime!
   file: File!
   id: String!
+  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int, where: SkillWhereInput): [Skill!]!
+  title: String!
+  updatedAt: DateTime!
   user: User!
 }
 
@@ -545,6 +571,11 @@ input SkillFilter {
   some: SkillWhereInput
 }
 
+input SkillOrderByInput {
+  id: OrderByArg
+  name: OrderByArg
+}
+
 input SkillWhereInput {
   AND: [SkillWhereInput!]
   id: StringFilter
@@ -604,14 +635,21 @@ type User {
   applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, skip: Int, where: ApplicationWhereInput): [Application!]!
   branch: Branch
   createdAt: DateTime!
+  eEmpact: UserEEmpactData
   email: String!
   favorites(after: FavoriteWhereUniqueInput, before: FavoriteWhereUniqueInput, first: Int, last: Int, skip: Int, where: FavoriteWhereInput): [Favorite!]!
   id: String!
   jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int, where: JobWhereInput): [Job!]!
   location: Location
   name: String!
-  resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, skip: Int): [Resume!]!
+  resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, skip: Int, where: ResumeWhereInput): [Resume!]!
   role: Role!
+  status: UserStatus!
+}
+
+type UserEEmpactData {
+  assignments: Int
+  id: String
 }
 
 input UserFilter {

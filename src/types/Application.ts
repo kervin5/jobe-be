@@ -1,4 +1,9 @@
-import { objectType, inputObjectType, enumType } from '@nexus/schema'
+import {
+  objectType,
+  inputObjectType,
+  extendInputType,
+  arg,
+} from '@nexus/schema'
 
 export const Application = objectType({
   name: 'Application',
@@ -21,6 +26,35 @@ export const UniqueApplicationInputType = inputObjectType({
   },
 })
 
+export const ApplicationWherInputWithStatus = extendInputType({
+  type: 'ApplicationWhereInput',
+  definition: (t) => {
+    t.field('status', {
+      type: 'ApplicationStatusFilter',
+      nullable: true,
+    })
+  },
+})
+
+export const ApplicationStatusFilter = inputObjectType({
+  name: 'ApplicationStatusFilter',
+  definition(t) {
+    t.field('in', {
+      type: 'ApplicationStatus',
+      list: true,
+      nullable: true,
+    })
+    t.field('not_in', {
+      type: 'ApplicationStatus',
+      list: true,
+      nullable: true,
+    })
+    t.field('equals', {
+      type: 'ApplicationStatus',
+      nullable: true,
+    })
+  },
+})
 /*
 export const ApplicationCreateInpuType = inputObjectType({
   name: 'ApplicationCreateInpuType',
