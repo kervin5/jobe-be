@@ -257,7 +257,7 @@ input FloatFilter {
 type Job {
   applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, skip: Int): [Application!]!
   author: User!
-  branch: Branch
+  branch: Branch!
   categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int, skip: Int): [Category!]!
   createdAt: DateTime!
   cronTask: JobCronTask
@@ -318,7 +318,7 @@ input JobWhereInput {
   author: UserWhereInput
   authorId: StringFilter
   branch: BranchWhereInput
-  branchId: NullableStringFilter
+  branchId: StringFilter
   categories: CategoryFilter
   compensationType: StringFilter
   createdAt: DateTimeFilter

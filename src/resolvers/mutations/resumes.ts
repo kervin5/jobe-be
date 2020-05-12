@@ -40,15 +40,15 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       const result = await ctx.prisma.resume.create({
         data: {
           file: {
-            create: {path: args.path+(new Date()), mimetype: args.type }
+            create: {path: args.path, mimetype: args.type }
           },
 
           user: {
-            connect: { id: "ck1v51fy5009r0738vo0f59qg" }
+            connect: { id: ctx.request.user.id }
           },
 
           title: args.title,
-         //...skills
+         ...skills
         }
       })
 

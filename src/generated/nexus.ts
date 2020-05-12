@@ -201,7 +201,7 @@ export interface NexusGenInputs {
     author?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
     authorId?: NexusGenInputs['StringFilter'] | null; // StringFilter
     branch?: NexusGenInputs['BranchWhereInput'] | null; // BranchWhereInput
-    branchId?: NexusGenInputs['NullableStringFilter'] | null; // NullableStringFilter
+    branchId?: NexusGenInputs['StringFilter'] | null; // StringFilter
     categories?: NexusGenInputs['CategoryFilter'] | null; // CategoryFilter
     compensationType?: NexusGenInputs['StringFilter'] | null; // StringFilter
     createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
@@ -656,7 +656,7 @@ export interface NexusGenFieldTypes {
   Job: { // field return type
     applications: NexusGenRootTypes['Application'][]; // [Application!]!
     author: NexusGenRootTypes['User']; // User!
-    branch: NexusGenRootTypes['Branch'] | null; // Branch
+    branch: NexusGenRootTypes['Branch']; // Branch!
     categories: NexusGenRootTypes['Category'][]; // [Category!]!
     createdAt: any; // DateTime!
     cronTask: NexusGenRootTypes['JobCronTask'] | null; // JobCronTask

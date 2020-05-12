@@ -147,8 +147,8 @@ model Job {
   status                                JobStatus @default(DRAFT)
   favorites                             Favorite[]
 
-  branchId                              String? @map("branch")
-  branch                                Branch? @relation(fields: [branchId], references: [id])
+  branchId                              String @map("branch")
+  branch                                Branch @relation(fields: [branchId], references: [id])
   
   cronTaskId                            String? @map("cronTask")
   cronTask                              JobCronTask?  @relation( fields: [cronTaskId], references: [id])
