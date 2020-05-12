@@ -161,7 +161,7 @@ export interface NexusGenInputs {
     NOT?: NexusGenInputs['FileWhereInput'][] | null; // [FileWhereInput!]
     OR?: NexusGenInputs['FileWhereInput'][] | null; // [FileWhereInput!]
     path?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    resume?: NexusGenInputs['ResumeFilter'] | null; // ResumeFilter
+    Resume?: NexusGenInputs['ResumeFilter'] | null; // ResumeFilter
     updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
   }
   FloatFilter: { // input type
@@ -228,8 +228,8 @@ export interface NexusGenInputs {
   }
   LocationWhereInput: { // input type
     AND?: NexusGenInputs['LocationWhereInput'][] | null; // [LocationWhereInput!]
-    branch?: NexusGenInputs['BranchFilter'] | null; // BranchFilter
-    company?: NexusGenInputs['CompanyFilter'] | null; // CompanyFilter
+    Branch?: NexusGenInputs['BranchFilter'] | null; // BranchFilter
+    Company?: NexusGenInputs['CompanyFilter'] | null; // CompanyFilter
     id?: NexusGenInputs['StringFilter'] | null; // StringFilter
     jobs?: NexusGenInputs['JobFilter'] | null; // JobFilter
     latitude?: NexusGenInputs['FloatFilter'] | null; // FloatFilter
@@ -286,6 +286,14 @@ export interface NexusGenInputs {
     every?: NexusGenInputs['ResumeWhereInput'] | null; // ResumeWhereInput
     none?: NexusGenInputs['ResumeWhereInput'] | null; // ResumeWhereInput
     some?: NexusGenInputs['ResumeWhereInput'] | null; // ResumeWhereInput
+  }
+  ResumeOrderByInput: { // input type
+    createdAt?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+    fileId?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+    id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+    title?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+    updatedAt?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+    userId?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
   }
   ResumeWhereInput: { // input type
     AND?: NexusGenInputs['ResumeWhereInput'][] | null; // [ResumeWhereInput!]
@@ -381,7 +389,7 @@ export interface NexusGenInputs {
   }
   UserWhereInput: { // input type
     AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
-    applicationNote?: NexusGenInputs['ApplicationNoteFilter'] | null; // ApplicationNoteFilter
+    ApplicationNote?: NexusGenInputs['ApplicationNoteFilter'] | null; // ApplicationNoteFilter
     applications?: NexusGenInputs['ApplicationFilter'] | null; // ApplicationFilter
     branch?: NexusGenInputs['BranchWhereInput'] | null; // BranchWhereInput
     branchId?: NexusGenInputs['NullableStringFilter'] | null; // NullableStringFilter
@@ -456,6 +464,7 @@ export interface NexusGenRootTypes {
     id: string; // String!
     mimetype: string; // String!
     path: string; // String!
+    updatedAt: any; // DateTime!
   }
   Job: { // root type
     createdAt: any; // DateTime!
@@ -568,6 +577,7 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
   PermissionWhereInput: NexusGenInputs['PermissionWhereInput'];
   PermissionWhereUniqueInput: NexusGenInputs['PermissionWhereUniqueInput'];
   ResumeFilter: NexusGenInputs['ResumeFilter'];
+  ResumeOrderByInput: NexusGenInputs['ResumeOrderByInput'];
   ResumeWhereInput: NexusGenInputs['ResumeWhereInput'];
   ResumeWhereUniqueInput: NexusGenInputs['ResumeWhereUniqueInput'];
   RolePermissionsInputType: NexusGenInputs['RolePermissionsInputType'];
@@ -641,6 +651,7 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     mimetype: string; // String!
     path: string; // String!
+    updatedAt: any; // DateTime!
   }
   Job: { // field return type
     applications: NexusGenRootTypes['Application'][]; // [Application!]!
@@ -1167,6 +1178,7 @@ export interface NexusGenArgTypes {
       before?: NexusGenInputs['ResumeWhereUniqueInput'] | null; // ResumeWhereUniqueInput
       first?: number | null; // Int
       last?: number | null; // Int
+      orderBy?: NexusGenInputs['ResumeOrderByInput'] | null; // ResumeOrderByInput
       skip?: number | null; // Int
       where?: NexusGenInputs['ResumeWhereInput'] | null; // ResumeWhereInput
     }
@@ -1180,7 +1192,7 @@ export interface NexusGenInheritedFields {}
 
 export type NexusGenObjectNames = "Application" | "ApplicationNote" | "AuthPayload" | "Branch" | "Category" | "Company" | "Favorite" | "File" | "Job" | "JobCronTask" | "Location" | "MapboxLocation" | "Mutation" | "Permission" | "Query" | "Resume" | "Role" | "SignedFileUploadRequest" | "Skill" | "Term" | "User" | "UserEEmpactData";
 
-export type NexusGenInputNames = "ApplicationFilter" | "ApplicationNoteFilter" | "ApplicationNoteWhereInput" | "ApplicationNoteWhereUniqueInput" | "ApplicationStatusFilter" | "ApplicationWhereInput" | "ApplicationWhereUniqueInput" | "BranchFilter" | "BranchWhereInput" | "BranchWhereUniqueInput" | "CategoryFilter" | "CategoryWhereInput" | "CategoryWhereUniqueInput" | "CompanyFilter" | "CompanyWhereInput" | "DateTimeFilter" | "FavoriteFilter" | "FavoriteWhereInput" | "FavoriteWhereUniqueInput" | "FileWhereInput" | "FloatFilter" | "JobCronTaskWhereInput" | "JobFilter" | "JobStatusFilter" | "JobWhereInput" | "JobWhereUniqueInput" | "LocationWhereInput" | "LocationWhereUniqueInput" | "NullableFloatFilter" | "NullableStringFilter" | "PermissionFilter" | "PermissionWhereInput" | "PermissionWhereUniqueInput" | "ResumeFilter" | "ResumeWhereInput" | "ResumeWhereUniqueInput" | "RolePermissionsInputType" | "RoleWhereInput" | "RoleWhereUniqueInput" | "SkillFilter" | "SkillOrderByInput" | "SkillWhereInput" | "SkillWhereUniqueInput" | "StringFilter" | "UniqueApplicationInputType" | "UpdateJobCustomInput" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
+export type NexusGenInputNames = "ApplicationFilter" | "ApplicationNoteFilter" | "ApplicationNoteWhereInput" | "ApplicationNoteWhereUniqueInput" | "ApplicationStatusFilter" | "ApplicationWhereInput" | "ApplicationWhereUniqueInput" | "BranchFilter" | "BranchWhereInput" | "BranchWhereUniqueInput" | "CategoryFilter" | "CategoryWhereInput" | "CategoryWhereUniqueInput" | "CompanyFilter" | "CompanyWhereInput" | "DateTimeFilter" | "FavoriteFilter" | "FavoriteWhereInput" | "FavoriteWhereUniqueInput" | "FileWhereInput" | "FloatFilter" | "JobCronTaskWhereInput" | "JobFilter" | "JobStatusFilter" | "JobWhereInput" | "JobWhereUniqueInput" | "LocationWhereInput" | "LocationWhereUniqueInput" | "NullableFloatFilter" | "NullableStringFilter" | "PermissionFilter" | "PermissionWhereInput" | "PermissionWhereUniqueInput" | "ResumeFilter" | "ResumeOrderByInput" | "ResumeWhereInput" | "ResumeWhereUniqueInput" | "RolePermissionsInputType" | "RoleWhereInput" | "RoleWhereUniqueInput" | "SkillFilter" | "SkillOrderByInput" | "SkillWhereInput" | "SkillWhereUniqueInput" | "StringFilter" | "UniqueApplicationInputType" | "UpdateJobCustomInput" | "UserFilter" | "UserWhereInput" | "UserWhereUniqueInput";
 
 export type NexusGenEnumNames = "ApplicationNoteType" | "ApplicationStatus" | "JobStatus" | "OrderByArg" | "UserStatus";
 

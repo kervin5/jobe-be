@@ -30,26 +30,26 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         resumeSkills.includes(skill.name),
       )
 
-      console.log(filteredSkills)
-
+     console.log(ctx.request.user.id);
+      
+      const skills = filteredSkills.length ? ({ skills: {
+        connect: filteredSkills.map((skill) => ({ id: skill.id }))
+      }}) : {};
+      
+     
       const result = await ctx.prisma.resume.create({
         data: {
           file: {
-            create: {
-              path: args.path,
-              mimetype: args.type,
-            },
+            create: {path: args.path+(new Date()), mimetype: args.type }
           },
 
           user: {
-            connect: { id: ctx.request.user.id },
+            connect: { id: "ck1v51fy5009r0738vo0f59qg" }
           },
 
           title: args.title,
-          skills: {
-            connect: filteredSkills.map((skill) => ({ id: skill.id })),
-          },
-        },
+         //...skills
+        }
       })
 
       return result

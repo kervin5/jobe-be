@@ -13,11 +13,13 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       const [file] = await ctx.prisma.file.findMany({
         where: { path: { endsWith: args.AWSUrl } },
       })
+      let result = null
 
       if (file) {
-        return await sign_s3_read(file.path)
+        result = await sign_s3_read(file.path)
       }
-      return null
+      console.log({ result, file })
+      return result
     },
   })
 }

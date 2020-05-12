@@ -228,6 +228,7 @@ type File {
   id: String!
   mimetype: String!
   path: String!
+  updatedAt: DateTime!
 }
 
 input FileWhereInput {
@@ -238,7 +239,7 @@ input FileWhereInput {
   NOT: [FileWhereInput!]
   OR: [FileWhereInput!]
   path: StringFilter
-  resume: ResumeFilter
+  Resume: ResumeFilter
   updatedAt: DateTimeFilter
 }
 
@@ -355,8 +356,8 @@ type Location {
 
 input LocationWhereInput {
   AND: [LocationWhereInput!]
-  branch: BranchFilter
-  company: CompanyFilter
+  Branch: BranchFilter
+  Company: CompanyFilter
   id: StringFilter
   jobs: JobFilter
   latitude: FloatFilter
@@ -506,6 +507,15 @@ input ResumeFilter {
   some: ResumeWhereInput
 }
 
+input ResumeOrderByInput {
+  createdAt: OrderByArg
+  fileId: OrderByArg
+  id: OrderByArg
+  title: OrderByArg
+  updatedAt: OrderByArg
+  userId: OrderByArg
+}
+
 input ResumeWhereInput {
   AND: [ResumeWhereInput!]
   applications: ApplicationFilter
@@ -642,7 +652,7 @@ type User {
   jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int, where: JobWhereInput): [Job!]!
   location: Location
   name: String!
-  resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, skip: Int, where: ResumeWhereInput): [Resume!]!
+  resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, orderBy: ResumeOrderByInput, skip: Int, where: ResumeWhereInput): [Resume!]!
   role: Role!
   status: UserStatus!
 }
@@ -666,7 +676,7 @@ enum UserStatus {
 
 input UserWhereInput {
   AND: [UserWhereInput!]
-  applicationNote: ApplicationNoteFilter
+  ApplicationNote: ApplicationNoteFilter
   applications: ApplicationFilter
   branch: BranchWhereInput
   branchId: NullableStringFilter

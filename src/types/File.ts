@@ -5,6 +5,7 @@ export const File = objectType({
   definition(t) {
     t.model.id()
     t.model.createdAt()
+    t.model.updatedAt()
     t.model.mimetype()
     t.model.path()
   },

@@ -5,12 +5,14 @@ export const User = objectType({
   name: 'User',
   definition(t) {
     t.model.id()
+
     t.model.name()
     t.model.email()
     t.model.branch()
     t.model.jobs({ filtering: true })
     t.model.favorites({ filtering: true })
-    t.model.resumes({ filtering: true })
+    t.model.resumes({ filtering: true , ordering: true
+    })
     t.model.role()
     t.model.location()
     t.model.status()

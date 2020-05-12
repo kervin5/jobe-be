@@ -1,5 +1,5 @@
 import aws from 'aws-sdk'
-import uuid from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 // Configure aws with your accessKeyId and your secretAccessKey
 // aws.config.update({
@@ -8,7 +8,6 @@ import uuid from 'uuid'
 //     secretAccessKey: process.env.AWSSecretKey
 // });
 
-const S3_BUCKET = process.env.Bucket ?? ''
 const ACL = 'private'
 
 // Now lets export this function so we can call it from somewhere else
@@ -20,7 +19,7 @@ export const sign_s3_upload = async ({
   fileType: string
 }): Promise<ISignedFile> => {
   // console.log(process.env.AWSAccessKeyId,process.env.AWSSecretKey);
-  const uniquefolder = 'resumes/' + uuid.v4() + fileName.replace(' ', '-')
+  const uniquefolder = 'resumes/' + uuidv4() + fileName.replace(' ', '-')
   const s3 = new aws.S3({
     region: 'us-west-1',
     accessKeyId: process.env.AWSAccessKeyId,
@@ -30,12 +29,11 @@ export const sign_s3_upload = async ({
 
   // Set up the payload of what we are sending to the S3 api
   const s3Params = {
-    Bucket: S3_BUCKET,
+    Bucket: process.env.AWS_BUCKET,
     Key: uniquefolder,
     Expires: 500,
     ContentType: fileType,
     ACL,
-    signature: 'v4',
   }
   // Make a request to the S3 API to get a signed URL which we can use to upload our file
   try {
@@ -44,7 +42,7 @@ export const sign_s3_upload = async ({
       success: true,
       data: {
         signedRequest: signedUrl,
-        url: `https://${S3_BUCKET}.s3.amazonaws.com/${uniquefolder}`,
+        url: `https://${process.env.AWS_BUCKET}.s3.amazonaws.com/${uniquefolder}`,
         acl: ACL,
       },
     }
@@ -76,10 +74,9 @@ export const sign_s3_read = async (filePath: string) => {
   }) // Create a new instance of S3
 
   const s3Params = {
-    Bucket: S3_BUCKET,
+    Bucket: process.env.AWS_BUCKET,
     Key: filePath.split('.com/')[1] || filePath.substring(1),
     Expires: 500,
-    signature: 'v4',
   }
 
   // Make a request to the S3 API to get a signed URL which we can use to upload our file
@@ -87,6 +84,7 @@ export const sign_s3_read = async (filePath: string) => {
     const signedUrl = await s3.getSignedUrl('getObject', s3Params)
     return signedUrl
   } catch (err) {
+    console.log(err)
     return null
   }
 }
