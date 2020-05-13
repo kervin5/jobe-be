@@ -58,8 +58,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
 
       return ctx.prisma.user.findMany({
         where: { ...args.where, ...usersFilter },
-        last: args.last,
-        first: args.first,
+        ...(args.first ? { first: args.first, skip: args.skip } : {}),
       })
     },
   })
@@ -123,8 +122,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       return ctx.prisma.user.findMany({
         where: { ...args.where, ...usersFilter, role: { name: 'candidate' } },
 
-        last: args.last,
-        first: args.first,
+        ...(args.first ? { first: args.first, skip: args.skip } : {}),
       })
     },
   })
@@ -146,6 +144,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
           role: { name: 'candidate' },
           applications: { some: { job: { branch: { id: user?.branch?.id } } } },
         },
+        
       })
     },
   })

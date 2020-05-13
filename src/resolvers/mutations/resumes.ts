@@ -30,7 +30,6 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         resumeSkills.includes(skill.name),
       )
 
-     console.log(ctx.request.user.id);
       
       const skills = filteredSkills.length ? ({ skills: {
         connect: filteredSkills.map((skill) => ({ id: skill.id }))
