@@ -6,5 +6,7 @@ export const Company = objectType({
     t.model.id()
     t.model.name()
     t.model.branches()
+    t.model.location()
+    t.model.description()
   },
 })

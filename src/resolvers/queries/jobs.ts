@@ -2,13 +2,9 @@ import { searchBoundary } from '../../utils/location'
 //const { forwardTo } = require("prisma-binding");
 import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
 import { stringArg, arg, intArg } from '@nexus/schema'
+import { UserAccessFilter } from './users'
 import { can } from '../../permissions/auth'
-
-interface JobFilter {
-  branch?: object
-  company?: object
-  author?: object
-}
+import { OrderByArg } from '@prisma/client'
 
 export default (t: ObjectDefinitionBlock<'Query'>) => {
   //Fetch single job
@@ -35,6 +31,8 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     type: 'Job',
     args: {
       where: arg({ type: 'JobWhereInput' }),
+      first: intArg({ nullable: true }),
+      skip: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.prisma.user.findOne({
@@ -43,7 +41,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       })
 
       //Gets jobs created by this user by default;
-      let ownerFilter: JobFilter = { author: { id: user?.id } }
+      let ownerFilter: UserAccessFilter = { author: { id: user?.id } }
 
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
@@ -57,6 +55,8 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
 
       return ctx.prisma.job.findMany({
         where: { ...args.where, ...ownerFilter },
+        orderBy: { updatedAt: 'desc' },
+        ...(args.first ? { first: args.first, skip: args.skip } : {}),
       })
     },
   })
@@ -68,7 +68,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       location: stringArg({ nullable: true }),
       query: stringArg(),
       where: arg({ type: 'JobWhereInput' }),
-      perPage: intArg({ nullable: true }),
+      first: intArg({ nullable: true }),
       skip: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
@@ -95,7 +95,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
             ...args.where,
             status: 'POSTED',
           },
-          ...(args.perPage ? { perPage: args.perPage, skip: args.skip } : {}),
+          ...(args.first ? { first: args.first, skip: args.skip } : {}),
           orderBy: { updatedAt: 'desc' },
         })
       }
@@ -139,7 +139,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
           ...args.where,
           status: 'POSTED',
         },
-        ...(args.perPage ? { perPage: args.perPage, skip: args.skip } : {}),
+        ...(args.first ? { first: args.first, skip: args.skip } : {}),
         orderBy: { updatedAt: 'desc' },
       })
     },
@@ -167,7 +167,9 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       })
 
       //Gets jobs created by this user by default;
-      let ownerFilter: JobFilter = { author: { id: ctx.request.user.id } }
+      let ownerFilter: UserAccessFilter = {
+        author: { id: ctx.request.user.id },
+      }
 
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {

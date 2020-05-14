@@ -2,9 +2,10 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
-    "lib": ["esnext","DOM"],
+    "lib": ["esnext", "DOM"],
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "typeRoots": ["./types", "./node_modules/@types"]
   },
   "include": ["src/**/*"]
 }

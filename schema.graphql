@@ -2,10 +2,28 @@
 ### Do not make changes to this file directly
 
 
+type Application {
+  createdAt: DateTime!
+  id: String!
+  job: Job!
+  notes(after: ApplicationNoteWhereUniqueInput, before: ApplicationNoteWhereUniqueInput, first: Int, last: Int, skip: Int): [ApplicationNote!]!
+  resume: Resume!
+  status: ApplicationStatus!
+  updatedAt: DateTime!
+  user: User!
+}
+
 input ApplicationFilter {
   every: ApplicationWhereInput
   none: ApplicationWhereInput
   some: ApplicationWhereInput
+}
+
+type ApplicationNote {
+  application: Application!
+  createdAt: DateTime!
+  id: String!
+  user: User!
 }
 
 input ApplicationNoteFilter {
@@ -34,6 +52,10 @@ input ApplicationNoteWhereInput {
   userId: StringFilter
 }
 
+input ApplicationNoteWhereUniqueInput {
+  id: String
+}
+
 enum ApplicationStatus {
   ARCHIVED
   CONTACTED
@@ -43,10 +65,14 @@ enum ApplicationStatus {
   VIEWED
 }
 
+input ApplicationStatusFilter {
+  equals: ApplicationStatus
+  in: [ApplicationStatus!]
+  not_in: [ApplicationStatus!]
+}
+
 input ApplicationWhereInput {
   AND: [ApplicationWhereInput!]
-  applicant: UserWhereInput
-  applicantId: StringFilter
   createdAt: DateTimeFilter
   id: StringFilter
   job: JobWhereInput
@@ -56,8 +82,14 @@ input ApplicationWhereInput {
   OR: [ApplicationWhereInput!]
   resume: ResumeWhereInput
   resumeId: StringFilter
-  status: ApplicationStatus
+  status: ApplicationStatusFilter
   updatedAt: DateTimeFilter
+  user: UserWhereInput
+  userId: StringFilter
+}
+
+input ApplicationWhereUniqueInput {
+  id: String
 }
 
 type AuthPayload {
@@ -65,14 +97,13 @@ type AuthPayload {
   user: User!
 }
 
-type BatchPayload {
-  count: Int!
-}
-
 type Branch {
   company: Company!
+  description: String
   id: String!
+  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int): [Job!]!
   name: String!
+  users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int, skip: Int): [User!]!
 }
 
 input BranchFilter {
@@ -112,6 +143,11 @@ input CategoryFilter {
   some: CategoryWhereInput
 }
 
+input CategoryOrderByInput {
+  id: OrderByArg
+  name: OrderByArg
+}
+
 input CategoryWhereInput {
   AND: [CategoryWhereInput!]
   id: StringFilter
@@ -121,9 +157,16 @@ input CategoryWhereInput {
   OR: [CategoryWhereInput!]
 }
 
+input CategoryWhereUniqueInput {
+  id: String
+  name: String
+}
+
 type Company {
   branches(after: BranchWhereUniqueInput, before: BranchWhereUniqueInput, first: Int, last: Int, skip: Int): [Branch!]!
+  description: String!
   id: String!
+  location: Location
   name: String!
 }
 
@@ -158,6 +201,12 @@ input DateTimeFilter {
   notIn: [DateTime!]
 }
 
+type Favorite {
+  id: String!
+  job: Job!
+  user: User!
+}
+
 input FavoriteFilter {
   every: FavoriteWhereInput
   none: FavoriteWhereInput
@@ -175,6 +224,18 @@ input FavoriteWhereInput {
   userId: StringFilter
 }
 
+input FavoriteWhereUniqueInput {
+  id: String
+}
+
+type File {
+  createdAt: DateTime!
+  id: String!
+  mimetype: String!
+  path: String!
+  updatedAt: DateTime!
+}
+
 input FileWhereInput {
   AND: [FileWhereInput!]
   createdAt: DateTimeFilter
@@ -183,7 +244,7 @@ input FileWhereInput {
   NOT: [FileWhereInput!]
   OR: [FileWhereInput!]
   path: StringFilter
-  resume: ResumeFilter
+  Resume: ResumeFilter
   updatedAt: DateTimeFilter
 }
 
@@ -198,22 +259,30 @@ input FloatFilter {
   notIn: [Float!]
 }
 
-input IntFilter {
-  equals: Int
-  gt: Int
-  gte: Int
-  in: [Int!]
-  lt: Int
-  lte: Int
-  not: Int
-  notIn: [Int!]
+type Job {
+  applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, skip: Int): [Application!]!
+  author: User!
+  branch: Branch!
+  categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int, skip: Int): [Category!]!
+  compensationType: String!
+  createdAt: DateTime!
+  cronTask: JobCronTask
+  description: String!
+  disclaimer: String
+  favorites(after: FavoriteWhereUniqueInput, before: FavoriteWhereUniqueInput, first: Int, last: Int, skip: Int): [Favorite!]!
+  id: String!
+  location: Location!
+  maxCompensation: Float!
+  minCompensation: Float!
+  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
+  status: JobStatus!
+  title: String!
+  type: String!
+  updatedAt: DateTime!
 }
 
-type Job {
-  author: User!
+type JobCronTask {
   id: String!
-  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
-  title: String!
 }
 
 input JobCronTaskWhereInput {
@@ -243,13 +312,19 @@ enum JobStatus {
   POSTED
 }
 
+input JobStatusFilter {
+  equals: JobStatus
+  in: [JobStatus!]
+  not_in: [JobStatus!]
+}
+
 input JobWhereInput {
   AND: [JobWhereInput!]
   applications: ApplicationFilter
   author: UserWhereInput
   authorId: StringFilter
   branch: BranchWhereInput
-  branchId: NullableStringFilter
+  branchId: StringFilter
   categories: CategoryFilter
   compensationType: StringFilter
   createdAt: DateTimeFilter
@@ -266,7 +341,7 @@ input JobWhereInput {
   NOT: [JobWhereInput!]
   OR: [JobWhereInput!]
   skills: SkillFilter
-  status: JobStatus
+  status: JobStatusFilter
   title: StringFilter
   type: StringFilter
   updatedAt: DateTimeFilter
@@ -276,30 +351,22 @@ input JobWhereUniqueInput {
   id: String
 }
 
-input Location_boundaryFilter {
-  every: Location_boundaryWhereInput
-  none: Location_boundaryWhereInput
-  some: Location_boundaryWhereInput
-}
-
-input Location_boundaryWhereInput {
-  AND: [Location_boundaryWhereInput!]
-  Location: LocationWhereInput
-  nodeId: StringFilter
-  NOT: [Location_boundaryWhereInput!]
-  OR: [Location_boundaryWhereInput!]
-  position: IntFilter
-  value: FloatFilter
+type Location {
+  boundary: [Float!]!
+  id: String!
+  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int): [Job!]!
+  latitude: Float!
+  longitude: Float!
+  name: String!
 }
 
 input LocationWhereInput {
   AND: [LocationWhereInput!]
-  branch: BranchFilter
-  company: CompanyFilter
+  Branch: BranchFilter
+  Company: CompanyFilter
   id: StringFilter
   jobs: JobFilter
   latitude: FloatFilter
-  location_boundary: Location_boundaryFilter
   longitude: FloatFilter
   name: StringFilter
   NOT: [LocationWhereInput!]
@@ -307,10 +374,42 @@ input LocationWhereInput {
   users: UserFilter
 }
 
+input LocationWhereUniqueInput {
+  id: String
+}
+
+type MapboxLocation {
+  id: String!
+  name: String!
+}
+
 type Mutation {
-  login(email: String!, password: String!): AuthPayload!
-  signup(email: String!, name: String, password: String!): AuthPayload!
-  updateManySkill(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
+  addFavorite(job: ID!): ID
+  createApplication(job: ID!): Application
+  createApplicationNote(content: String!, id: ID!): ApplicationNote
+  createCategory(name: String!): Category
+  createCompany(description: String!, name: String!): Company
+  createJob(author: String, categories: [String!]!, compensationType: String!, description: String!, disclaimer: String, isRecurring: Boolean, location: String, maxCompensation: Float, minCompensation: Float!, skills: [String!]!, title: String!, type: String!): Job
+  createLocation(boundary: [Float!]!, latitude: Float!, longitude: Float!, name: String!): Location
+  createResume(path: String!, title: String!, type: String!): Resume
+  createRole(name: String!, permissions: [RolePermissionsInputType!]!): Role
+  createSkill(name: String!): Skill
+  createUser(branch: ID, email: String!, name: String!, role: ID): User!
+  deleteFavorite(job: ID!): ID
+  deleteJob(id: ID!): Job
+  deleteUser(id: ID): User
+  login(email: String!, password: String!): User!
+  logout: String
+  requestReset(email: String!): String!
+  resetPassword(confirmPassword: String!, password: String!, token: String!): User!
+  schedule(id: String!): String
+  signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
+  signup(email: String!, name: String!, password: String!): User!
+  unschedule(id: String!): String
+  updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
+  updateJob(data: UpdateJobCustomInput!, where: JobWhereUniqueInput!): Job
+  updateRole(id: ID!, name: String, permissions: [RolePermissionsInputType!]): Role
+  updateUser(branch: ID, id: ID!, name: String, role: ID): User
 }
 
 input NullableFloatFilter {
@@ -338,26 +437,15 @@ input NullableStringFilter {
   startsWith: String
 }
 
+enum OrderByArg {
+  asc
+  desc
+}
+
 type Permission {
   actions: [String!]!
   id: String!
   object: String!
-}
-
-input Permission_actionsFilter {
-  every: Permission_actionsWhereInput
-  none: Permission_actionsWhereInput
-  some: Permission_actionsWhereInput
-}
-
-input Permission_actionsWhereInput {
-  AND: [Permission_actionsWhereInput!]
-  nodeId: StringFilter
-  NOT: [Permission_actionsWhereInput!]
-  OR: [Permission_actionsWhereInput!]
-  Permission: PermissionWhereInput
-  position: IntFilter
-  value: StringFilter
 }
 
 input PermissionFilter {
@@ -372,7 +460,6 @@ input PermissionWhereInput {
   NOT: [PermissionWhereInput!]
   object: StringFilter
   OR: [PermissionWhereInput!]
-  permission_actions: Permission_actionsFilter
   role: RoleWhereInput
   roleId: StringFilter
 }
@@ -382,19 +469,57 @@ input PermissionWhereUniqueInput {
 }
 
 type Query {
+  application(where: UniqueApplicationInputType!): Application
+  applicationNotes(id: String): [ApplicationNote!]!
+  applications(first: Int, skip: Int, where: ApplicationWhereInput): [Application!]!
+  applicationsConnection(where: ApplicationWhereInput): Int!
+  branches(where: BranchWhereInput): [Branch!]!
+  candidates(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
+  candidatesConnection(where: UserWhereInput): Int!
+  categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int, orderBy: CategoryOrderByInput, skip: Int, where: CategoryWhereInput): [Category!]!
+  category(where: CategoryWhereUniqueInput!): Category
+  getSignedFileUrl(AWSUrl: String!): String
   job(where: JobWhereUniqueInput!): Job
   jobs(where: JobWhereInput): [Job!]!
   jobsConnection(where: JobWhereInput): Int!
-  protectedJobs(where: JobWhereInput): [Job!]!
+  location(where: LocationWhereUniqueInput!): Location
+  locations(after: LocationWhereUniqueInput, before: LocationWhereUniqueInput, first: Int, last: Int, skip: Int): [Location!]!
+  mapBoxLocations(query: String): [MapboxLocation!]!
+  me: User
+  popularTerms: [Term!]!
+  protectedJobs(first: Int, skip: Int, where: JobWhereInput): [Job!]!
   protectedJobsConnection(where: JobWhereInput): Int!
-  searchJobs(location: String, perPage: Int, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
-  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int): [Skill!]!
+  roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, skip: Int): [Role!]!
+  searchJobs(first: Int, location: String, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
+  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, orderBy: SkillOrderByInput, skip: Int, where: SkillWhereInput): [Skill!]!
+  user(where: UserWhereUniqueInput!): User
+  users(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
+  usersConnection(where: UserWhereInput): Int!
+}
+
+type Resume {
+  createdAt: DateTime!
+  file: File!
+  id: String!
+  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, skip: Int, where: SkillWhereInput): [Skill!]!
+  title: String!
+  updatedAt: DateTime!
+  user: User!
 }
 
 input ResumeFilter {
   every: ResumeWhereInput
   none: ResumeWhereInput
   some: ResumeWhereInput
+}
+
+input ResumeOrderByInput {
+  createdAt: OrderByArg
+  fileId: OrderByArg
+  id: OrderByArg
+  title: OrderByArg
+  updatedAt: OrderByArg
+  userId: OrderByArg
 }
 
 input ResumeWhereInput {
@@ -413,10 +538,19 @@ input ResumeWhereInput {
   userId: StringFilter
 }
 
+input ResumeWhereUniqueInput {
+  id: String
+}
+
 type Role {
   id: String!
   name: String!
   permissions(after: PermissionWhereUniqueInput, before: PermissionWhereUniqueInput, first: Int, last: Int, skip: Int): [Permission!]!
+}
+
+input RolePermissionsInputType {
+  actions: [String!]
+  object: String!
 }
 
 input RoleWhereInput {
@@ -429,10 +563,22 @@ input RoleWhereInput {
   users: UserFilter
 }
 
+input RoleWhereUniqueInput {
+  id: String
+}
+
+type SignedFileUploadRequest {
+  acl: String
+  signedRequest: String
+  url: String
+}
+
 type Skill {
   id: String!
-  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int): [Job!]!
+  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int, where: JobWhereInput): [Job!]!
   name: String!
+  resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, skip: Int, where: ResumeWhereInput): [Resume!]!
+  users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int, skip: Int): [User!]!
 }
 
 input SkillFilter {
@@ -441,9 +587,9 @@ input SkillFilter {
   some: SkillWhereInput
 }
 
-input SkillUpdateManyMutationInput {
-  id: String
-  name: String
+input SkillOrderByInput {
+  id: OrderByArg
+  name: OrderByArg
 }
 
 input SkillWhereInput {
@@ -476,11 +622,50 @@ input StringFilter {
   startsWith: String
 }
 
-type User {
-  branch: Branch
-  email: String!
+type Term {
   id: String!
+  label: String!
+  type: String!
+}
+
+input UniqueApplicationInputType {
+  id: String!
+}
+
+input UpdateJobCustomInput {
+  author: String
+  categories: [String!]
+  compensationType: String
+  description: String
+  disclaimer: String
+  location: String
+  maxCompensation: Float
+  minCompensation: Float
+  skills: [String!]
+  status: JobStatus
+  title: String
+  type: String
+}
+
+type User {
+  applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, skip: Int, where: ApplicationWhereInput): [Application!]!
+  branch: Branch
+  createdAt: DateTime!
+  eEmpact: UserEEmpactData
+  email: String!
+  favorites(after: FavoriteWhereUniqueInput, before: FavoriteWhereUniqueInput, first: Int, last: Int, skip: Int, where: FavoriteWhereInput): [Favorite!]!
+  id: String!
+  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, skip: Int, where: JobWhereInput): [Job!]!
+  location: Location
   name: String!
+  resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, orderBy: ResumeOrderByInput, skip: Int, where: ResumeWhereInput): [Resume!]!
+  role: Role!
+  status: UserStatus!
+}
+
+type UserEEmpactData {
+  assignments: Int
+  id: String
 }
 
 input UserFilter {
@@ -497,7 +682,7 @@ enum UserStatus {
 
 input UserWhereInput {
   AND: [UserWhereInput!]
-  applicationNote: ApplicationNoteFilter
+  ApplicationNote: ApplicationNoteFilter
   applications: ApplicationFilter
   branch: BranchWhereInput
   branchId: NullableStringFilter
@@ -520,4 +705,9 @@ input UserWhereInput {
   skills: SkillFilter
   status: UserStatus
   updatedAt: DateTimeFilter
+}
+
+input UserWhereUniqueInput {
+  email: String
+  id: String
 }
