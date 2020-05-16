@@ -4,8 +4,7 @@
     "rootDir": "src",
     "lib": ["esnext", "DOM"],
     "esModuleInterop": true,
-    "strict": true,
-    "typeRoots": ["./types", "./node_modules/@types"]
-  },
-  "include": ["src/**/*"]
+    "strict": true
+  }
+  //"include": ["src/**/*"]
 }

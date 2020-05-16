@@ -1,4 +1,4 @@
-import { rule, shield, and } from 'graphql-shield'
+import { rule, shield, and, or } from 'graphql-shield'
 import { getUserId, can, IUserCan } from '../permissions/auth'
 import { Context } from '../context'
 
@@ -28,52 +28,130 @@ const rules = {
 export const permissions = shield(
   {
     Query: {
-      // me: rules.isAuthenticatedUser,
-      /*
-    me: rules.isAuthenticatedUser,
-    filterPosts: rules.isAuthenticatedUser,
-    post: rules.isAuthenticatedUser,*/
-      //jobs: rules.allow,
+      application: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'JOB' }),
+        rules.can({ action: 'READ', object: 'APPLICATION' }),
+      ),
+      applications: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'JOB' }),
+        rules.can({ action: 'READ', object: 'APPLICATION' }),
+      ),
+      applicationsConnection: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'JOB' }),
+        rules.can({ action: 'READ', object: 'APPLICATION' }),
+      ),
       roles: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'READ', object: 'ROLE' }),
       ),
-      protectedJobs: rules.isAuthenticatedUser,
-      protectedJobsConnection: rules.isAuthenticatedUser,
-      user: and(
+      protectedJobs: and(
         rules.isAuthenticatedUser,
-        rules.can({ action: 'READ', object: 'USER' }),
+        rules.can({ action: 'CREATE', object: 'JOB' }),
       ),
-      users: and(
+      protectedJobsConnection: and(
         rules.isAuthenticatedUser,
-        rules.can({ action: 'READ', object: 'USER' }),
+        rules.can({ action: 'CREATE', object: 'JOB' }),
       ),
-      usersConnection: and(
+      user: or(
         rules.isAuthenticatedUser,
         rules.can({ action: 'READ', object: 'USER' }),
+        rules.can({ action: 'READ', object: 'COMPANY' }),
+        rules.can({ action: 'READ', object: 'BRANCH' }),
+      ),
+      users: or(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'READ', object: 'USER' }),
+        rules.can({ action: 'READ', object: 'COMPANY' }),
+        rules.can({ action: 'READ', object: 'BRANCH' }),
+      ),
+      usersConnection: or(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'READ', object: 'USER' }),
+        rules.can({ action: 'READ', object: 'COMPANY' }),
+        rules.can({ action: 'READ', object: 'BRANCH' }),
       ),
       candidates: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'JOB' }),
+        or(
+          rules.can({ action: 'READ', object: 'USER' }),
+          rules.can({ action: 'READ', object: 'COMPANY' }),
+          rules.can({ action: 'READ', object: 'BRANCH' }),
+        ),
       ),
       candidatesConnection: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'JOB' }),
+        or(
+          rules.can({ action: 'READ', object: 'USER' }),
+          rules.can({ action: 'READ', object: 'COMPANY' }),
+          rules.can({ action: 'READ', object: 'BRANCH' }),
+        ),
       ),
+
       branches: rules.isAuthenticatedUser,
       getSignedFileUrl: rules.isAuthenticatedUser,
     },
     Mutation: {
-      /*
-    createDraft: rules.isAuthenticatedUser,
-    deletePost: rules.isPostOwner,
-    publish: rules.isPostOwner,*/
+      createUser: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'USER' }),
+      ),
+      deleteUser: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'DELETE', object: 'USER' }),
+      ),
+      updateUser: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'DELETE', object: 'USER' }),
+      ),
       createJob: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'JOB' }),
       ),
-      createApplication: rules.isAuthenticatedUser,
-      createResume: rules.isAuthenticatedUser,
+      updateJob: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'UPDATE', object: 'JOB' }),
+      ),
+      createLocation: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'LOCATION' }),
+      ),
+      createCategory: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'CATEGORY' }),
+      ),
+      createSkill: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'SKILL' }),
+      ),
+      addFavorite: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'FAVORITE' }),
+      ),
+      deleteFavorite: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'DELETE', object: 'FAVORITE' }),
+      ),
+      signFileUpload: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'RESUME' }),
+      ),
+      createApplication: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'APPLICATION' }),
+      ),
+      createResume: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'RESUME' }),
+      ),
+      createCompany: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'COMPANY' }),
+      ),
     },
   },
   {
