@@ -11,16 +11,16 @@
   ],
   "build": {
     "env": {
-      "POSTGRESQL_URL": "@postgresql_url"
+      "DATABASE_URL": "@postgresql_url"
     }
   },
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/graphql",
       "dest": "src/server.ts"
     }
   ],
   "env": {
-    "POSTGRESQL_URL": "@postgresql_url"
+    "DATABASE_URL": "@postgresql_url"
   }
 }

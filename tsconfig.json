@@ -4,7 +4,8 @@
     // "rootDir": "src",
     "lib": ["esnext", "DOM"],
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "target": "ES2018"
   },
   "include": ["src/**/*"]
 }
