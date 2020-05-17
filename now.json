@@ -1,12 +1,14 @@
 {
   "version": 2,
-  "builds": {
-    "src": "src/server.ts",
-    "use": "@now/node@canary",
-    "config": {
-      "maxLambdaSize": "25mb"
+  "builds": [
+    {
+      "src": "src/server.ts",
+      "use": "@now/node@canary",
+      "config": {
+        "maxLambdaSize": "25mb"
+      }
     }
-  },
+  ],
   "build": {
     "env": {
       "POSTGRESQL_URL": "@postgresql_url"
