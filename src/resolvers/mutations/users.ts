@@ -162,7 +162,10 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
           include: { role: true },
         })
 
-        const token = jwt.sign({ id: user.id }, process.env.APP_SECRET)
+        const token = jwt.sign(
+          { id: user.id },
+          process.env.APP_SECRET as string,
+        )
         // 4. Set the cookie with the token
         ctx.response.header('token', token)
         ctx.response.cookie('token', token, {
@@ -197,7 +200,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         throw new Error('Invalid password')
       }
       // 3. generate the JWT Token
-      const token = jwt.sign({ id: user.id }, process.env.APP_SECRET)
+      const token = jwt.sign({ id: user.id }, process.env.APP_SECRET as string)
 
       ctx.response.header('token', `Bearer ${token}`)
 
@@ -394,7 +397,10 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         },
       })
       // 6. Generate JWT
-      const token = jwt.sign({ id: updatedUser.id }, process.env.APP_SECRET)
+      const token = jwt.sign(
+        { id: updatedUser.id },
+        process.env.APP_SECRET as string,
+      )
       // 7. Set the JWT cookie
       ctx.response.cookie('token', token, {
         httpOnly: true,
