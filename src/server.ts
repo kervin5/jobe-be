@@ -24,8 +24,8 @@ const schemaWithMiddleware = applyMiddleware(schema, permissions)
 const server = new ApolloServer({
   schema: schemaWithMiddleware,
   context: createContext,
-  introspection: true,
-  playground: true,
+  //introspection: true,
+  // playground: true,
 })
 
 server.applyMiddleware({ app })
