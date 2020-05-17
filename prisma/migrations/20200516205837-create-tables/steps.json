@@ -352,7 +352,7 @@
     {
       "tag": "CreateField",
       "model": "Application",
-      "field": "applicantId",
+      "field": "userId",
       "type": "String",
       "arity": "Required"
     },
@@ -362,7 +362,7 @@
         "path": {
           "tag": "Field",
           "model": "Application",
-          "field": "applicantId"
+          "field": "userId"
         },
         "directive": "map"
       }
@@ -374,17 +374,17 @@
         "path": {
           "tag": "Field",
           "model": "Application",
-          "field": "applicantId"
+          "field": "userId"
         },
         "directive": "map"
       },
       "argument": "",
-      "value": "\"applicant\""
+      "value": "\"user\""
     },
     {
       "tag": "CreateField",
       "model": "Application",
-      "field": "applicant",
+      "field": "user",
       "type": "User",
       "arity": "Required"
     },
@@ -394,7 +394,7 @@
         "path": {
           "tag": "Field",
           "model": "Application",
-          "field": "applicant"
+          "field": "user"
         },
         "directive": "relation"
       }
@@ -406,12 +406,12 @@
         "path": {
           "tag": "Field",
           "model": "Application",
-          "field": "applicant"
+          "field": "user"
         },
         "directive": "relation"
       },
       "argument": "fields",
-      "value": "[applicantId]"
+      "value": "[userId]"
     },
     {
       "tag": "CreateArgument",
@@ -420,7 +420,7 @@
         "path": {
           "tag": "Field",
           "model": "Application",
-          "field": "applicant"
+          "field": "user"
         },
         "directive": "relation"
       },
@@ -1967,7 +1967,7 @@
       "model": "Job",
       "field": "branchId",
       "type": "String",
-      "arity": "Optional"
+      "arity": "Required"
     },
     {
       "tag": "CreateDirective",
@@ -1999,7 +1999,7 @@
       "model": "Job",
       "field": "branch",
       "type": "Branch",
-      "arity": "Optional"
+      "arity": "Required"
     },
     {
       "tag": "CreateDirective",
@@ -2302,100 +2302,6 @@
     },
     {
       "tag": "CreateModel",
-      "model": "Location_boundary"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Location_boundary",
-      "field": "nodeId",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Location_boundary",
-      "field": "position",
-      "type": "Int",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Location_boundary",
-      "field": "value",
-      "type": "Float",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Location_boundary",
-      "field": "Location",
-      "type": "Location",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Location_boundary",
-          "field": "Location"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Location_boundary",
-          "field": "Location"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[nodeId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Location_boundary",
-          "field": "Location"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "Location_boundary"
-        },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Model",
-          "model": "Location_boundary"
-        },
-        "directive": "id"
-      },
-      "argument": "",
-      "value": "[nodeId, position]"
-    },
-    {
-      "tag": "CreateModel",
       "model": "Permission"
     },
     {
@@ -2456,6 +2362,31 @@
       "arity": "Required"
     },
     {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Permission",
+          "field": "roleId"
+        },
+        "directive": "map"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Permission",
+          "field": "roleId"
+        },
+        "directive": "map"
+      },
+      "argument": "",
+      "value": "\"role\""
+    },
+    {
       "tag": "CreateField",
       "model": "Permission",
       "field": "role",
@@ -2507,100 +2438,6 @@
       "field": "actions",
       "type": "String",
       "arity": "List"
-    },
-    {
-      "tag": "CreateModel",
-      "model": "Permission_actions"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Permission_actions",
-      "field": "nodeId",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Permission_actions",
-      "field": "position",
-      "type": "Int",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Permission_actions",
-      "field": "value",
-      "type": "String",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateField",
-      "model": "Permission_actions",
-      "field": "Permission",
-      "type": "Permission",
-      "arity": "Required"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Field",
-          "model": "Permission_actions",
-          "field": "Permission"
-        },
-        "directive": "relation"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Permission_actions",
-          "field": "Permission"
-        },
-        "directive": "relation"
-      },
-      "argument": "fields",
-      "value": "[nodeId]"
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Field",
-          "model": "Permission_actions",
-          "field": "Permission"
-        },
-        "directive": "relation"
-      },
-      "argument": "references",
-      "value": "[id]"
-    },
-    {
-      "tag": "CreateDirective",
-      "location": {
-        "path": {
-          "tag": "Model",
-          "model": "Permission_actions"
-        },
-        "directive": "id"
-      }
-    },
-    {
-      "tag": "CreateArgument",
-      "location": {
-        "tag": "Directive",
-        "path": {
-          "tag": "Model",
-          "model": "Permission_actions"
-        },
-        "directive": "id"
-      },
-      "argument": "",
-      "value": "[nodeId, position]"
     },
     {
       "tag": "CreateModel",
@@ -2664,6 +2501,31 @@
       "arity": "Required"
     },
     {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Resume",
+          "field": "fileId"
+        },
+        "directive": "map"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Resume",
+          "field": "fileId"
+        },
+        "directive": "map"
+      },
+      "argument": "",
+      "value": "\"file\""
+    },
+    {
       "tag": "CreateField",
       "model": "Resume",
       "field": "file",
@@ -2715,6 +2577,31 @@
       "field": "userId",
       "type": "String",
       "arity": "Required"
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Resume",
+          "field": "userId"
+        },
+        "directive": "map"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Resume",
+          "field": "userId"
+        },
+        "directive": "map"
+      },
+      "argument": "",
+      "value": "\"user\""
     },
     {
       "tag": "CreateField",
@@ -2940,6 +2827,31 @@
         },
         "directive": "id"
       }
+    },
+    {
+      "tag": "CreateDirective",
+      "location": {
+        "path": {
+          "tag": "Field",
+          "model": "Skill",
+          "field": "id"
+        },
+        "directive": "default"
+      }
+    },
+    {
+      "tag": "CreateArgument",
+      "location": {
+        "tag": "Directive",
+        "path": {
+          "tag": "Field",
+          "model": "Skill",
+          "field": "id"
+        },
+        "directive": "default"
+      },
+      "argument": "",
+      "value": "cuid()"
     },
     {
       "tag": "CreateField",

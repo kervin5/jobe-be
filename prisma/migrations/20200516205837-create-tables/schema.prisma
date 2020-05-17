@@ -39,6 +39,7 @@ enum JobStatus {
 
 model Application {
   id              String   @id @default(cuid())
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
  
@@ -48,10 +49,10 @@ model Application {
   jobId           String @map("job")
   job             Job    @relation(fields: [jobId], references: [id])
  
-  status          ApplicationStatus @default(NEW)
+  status          ApplicationStatus @default(NEW) 
 
-  applicantId     String @map("applicant")
-  applicant       User   @relation(fields: [applicantId], references: [id])
+  userId     String @map("user")
+  user       User   @relation(fields: [userId], references: [id])
 
   notes ApplicationNote[]
 }
@@ -146,8 +147,8 @@ model Job {
   status                                JobStatus @default(DRAFT)
   favorites                             Favorite[]
 
-  branchId                              String? @map("branch")
-  branch                                Branch? @relation(fields: [branchId], references: [id])
+  branchId                              String @map("branch")
+  branch                                Branch @relation(fields: [branchId], references: [id])
   
   cronTaskId                            String? @map("cronTask")
   cronTask                              JobCronTask?  @relation( fields: [cronTaskId], references: [id])
@@ -173,39 +174,39 @@ model Location {
   users              User[]
 }
 
-model Location_boundary {
-  nodeId   String
-  position Int
-  value    Float
-  Location Location @relation(fields: [nodeId], references: [id])
+//model Location_boundary {
+  
+//  position Int
+  //value    Float
+ // locationId String @map("location")
+ // location Location @relation(fields: [locationId], references: [id])
 
-  @@id([nodeId, position])
-}
+  //@@id([locationId, position])
+//}
 
 model Permission {
   id                 String @id @default(cuid())
   object             String
-  roleId             String
+  roleId               String @map("role")
   role               Role               @relation(fields: [roleId], references: [id])
   actions String[]
 }
 
-model Permission_actions {
-  nodeId     String
-  position   Int
-  value      String
-  Permission Permission @relation(fields: [nodeId], references: [id])
-
-  @@id([nodeId, position])
-}
+//model Permission_actions {
+  //position   Int
+  //value      String
+  //permissionId     String @map("permission")
+  //permission Permission @relation(fields: [permissionId], references: [id])
+  //@@id([permissionId, position])
+//}
 
 model Resume {
-  id          String        @id @default(cuid())
+  id          String      @id @default(cuid())
   title       String
-  fileId      String
+  fileId        String     @map("file")
   file        File         @relation(fields: [fileId], references: [id])
-  userId        String
-  user        User         @relation(fields: [userId], references: [id])
+  userId      String        @map("user")
+  user        User        @relation(fields: [userId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime  @updatedAt
   applications Application[]
@@ -220,7 +221,7 @@ model Role {
 }
 
 model Skill {
-  id     String   @id
+  id     String   @id @default(cuid()) 
   name   String   @unique
   jobs   Job[]    @relation(references: [id])
   resumes Resume[] @relation(references: [id])
@@ -228,9 +229,9 @@ model Skill {
 }
 
 model User {
-  id               String            @id @default(cuid())
+  id               String      @id @default(cuid()) 
   name             String
-  email            String            @unique
+  email            String      @unique
   password         String
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt()

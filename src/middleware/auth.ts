@@ -1,10 +1,18 @@
-import jwt from 'jsonwebtoken'
-import { Request } from 'express'
+import { Token } from '../permissions/auth'
+import { Request, Response } from 'express'
 import { getUserId } from '../permissions/auth'
 
 // const config = require('config');
 
-export default function auth(req: Request, res, next) {
+declare global {
+  namespace Express {
+    interface Request {
+      user: Token | undefined
+    }
+  }
+}
+
+export default function auth(req: Request, res: Response, next: Function) {
   // if (!token) return res.status(401).send({error: 'Access denied.'});
 
   try {

@@ -1,8 +1,8 @@
-import { verify } from 'jsonwebtoken'
+import { verify, Secret } from 'jsonwebtoken'
 import { Context } from '../context'
 import { Request } from 'express'
 
-interface Token {
+export interface Token {
   id: string
 }
 
@@ -33,7 +33,7 @@ export async function can(action: string, object: string, ctx: Context) {
 export function getUserId(req: Request) {
   const token = getUserToken(req)
   if (token) {
-    const decoded = verify(token, process.env.APP_SECRET) as Token
+    const decoded = verify(token, process.env.APP_SECRET as Secret) as Token
     return decoded
   }
 }
