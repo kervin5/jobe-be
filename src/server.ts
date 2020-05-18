@@ -30,8 +30,8 @@ const server = new ApolloServer({
     optionsSuccessStatus: 200,
     methods: ['POST', 'GET'],
   },
-  //introspection: true,
-  // playground: true,
+  introspection: true,
+  playground: true,
 })
 
 //server.applyMiddleware({ app })

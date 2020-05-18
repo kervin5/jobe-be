@@ -9,18 +9,10 @@
       }
     }
   ],
-  "build": {
-    "env": {
-      "DATABASE_URL": "@postgresql_url"
-    }
-  },
   "routes": [
     {
       "src": "/graphql",
       "dest": "src/server.ts"
     }
-  ],
-  "env": {
-    "DATABASE_URL": "@postgresql_url"
-  }
+  ]
 }
