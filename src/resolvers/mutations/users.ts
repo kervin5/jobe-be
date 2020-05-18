@@ -100,12 +100,24 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         })
       }
 
-      if (!!usersCount) {
+      if (!usersCount) {
         defaultRole = await ctx.prisma.role.create({
           data: {
             name: 'administrator',
             permissions: {
               create: [
+                {
+                  object: 'JOB',
+                  actions: {
+                    set: ['CREATE', 'READ', 'UPDATE', 'DELETE', 'PUBLISH'],
+                  },
+                },
+                {
+                  object: 'APPLICATION',
+                  actions: {
+                    set: ['CREATE', 'READ', 'UPDATE', 'DELETE'],
+                  },
+                },
                 {
                   object: 'USER',
                   actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
@@ -134,7 +146,6 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
                   object: 'COMPANY',
                   actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
                 },
-
                 {
                   object: 'RESUME',
                   actions: { set: ['CREATE', 'READ', 'UPDATE', 'DELETE'] },
@@ -175,6 +186,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         // console.log(user);
         return user
       } catch (error) {
+        console.log({ error })
         throw new Error(`An user with this email already exists`)
       }
     },

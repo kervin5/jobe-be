@@ -1,6 +1,6 @@
 import { rule, shield, and, or } from 'graphql-shield'
-import { getUserId, can, IUserCan } from '../permissions/auth'
-import { Context } from '../context'
+import { getUserId, can, IUserCan } from './auth'
+// import { Context } from '../context'
 
 const rules = {
   isAuthenticatedUser: rule()((parent, args, context) => {
