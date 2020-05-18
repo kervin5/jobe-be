@@ -144,7 +144,6 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
           role: { name: 'candidate' },
           applications: { some: { job: { branch: { id: user?.branch?.id } } } },
         },
-        
       })
     },
   })

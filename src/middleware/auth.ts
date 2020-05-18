@@ -18,7 +18,7 @@ export default function auth(req: Request, res: Response, next: Function) {
   try {
     req.user = getUserId(req)
   } catch (ex) {
-    console.log({ ex })
+    // console.log({ ex })
     //TODO: Handle missing AUTH
     // console.log("error");
     // console.log(token);
