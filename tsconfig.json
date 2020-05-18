@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    // "rootDir": "src",
+    //"rootDir": "src",
     "lib": ["esnext", "DOM"],
     "esModuleInterop": true,
     "strict": true,
-    "target": "ES2018"
+    "target": "ES2018",
+    "moduleResolution": "node"
   },
   "include": ["src/**/*"]
 }
