@@ -66,7 +66,6 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       const salt = await genSalt(10)
 
       let usersCount = await ctx.prisma.user.count()
-      console.log({ usersCount })
 
       //A role must exist in the database
       let [defaultRole] = await ctx.prisma.role.findMany({
