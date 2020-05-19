@@ -165,7 +165,7 @@ model JobCronTask {
 }
 
 model Location {
-  id                String  @id @default(now())
+  id                String  @id @default(cuid())
   name              String
   latitude          Float
   longitude         Float
