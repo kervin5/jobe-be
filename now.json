@@ -14,5 +14,15 @@
       "src": "/graphql",
       "dest": "src/server.ts"
     }
-  ]
+  ],
+  "env": {
+    "AWS_SES_AccessKey": "@aws-ses-accesskey",
+    "AWS_SES_SecretKey": "@aws-ses-accesssecret"
+  },
+  "build": {
+    "env": {
+      "AWS_SES_AccessKey": "@aws-ses-accesskey",
+      "AWS_SES_SecretKey": "@aws-ses-accesssecret"
+    }
+  }
 }
