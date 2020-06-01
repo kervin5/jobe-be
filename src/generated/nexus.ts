@@ -1081,6 +1081,7 @@ export interface NexusGenArgTypes {
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int
+      where?: NexusGenInputs['RoleWhereInput'] | null; // RoleWhereInput
     }
     searchJobs: { // args
       first?: number | null; // Int
