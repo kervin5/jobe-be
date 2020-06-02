@@ -769,6 +769,7 @@ export interface NexusGenFieldTypes {
     id: string; // String!
     name: string; // String!
     permissions: NexusGenRootTypes['Permission'][]; // [Permission!]!
+    users: NexusGenRootTypes['User'][]; // [User!]!
   }
   SignedFileUploadRequest: { // field return type
     acl: string | null; // String
@@ -1127,6 +1128,13 @@ export interface NexusGenArgTypes {
     permissions: { // args
       after?: NexusGenInputs['PermissionWhereUniqueInput'] | null; // PermissionWhereUniqueInput
       before?: NexusGenInputs['PermissionWhereUniqueInput'] | null; // PermissionWhereUniqueInput
+      first?: number | null; // Int
+      last?: number | null; // Int
+      skip?: number | null; // Int
+    }
+    users: { // args
+      after?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
+      before?: NexusGenInputs['UserWhereUniqueInput'] | null; // UserWhereUniqueInput
       first?: number | null; // Int
       last?: number | null; // Int
       skip?: number | null; // Int

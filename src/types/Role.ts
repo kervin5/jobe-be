@@ -6,6 +6,7 @@ export const Role = objectType({
     t.model.id()
     t.model.name()
     t.model.permissions()
+    t.model.users()
   },
 })
 
