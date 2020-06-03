@@ -235,11 +235,14 @@ model User {
   resetToken       String?
   resetTokenExpiry Float?
   status           UserStatus        @default(ACTIVE)
-  ApplicationNote  ApplicationNote[]
+  applicationNotes ApplicationNote[]
+  perks            Perk[]
 }
 
 model Perk {
-  id   String @id @default(cuid())
-  name String
-  jobs Job[]  @relation(references: [id])
+  id       String @id @default(cuid())
+  name     String
+  jobs     Job[]  @relation(references: [id])
+  authorId String @map("author")
+  author   User   @relation(fields: [authorId], references: [id])
 }

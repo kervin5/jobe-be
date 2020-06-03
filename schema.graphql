@@ -431,6 +431,7 @@ enum OrderByArg {
 }
 
 type Perk {
+  author: User!
   id: String!
   jobs(skip: Int, where: JobWhereInput): [Job!]!
   name: String!
@@ -443,12 +444,15 @@ input PerkFilter {
 }
 
 input PerkOrderByInput {
+  authorId: OrderByArg
   id: OrderByArg
   name: OrderByArg
 }
 
 input PerkWhereInput {
   AND: [PerkWhereInput!]
+  author: UserWhereInput
+  authorId: StringFilter
   id: StringFilter
   jobs: JobFilter
   name: StringFilter
@@ -681,7 +685,7 @@ enum UserStatus {
 
 input UserWhereInput {
   AND: [UserWhereInput!]
-  ApplicationNote: ApplicationNoteFilter
+  applicationNotes: ApplicationNoteFilter
   applications: ApplicationFilter
   branch: BranchWhereInput
   branchId: NullableStringFilter
@@ -696,6 +700,7 @@ input UserWhereInput {
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   password: StringFilter
+  perks: PerkFilter
   resetToken: NullableStringFilter
   resetTokenExpiry: NullableFloatFilter
   resumes: ResumeFilter

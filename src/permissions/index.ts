@@ -128,6 +128,10 @@ export const permissions = shield(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'SKILL' }),
       ),
+      createPerk: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'PERK' }),
+      ),
       addFavorite: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'FAVORITE' }),

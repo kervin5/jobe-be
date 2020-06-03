@@ -6,5 +6,6 @@ export const Perk = objectType({
     t.model.id()
     t.model.name()
     t.model.jobs({ filtering: true })
+    t.model.author()
   },
 })
