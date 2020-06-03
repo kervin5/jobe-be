@@ -31,7 +31,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     type: 'Job',
     args: {
       where: arg({ type: 'JobWhereInput' }),
-      first: intArg({ nullable: true }),
+      take: intArg({ nullable: true }),
       skip: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
@@ -56,7 +56,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       return ctx.prisma.job.findMany({
         where: { ...args.where, ...ownerFilter },
         orderBy: { updatedAt: 'desc' },
-        ...(args.first ? { first: args.first, skip: args.skip } : {}),
+        ...(args.take ? { take: args.take, skip: args.skip } : {}),
       })
     },
   })
@@ -68,7 +68,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       location: stringArg({ nullable: true }),
       query: stringArg(),
       where: arg({ type: 'JobWhereInput' }),
-      first: intArg({ nullable: true }),
+      take: intArg({ nullable: true }),
       skip: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
@@ -95,7 +95,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
             ...args.where,
             status: 'POSTED',
           },
-          ...(args.first ? { first: args.first, skip: args.skip } : {}),
+          ...(args.take ? { take: args.take, skip: args.skip } : {}),
           orderBy: { updatedAt: 'desc' },
         })
       }
@@ -139,7 +139,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
           ...args.where,
           status: 'POSTED',
         },
-        ...(args.first ? { first: args.first, skip: args.skip } : {}),
+        ...(args.take ? { take: args.take, skip: args.skip } : {}),
         orderBy: { updatedAt: 'desc' },
       })
     },

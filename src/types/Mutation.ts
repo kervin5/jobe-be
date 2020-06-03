@@ -5,6 +5,7 @@ import locations from '../resolvers/mutations/locations'
 import roles from '../resolvers/mutations/roles'
 import categories from '../resolvers/mutations/categories'
 import skills from '../resolvers/mutations/skills'
+import perks from '../resolvers/mutations/perks'
 import jobs from '../resolvers/mutations/jobs'
 import applications from '../resolvers/mutations/applications'
 import applicationNotes from '../resolvers/mutations/applicationNotes'
@@ -21,6 +22,7 @@ export const Mutation = mutationType({
     roles(t)
     categories(t)
     skills(t)
+    perks(t)
     jobs(t)
     applications(t)
     applicationNotes(t)

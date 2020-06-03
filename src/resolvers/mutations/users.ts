@@ -261,7 +261,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
             id: { not: user?.id },
             role: { name: 'recruiter' },
           },
-          first: 1,
+          take: 1,
         })
 
         if (recruiters.length) {
@@ -280,7 +280,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
               id: { not: user?.id },
               role: { name: 'manager' },
             },
-            first: 1,
+            take: 1,
           })
 
           if (managers.length) {

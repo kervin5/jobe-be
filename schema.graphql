@@ -379,6 +379,7 @@ type Mutation {
   createCompany(description: String!, name: String!): Company
   createJob(author: String, categories: [String!]!, compensationType: String!, description: String!, disclaimer: String, isRecurring: Boolean, location: String, maxCompensation: Float, minCompensation: Float!, skills: [String!]!, title: String!, type: String!): Job
   createLocation(boundary: [Float!]!, latitude: Float!, longitude: Float!, name: String!): Location
+  createPerk(name: String!): Perk
   createResume(path: String!, title: String!, type: String!): Resume
   createRole(name: String!, permissions: [RolePermissionsInputType!]!): Role
   createSkill(name: String!): Skill
@@ -485,10 +486,10 @@ input PermissionWhereInput {
 type Query {
   application(where: UniqueApplicationInputType!): Application
   applicationNotes(id: String): [ApplicationNote!]!
-  applications(first: Int, skip: Int, where: ApplicationWhereInput): [Application!]!
+  applications(skip: Int, take: Int, where: ApplicationWhereInput): [Application!]!
   applicationsConnection(where: ApplicationWhereInput): Int!
   branches(where: BranchWhereInput): [Branch!]!
-  candidates(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
+  candidates(skip: Int, take: Int, where: UserWhereInput): [User!]!
   candidatesConnection(where: UserWhereInput): Int!
   categories(orderBy: CategoryOrderByInput, skip: Int, where: CategoryWhereInput): [Category!]!
   category(where: CategoryWhereUniqueInput!): Category
@@ -502,13 +503,13 @@ type Query {
   me: User
   perks(orderBy: PerkOrderByInput, skip: Int, where: PerkWhereInput): [Perk!]!
   popularTerms: [Term!]!
-  protectedJobs(first: Int, skip: Int, where: JobWhereInput): [Job!]!
+  protectedJobs(skip: Int, take: Int, where: JobWhereInput): [Job!]!
   protectedJobsConnection(where: JobWhereInput): Int!
   roles(skip: Int, where: RoleWhereInput): [Role!]!
-  searchJobs(first: Int, location: String, query: String, radius: Int = 5, skip: Int, where: JobWhereInput): [Job!]!
+  searchJobs(location: String, query: String, radius: Int = 5, skip: Int, take: Int, where: JobWhereInput): [Job!]!
   skills(orderBy: SkillOrderByInput, skip: Int, where: SkillWhereInput): [Skill!]!
   user(where: UserWhereUniqueInput!): User
-  users(first: Int, last: Int, skip: Int, where: UserWhereInput): [User!]!
+  users(skip: Int, take: Int, where: UserWhereInput): [User!]!
   usersConnection(where: UserWhereInput): Int!
 }
 

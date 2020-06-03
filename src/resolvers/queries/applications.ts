@@ -42,7 +42,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     type: 'Application',
     args: {
       where: arg({ type: 'ApplicationWhereInput' }),
-      first: intArg({ nullable: true }),
+      take: intArg({ nullable: true }),
       skip: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {

@@ -33,8 +33,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     args: {
       where: arg({ type: 'UserWhereInput' }),
       skip: intArg(),
-      first: intArg(),
-      last: intArg(),
+      take: intArg(),
     },
     resolve: async (parent, args, ctx) => {
       const requesterData = await ctx.prisma.user.findOne({
@@ -58,7 +57,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
 
       return ctx.prisma.user.findMany({
         where: { ...args.where, ...usersFilter },
-        ...(args.first ? { first: args.first, skip: args.skip } : {}),
+        ...(args.take ? { take: args.take, skip: args.skip } : {}),
       })
     },
   })
@@ -96,8 +95,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     args: {
       where: arg({ type: 'UserWhereInput' }),
       skip: intArg(),
-      first: intArg(),
-      last: intArg(),
+      take: intArg(),
     },
     resolve: async (parent, args, ctx) => {
       const requesterData = await ctx.prisma.user.findOne({
@@ -122,7 +120,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       return ctx.prisma.user.findMany({
         where: { ...args.where, ...usersFilter, role: { name: 'candidate' } },
 
-        ...(args.first ? { first: args.first, skip: args.skip } : {}),
+        ...(args.take ? { take: args.take, skip: args.skip } : {}),
       })
     },
   })
