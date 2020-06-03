@@ -22,6 +22,7 @@ export const Job = objectType({
     t.model.disclaimer()
     t.model.categories()
     t.model.cronTask()
+    t.model.perks()
   },
 })
 
