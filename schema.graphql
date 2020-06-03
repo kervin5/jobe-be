@@ -21,8 +21,10 @@ input ApplicationFilter {
 
 type ApplicationNote {
   application: Application!
+  content: String!
   createdAt: DateTime!
   id: String!
+  type: ApplicationNoteType!
   user: User!
 }
 

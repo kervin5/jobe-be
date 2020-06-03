@@ -439,8 +439,10 @@ export interface NexusGenRootTypes {
     updatedAt: any; // DateTime!
   }
   ApplicationNote: { // root type
+    content: string; // String!
     createdAt: any; // DateTime!
     id: string; // String!
+    type: NexusGenEnums['ApplicationNoteType']; // ApplicationNoteType!
   }
   AuthPayload: { // root type
     token: string; // String!
@@ -619,8 +621,10 @@ export interface NexusGenFieldTypes {
   }
   ApplicationNote: { // field return type
     application: NexusGenRootTypes['Application']; // Application!
+    content: string; // String!
     createdAt: any; // DateTime!
     id: string; // String!
+    type: NexusGenEnums['ApplicationNoteType']; // ApplicationNoteType!
     user: NexusGenRootTypes['User']; // User!
   }
   AuthPayload: { // field return type

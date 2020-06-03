@@ -7,5 +7,7 @@ export const ApplicationNote = objectType({
     t.model.application()
     t.model.user()
     t.model.createdAt()
+    t.model.type()
+    t.model.content()
   },
 })
