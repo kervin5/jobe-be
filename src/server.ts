@@ -29,6 +29,7 @@ const server = new ApolloServer({
       'https://www.myexactjobs.com/',
       'http://localhost:3000',
       'https://myexactjobs.herokuapp.com',
+      'https://www.myexactjobs.com',
     ],
     credentials: true,
     optionsSuccessStatus: 200,
