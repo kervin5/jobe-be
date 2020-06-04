@@ -25,7 +25,11 @@ const server = new ApolloServer({
   schema: schemaWithMiddleware,
   context: createContext,
   cors: {
-    origin: '*',
+    origin: [
+      'https://www.myexactjobs.com/',
+      'http://localhost:3000',
+      'https://myexactjobs.herokuapp.com',
+    ],
     credentials: true,
     optionsSuccessStatus: 200,
     methods: ['POST', 'GET'],
