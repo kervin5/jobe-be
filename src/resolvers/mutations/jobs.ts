@@ -1,0 +1,252 @@
+import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
+import { stringArg, floatArg, booleanArg, idArg, arg } from '@nexus/schema'
+import { fetchLocation } from '../../utils/location'
+import { can } from '../../permissions/auth'
+
+export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+  t.field('createJob', {
+    type: 'Job',
+    nullable: true,
+    args: {
+      title: stringArg({ required: true }),
+      description: stringArg({ required: true }),
+      compensationType: stringArg({ required: true }),
+      disclaimer: stringArg(),
+      type: stringArg({ required: true }),
+      minCompensation: floatArg({ required: true }),
+      maxCompensation: floatArg(),
+      location: stringArg(),
+      categories: stringArg({ list: true, required: true }),
+      skills: stringArg({ list: true, required: true }),
+      author: stringArg(),
+      isRecurring: booleanArg(),
+    },
+    resolve: async (parent, args, ctx) => {
+      const user = await ctx.prisma.user.findOne({
+        where: { id: ctx.request.user.id },
+        include: { branch: { include: { company: true } } },
+      })
+
+      const jobLocation = {
+        name: args.location,
+      }
+
+      const jobIsRecurring = !!args.isRecurring
+      delete args.isRecurring
+
+      // Checks if location exists in DB
+      const locationExists =
+        (await ctx.prisma.location.findMany({ where: jobLocation })).length > 0
+
+      let location = {}
+
+      if (locationExists) {
+        const existingLocations = await ctx.prisma.location.findMany({
+          where: jobLocation,
+        })
+
+        location = { connect: { id: existingLocations[0].id } }
+      } else {
+        const fetchedLocation = await fetchLocation(args.location || '')
+        location = {
+          create: {
+            name: args.location,
+            longitude: fetchedLocation.center[1],
+            latitude: fetchedLocation.center[0],
+            boundary: { set: fetchedLocation.bbox },
+          },
+        }
+      }
+
+      let authorId = ctx.request.user.id
+
+      if (
+        args.author &&
+        args.author !== '' &&
+        ((await can('READ', 'BRANCH', ctx)) ||
+          (await can('READ', 'COMPANY', ctx)) ||
+          (await can('READ', 'USER', ctx)))
+      ) {
+        authorId = args.author
+      } else {
+        // console.log(args);
+      }
+
+      const job = await ctx.prisma.job.create({
+        data: {
+          ...args,
+          categories: {
+            connect: args.categories.map((category: string) => ({
+              id: category,
+            })),
+          },
+          skills: {
+            connect: args.skills.map((skill: string) => ({ id: skill })),
+          },
+          status: 'DRAFT',
+          author: { connect: { id: authorId } },
+          location,
+          branch: { connect: { id: user?.branch?.id } },
+          maxCompensation: args.maxCompensation || 0,
+        },
+      })
+
+      if (jobIsRecurring) {
+        //await scheduleJobAutoUpdate(ctx, job.id)TODO: Implement recurring jobs
+      } else {
+        //console.log(args) TODO: Handle jobs that are not recurring
+      }
+
+      return job
+    },
+  })
+  t.field('deleteJob', {
+    type: 'Job',
+    nullable: true,
+    args: {
+      id: idArg({ required: true }),
+    },
+    resolve: async (parent, args, ctx, info) => {
+      const jobs = await ctx.prisma.job.findMany({
+        where: {
+          id: args.id,
+          author: { id: ctx.request.user.id },
+        },
+      })
+
+      if (
+        jobs.length > 0 ||
+        (await can('UPDATE', 'BRANCH', ctx)) ||
+        (await can('UPDATE', 'COMPANY', ctx))
+      ) {
+        await ctx.prisma.application.updateMany({
+          where: {
+            job: { id: args.id },
+            status: { notIn: ['ARCHIVED', 'HIRED'] },
+          },
+          data: { status: 'ARCHIVED' },
+        })
+
+        return ctx.prisma.job.update({
+          where: { id: args.id },
+          data: { status: 'DELETED' },
+        })
+      }
+      return null
+    },
+  })
+
+  t.field('updateJob', {
+    type: 'Job',
+    nullable: true,
+    args: {
+      where: arg({ type: 'JobWhereUniqueInput', required: true }),
+      data: arg({ type: 'UpdateJobCustomInput', required: true }),
+    },
+    resolve: async (parent, args, ctx, info) => {
+      let authorId = ctx.request.user.id
+      let JobDataToUpdate: any = { ...args.data } //TODO: Implement interface to define payload of object
+
+      if (
+        JobDataToUpdate.author &&
+        JobDataToUpdate.author !== '' &&
+        ((await can('READ', 'BRANCH', ctx)) ||
+          (await can('READ', 'COMPANY', ctx)) ||
+          (await can('READ', 'USER', ctx)))
+      ) {
+        authorId = JobDataToUpdate.author
+      } else {
+        const job = await ctx.prisma.job.findOne({
+          where: { id: args.where.id },
+          include: { location: true, author: true },
+        })
+        authorId = job?.author.id
+      }
+
+      const jobs = await ctx.prisma.job.findMany({
+        where: {
+          id: args.where.id,
+          author: { id: authorId },
+        },
+      })
+
+      if (
+        jobs.length > 0 ||
+        (await can('UPDATE', 'BRANCH', ctx)) ||
+        (await can('UPDATE', 'COMPANY', ctx))
+      ) {
+        if (JobDataToUpdate.location) {
+          const locationExists =
+            (
+              await ctx.prisma.location.findMany({
+                where: { name: JobDataToUpdate.location },
+              })
+            ).length > 0
+
+          if (locationExists) {
+            const existingLocations = await ctx.prisma.location.findMany({
+              where: {
+                name: JobDataToUpdate.location,
+              },
+            })
+            //Deletes the create mutation and forces connection to existing location if the location already exists
+            JobDataToUpdate.location = {
+              connect: {
+                id: existingLocations[0].id,
+              },
+            }
+          } else {
+            const fetchedLocation = await fetchLocation(
+              JobDataToUpdate.location,
+            )
+            JobDataToUpdate.location = {
+              create: {
+                name: JobDataToUpdate.location,
+                longitude: fetchedLocation.center[1],
+                latitude: fetchedLocation.center[0],
+                boundary: { set: fetchedLocation.bbox },
+              },
+            }
+          }
+        }
+        // console.log(args);
+        //Connect User to job
+        if (JobDataToUpdate.categories) {
+          JobDataToUpdate.categories = {
+            set: JobDataToUpdate.categories.map((category: string) => ({
+              id: category,
+            })),
+          }
+        }
+
+        if (JobDataToUpdate.skills) {
+          JobDataToUpdate.skills = {
+            set: JobDataToUpdate.skills.map((skill: string) => ({ id: skill })),
+          }
+        }
+
+        if (!JobDataToUpdate.status) {
+          JobDataToUpdate.status = 'DRAFT'
+        }
+
+        const user = await ctx.prisma.user.findOne({
+          where: { id: authorId },
+          include: { branch: { include: { company: true } } },
+        })
+
+        JobDataToUpdate.author = { connect: { id: authorId } }
+        JobDataToUpdate['branch'] = { connect: { id: user?.branch?.id } }
+        const job = await ctx.prisma.job.update({
+          where: args.where,
+          data: JobDataToUpdate,
+        })
+
+        return job
+      } else {
+        return null
+      }
+    },
+  })
+}
+
+interface IJobUpdateData {}

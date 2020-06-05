@@ -1,0 +1,42 @@
+import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
+import { shuffleArray } from '../../utils/functions'
+
+export default (t: ObjectDefinitionBlock<'Query'>) => {
+  t.list.field('popularTerms', {
+    type: 'Term',
+    resolve: async (parent, args, ctx) => {
+      let categories = await ctx.prisma.category.findMany({
+        where: { jobs: { some: { status: 'POSTED' } } },
+        include: { jobs: true },
+      })
+
+      let locations = await ctx.prisma.location.findMany({
+        where: { jobs: { some: { status: 'POSTED' } } },
+        include: { jobs: true },
+      })
+
+      categories.sort((a, b) => (a.jobs.length > b.jobs.length ? -1 : 1))
+      locations.sort((a, b) => (a.jobs.length > b.jobs.length ? -1 : 1))
+
+      const terms = [
+        ...categories
+          .map((category) => ({
+            label: category.name,
+            type: 'category',
+            id: category.id,
+          }))
+          .slice(0, 4),
+        ...locations
+          .map((location) => ({
+            label: location.name,
+            type: 'location',
+            id: location.id,
+          }))
+          .slice(0, 5),
+      ]
+
+      shuffleArray(terms)
+      return terms
+    },
+  })
+}

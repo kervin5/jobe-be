@@ -1,0 +1,5 @@
+# Prisma Migrate lockfile v1
+
+20200516205837-create-tables
+20200519140431-change-id-type-for-location
+20200603143752-create-perk-type
