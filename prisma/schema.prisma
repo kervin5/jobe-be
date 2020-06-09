@@ -89,9 +89,11 @@ model Branch {
 }
 
 model Category {
-  id   String @id @default(cuid())
-  name String @unique
-  jobs Job[]  @relation(references: [id])
+  id           String        @id @default(cuid())
+  name         String        @unique
+  jobs         Job[]         @relation(references: [id])
+  JobTemplates JobTemplate[] @relation(references: [id])
+
 }
 
 model Company {
@@ -205,11 +207,12 @@ model Role {
 }
 
 model Skill {
-  id      String   @id @default(cuid())
-  name    String   @unique
-  jobs    Job[]    @relation(references: [id])
-  resumes Resume[] @relation(references: [id])
-  users   User[]   @relation(references: [id])
+  id           String        @id @default(cuid())
+  name         String        @unique
+  jobs         Job[]         @relation(references: [id])
+  resumes      Resume[]      @relation(references: [id])
+  users        User[]        @relation(references: [id])
+  jobTemplates JobTemplate[] @relation(references: [id])
 }
 
 model User {
@@ -237,12 +240,38 @@ model User {
   status           UserStatus        @default(ACTIVE)
   applicationNotes ApplicationNote[]
   perks            Perk[]
+  jobTemplates     JobTemplate[]
 }
 
 model Perk {
-  id       String @id @default(cuid())
-  name     String
-  jobs     Job[]  @relation(references: [id])
-  authorId String @map("author")
-  author   User   @relation(fields: [authorId], references: [id])
+  id            String       @id @default(cuid())
+  name          String
+  jobs          Job[]        @relation(references: [id])
+  authorId      String       @map("author")
+  author        User         @relation(fields: [authorId], references: [id])
+  JobTemplate   JobTemplate? @relation(fields: [jobTemplateId], references: [id])
+  jobTemplateId String?
+}
+
+model JobTemplate {
+  id               String   @id @default(cuid())
+  name             String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  title            String
+  compensationType String   @default("hourly")
+  description      String
+  disclaimer       String?
+  type             String
+  maxCompensation  Float
+  minCompensation  Float
+
+  authorId         String  @map("author")
+  author           User    @relation(fields: [authorId], references: [id])
+  lastUserModified String?
+
+  categories Category[] @relation(references: [id])
+  skills     Skill[]    @relation(references: [id])
+
+  perks Perk[]
 }
