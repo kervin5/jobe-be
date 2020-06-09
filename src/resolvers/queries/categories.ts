@@ -9,7 +9,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     resolve: async (parent, args, ctx) => {
       return ctx.prisma.category.findMany({
         where: args.where,
-        take: args.take ?? 0,
+        ...(args.take ? { take: args.take } : {}),
       })
     },
   })
