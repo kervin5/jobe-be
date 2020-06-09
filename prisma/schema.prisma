@@ -234,28 +234,28 @@ model User {
   branchId String? @map("branch")
   branch   Branch? @relation(fields: [branchId], references: [id])
 
-  resumes          Resume[]
-  resetToken       String?
-  resetTokenExpiry Float?
-  status           UserStatus        @default(ACTIVE)
-  applicationNotes ApplicationNote[]
-  perks            Perk[]
-  jobTemplates     JobTemplate[]
+  resumes              Resume[]
+  resetToken           String?
+  resetTokenExpiry     Float?
+  status               UserStatus        @default(ACTIVE)
+  applicationNotes     ApplicationNote[]
+  perks                Perk[]
+  createdJobTemplates  JobTemplate[]
+  modifiedJobTemplates JobTemplate[]     @relation("lastModifiedJobTemplates")
 }
 
 model Perk {
-  id            String       @id @default(cuid())
-  name          String
-  jobs          Job[]        @relation(references: [id])
-  authorId      String       @map("author")
-  author        User         @relation(fields: [authorId], references: [id])
-  JobTemplate   JobTemplate? @relation(fields: [jobTemplateId], references: [id])
-  jobTemplateId String?
+  id           String        @id @default(cuid())
+  name         String
+  jobs         Job[]         @relation(references: [id])
+  authorId     String        @map("author")
+  author       User          @relation(fields: [authorId], references: [id])
+  JobTemplates JobTemplate[] @relation(references: [id])
 }
 
 model JobTemplate {
   id               String   @id @default(cuid())
-  name             String
+  name             String   @unique
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   title            String
@@ -266,12 +266,15 @@ model JobTemplate {
   maxCompensation  Float
   minCompensation  Float
 
-  authorId         String  @map("author")
-  author           User    @relation(fields: [authorId], references: [id])
-  lastUserModified String?
+  authorId String @map("author")
+  author   User   @relation(fields: [authorId], references: [id])
+
+  lastModifiedUserId String @map("lastUserModified")
+  lastUserModified   User   @relation("lastModifiedJobTemplates", fields: [lastModifiedUserId], references: [id])
 
   categories Category[] @relation(references: [id])
   skills     Skill[]    @relation(references: [id])
 
-  perks Perk[]
+  perks Perk[] @relation(references: [id])
+
 }
