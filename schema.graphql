@@ -137,6 +137,7 @@ input CategoryWhereInput {
   AND: [CategoryWhereInput!]
   id: StringFilter
   jobs: JobFilter
+  JobTemplates: JobTemplateFilter
   name: StringFilter
   NOT: [CategoryWhereInput!]
   OR: [CategoryWhereInput!]
@@ -300,6 +301,36 @@ input JobStatusFilter {
   not_in: [JobStatus!]
 }
 
+input JobTemplateFilter {
+  every: JobTemplateWhereInput
+  none: JobTemplateWhereInput
+  some: JobTemplateWhereInput
+}
+
+input JobTemplateWhereInput {
+  AND: [JobTemplateWhereInput!]
+  author: UserWhereInput
+  authorId: StringFilter
+  categories: CategoryFilter
+  compensationType: StringFilter
+  createdAt: DateTimeFilter
+  description: StringFilter
+  disclaimer: NullableStringFilter
+  id: StringFilter
+  lastModifiedUserId: StringFilter
+  lastUserModified: UserWhereInput
+  maxCompensation: FloatFilter
+  minCompensation: FloatFilter
+  name: StringFilter
+  NOT: [JobTemplateWhereInput!]
+  OR: [JobTemplateWhereInput!]
+  perks: PerkFilter
+  skills: SkillFilter
+  title: StringFilter
+  type: StringFilter
+  updatedAt: DateTimeFilter
+}
+
 input JobWhereInput {
   AND: [JobWhereInput!]
   applications: ApplicationFilter
@@ -451,6 +482,7 @@ input PerkWhereInput {
   authorId: StringFilter
   id: StringFilter
   jobs: JobFilter
+  JobTemplates: JobTemplateFilter
   name: StringFilter
   NOT: [PerkWhereInput!]
   OR: [PerkWhereInput!]
@@ -600,6 +632,7 @@ input SkillWhereInput {
   AND: [SkillWhereInput!]
   id: StringFilter
   jobs: JobFilter
+  jobTemplates: JobTemplateFilter
   name: StringFilter
   NOT: [SkillWhereInput!]
   OR: [SkillWhereInput!]
@@ -686,12 +719,14 @@ input UserWhereInput {
   branch: BranchWhereInput
   branchId: NullableStringFilter
   createdAt: DateTimeFilter
+  createdJobTemplates: JobTemplateFilter
   email: StringFilter
   favorites: FavoriteFilter
   id: StringFilter
   jobs: JobFilter
   location: LocationWhereInput
   locationId: NullableStringFilter
+  modifiedJobTemplates: JobTemplateFilter
   name: StringFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
