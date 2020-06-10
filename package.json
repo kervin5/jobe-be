@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "nexus dev",
     "build": "nexus build",
-    "start": "node node_modules/.build"
+    "start": "node .nexus/build"
   },
   "dependencies": {
     "aws-sdk": "^2.666.0",
