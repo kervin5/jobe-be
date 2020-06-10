@@ -5,6 +5,7 @@
     "build": "nexus build",
     "start": "node .nexus/build --experimental-modules"
   },
+  "type": "module",
   "dependencies": {
     "aws-sdk": "^2.666.0",
     "bcryptjs": "^2.4.3",
