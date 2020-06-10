@@ -42,6 +42,7 @@ const PORT = parseInt(process.env.PORT ?? `${4000}`)
 settings.change({
   server: {
     port: PORT,
+    playground: true,
   },
 })
 
