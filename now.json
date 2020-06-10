@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "src/server.ts",
+      "src": "node_modules/.build",
       "use": "@now/node@canary",
       "config": {
         "maxLambdaSize": "25mb"
@@ -12,7 +12,7 @@
   "routes": [
     {
       "src": "/graphql",
-      "dest": "src/server.ts"
+      "dest": "node_modules/.build"
     }
   ]
 }
