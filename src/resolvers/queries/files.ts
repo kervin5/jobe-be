@@ -1,12 +1,11 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg } from '@nexus/schema'
+import { schema } from 'nexus'
 import { sign_s3_read } from '../../utils/aws'
 
-export default (t: ObjectDefinitionBlock<'Query'>) => {
+export default (t) => {
   t.string('getSignedFileUrl', {
     nullable: true,
     args: {
-      AWSUrl: stringArg({ required: true }),
+      AWSUrl: schema.stringArg({ required: true }),
     },
 
     resolve: async (parent, args, ctx) => {

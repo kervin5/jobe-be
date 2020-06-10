@@ -1,11 +1,10 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { idArg } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.id('addFavorite', {
     nullable: true,
     args: {
-      job: idArg({ required: true }),
+      job: schema.idArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       const favorites = await ctx.db.favorite.findMany({
@@ -33,7 +32,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.id('deleteFavorite', {
     nullable: true,
     args: {
-      job: idArg({ required: true }),
+      job: schema.idArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       try {

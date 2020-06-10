@@ -1,25 +1,24 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, floatArg, booleanArg, idArg, arg } from '@nexus/schema'
+import { schema } from 'nexus'
 import { fetchLocation } from '../../utils/location'
 import { can } from '../../permissions/auth'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createJob', {
     type: 'Job',
     nullable: true,
     args: {
-      title: stringArg({ required: true }),
-      description: stringArg({ required: true }),
-      compensationType: stringArg({ required: true }),
-      disclaimer: stringArg(),
-      type: stringArg({ required: true }),
-      minCompensation: floatArg({ required: true }),
-      maxCompensation: floatArg(),
-      location: stringArg(),
-      categories: stringArg({ list: true, required: true }),
-      skills: stringArg({ list: true, required: true }),
-      author: stringArg(),
-      isRecurring: booleanArg(),
+      title: schema.stringArg({ required: true }),
+      description: schema.stringArg({ required: true }),
+      compensationType: schema.stringArg({ required: true }),
+      disclaimer: schema.stringArg(),
+      type: schema.stringArg({ required: true }),
+      minCompensation: schema.floatArg({ required: true }),
+      maxCompensation: schema.floatArg(),
+      location: schema.stringArg(),
+      categories: schema.stringArg({ list: true, required: true }),
+      skills: schema.stringArg({ list: true, required: true }),
+      author: schema.stringArg(),
+      isRecurring: schema.booleanArg(),
     },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
@@ -104,7 +103,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'Job',
     nullable: true,
     args: {
-      id: idArg({ required: true }),
+      id: schema.idArg({ required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
       const jobs = await ctx.db.job.findMany({
@@ -140,8 +139,8 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'Job',
     nullable: true,
     args: {
-      where: arg({ type: 'JobWhereUniqueInput', required: true }),
-      data: arg({ type: 'UpdateJobCustomInput', required: true }),
+      where: schema.arg({ type: 'JobWhereUniqueInput', required: true }),
+      data: schema.arg({ type: 'UpdateJobCustomInput', required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
       let authorId = ctx.request.user.id

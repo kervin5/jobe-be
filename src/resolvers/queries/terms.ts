@@ -1,7 +1,6 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
 import { shuffleArray } from '../../utils/functions'
 
-export default (t: ObjectDefinitionBlock<'Query'>) => {
+export default (t) => {
   t.list.field('popularTerms', {
     type: 'Term',
     resolve: async (parent, args, ctx) => {

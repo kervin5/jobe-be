@@ -1,12 +1,9 @@
 import { searchBoundary } from '../../utils/location'
-//const { forwardTo } = require("prisma-binding");
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, arg, intArg } from '@nexus/schema'
+import { schema } from 'nexus'
 import { UserAccessFilter } from './users'
 import { can } from '../../permissions/auth'
-import { OrderByArg } from '@prisma/client'
 
-export default (t: ObjectDefinitionBlock<'Query'>) => {
+export default (t) => {
   //Fetch single job
   t.crud.job()
 
@@ -15,10 +12,9 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
   t.list.field('jobs', {
     type: 'Job',
     args: {
-      where: arg({ type: 'JobWhereInput' }),
+      where: schema.arg({ type: 'JobWhereInput' }),
     },
     resolve: (parent, args, ctx) => {
-      console.log(ctx.request.user)
       return ctx.db.job.findMany({
         where: {
           ...args.where,
@@ -31,9 +27,9 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
   t.list.field('protectedJobs', {
     type: 'Job',
     args: {
-      where: arg({ type: 'JobWhereInput' }),
-      take: intArg({ nullable: true }),
-      skip: intArg({ nullable: true }),
+      where: schema.arg({ type: 'JobWhereInput' }),
+      take: schema.intArg({ nullable: true }),
+      skip: schema.intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
@@ -65,12 +61,12 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
   t.list.field('searchJobs', {
     type: 'Job',
     args: {
-      radius: intArg({ nullable: true, default: 5 }),
-      location: stringArg({ nullable: true }),
-      query: stringArg(),
-      where: arg({ type: 'JobWhereInput' }),
-      take: intArg({ nullable: true }),
-      skip: intArg({ nullable: true }),
+      radius: schema.intArg({ nullable: true, default: 5 }),
+      location: schema.stringArg({ nullable: true }),
+      query: schema.stringArg(),
+      where: schema.arg({ type: 'JobWhereInput' }),
+      take: schema.intArg({ nullable: true }),
+      skip: schema.intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
       if (!args.location || args.location === '') {
@@ -148,7 +144,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
 
   t.int('jobsConnection', {
     args: {
-      where: arg({ type: 'JobWhereInput' }),
+      where: schema.arg({ type: 'JobWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
       return ctx.db.job.count({
@@ -159,7 +155,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
 
   t.int('protectedJobsConnection', {
     args: {
-      where: arg({ type: 'JobWhereInput' }),
+      where: schema.arg({ type: 'JobWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({

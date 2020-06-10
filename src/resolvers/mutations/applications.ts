@@ -1,12 +1,11 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { idArg, arg } from '@nexus/schema'
+import { schema } from 'nexus'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createApplication', {
     type: 'Application',
     nullable: true,
-    args: { job: idArg({ required: true }) },
+    args: { job: schema.idArg({ required: true }) },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
@@ -66,8 +65,8 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'Application',
     nullable: true,
     args: {
-      id: idArg({ required: true }),
-      status: arg({ type: 'ApplicationStatus', required: true }),
+      id: schema.idArg({ required: true }),
+      status: schema.arg({ type: 'ApplicationStatus', required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
       try {

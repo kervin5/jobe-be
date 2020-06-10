@@ -1,17 +1,9 @@
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 import auth from './middleware/auth'
-// import { ContextContributor } from 'nexus/dist/runtime/schema/schema'
 import { server, schema } from 'nexus'
 
 const cp = cookieParser()
-// const addCookies = (req: any, res: any) =>
-//   new Promise((resolve) => {
-//     cp(req, res, resolve)
-//   })
-// const authorization = (req: any, res: any) =>
-//   new Promise((resolve) => {
-//     auth(req, res, resolve)
-//   })
 
 export interface Context {
   request: any
@@ -20,6 +12,20 @@ export interface Context {
 }
 
 export async function injectMiddleware() {
+  server.express.use(
+    cors({
+      origin: [
+        'https://www.myexactjobs.com/',
+        'http://localhost:3000',
+        'https://myexactjobs.herokuapp.com',
+        'https://www.myexactjobs.com',
+        'https://jobboard-fe-next.now.sh',
+      ],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      methods: ['POST', 'GET'],
+    }),
+  )
   server.express.use(cp)
   server.express.use(auth)
   server.express.use((request: Request, response: any, next: any) => {
@@ -28,6 +34,4 @@ export async function injectMiddleware() {
     })
     next()
   })
-  // await addCookies(request.req, request.res)
-  // await authorization(request.req, request.res)
 }

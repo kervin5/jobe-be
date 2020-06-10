@@ -1,13 +1,12 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, arg, idArg } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createRole', {
     type: 'Role',
     nullable: true,
     args: {
-      name: stringArg({ required: true }),
-      permissions: arg({
+      name: schema.stringArg({ required: true }),
+      permissions: schema.arg({
         type: 'RolePermissionsInputType',
         list: true,
         required: true,
@@ -36,9 +35,9 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'Role',
     nullable: true,
     args: {
-      id: idArg({ required: true }),
-      name: stringArg(),
-      permissions: arg({ type: 'RolePermissionsInputType', list: true }),
+      id: schema.idArg({ required: true }),
+      name: schema.stringArg(),
+      permissions: schema.arg({ type: 'RolePermissionsInputType', list: true }),
     },
     resolve: async (parent, args, ctx) => {
       const role = await ctx.db.role.findOne({

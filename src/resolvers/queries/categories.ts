@@ -1,11 +1,13 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { arg, intArg } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export default (t: ObjectDefinitionBlock<'Query'>) => {
+export default (t) => {
   t.crud.category()
   t.list.field('categories', {
     type: 'Category',
-    args: { where: arg({ type: 'CategoryWhereInput' }), take: intArg() },
+    args: {
+      where: schema.arg({ type: 'CategoryWhereInput' }),
+      take: schema.intArg(),
+    },
     resolve: async (parent, args, ctx) => {
       return ctx.db.category.findMany({
         where: args.where,

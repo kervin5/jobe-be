@@ -1,7 +1,6 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
 import { arg } from '@nexus/schema'
 
-export default (t: ObjectDefinitionBlock<'Query'>) => {
+export default (t) => {
   t.list.field('branches', {
     type: 'Branch',
     args: {

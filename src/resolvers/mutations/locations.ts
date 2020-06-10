@@ -1,15 +1,14 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, floatArg } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createLocation', {
     type: 'Location',
     nullable: true,
     args: {
-      name: stringArg({ required: true }),
-      latitude: floatArg({ required: true }),
-      longitude: floatArg({ required: true }),
-      boundary: floatArg({ list: true, required: true }),
+      name: schema.stringArg({ required: true }),
+      latitude: schema.floatArg({ required: true }),
+      longitude: schema.floatArg({ required: true }),
+      boundary: schema.floatArg({ list: true, required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
       return ctx.db.location.create({

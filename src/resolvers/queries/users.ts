@@ -1,7 +1,5 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, arg, intArg } from '@nexus/schema'
+import { arg, intArg } from '@nexus/schema'
 import { can } from '../../permissions/auth'
-import { debug } from '@prisma/client/runtime'
 
 export interface UserAccessFilter {
   branch?: object
@@ -10,7 +8,7 @@ export interface UserAccessFilter {
   id?: string
 }
 
-export default (t: ObjectDefinitionBlock<'Query'>) => {
+export default (t) => {
   t.field('me', {
     type: 'User',
     nullable: true,

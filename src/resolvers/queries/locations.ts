@@ -1,19 +1,18 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
 import request from '../../utils/request'
-import { stringArg } from '@nexus/schema'
+import { schema } from 'nexus'
 
 interface IMapboxLocation {
   id: string
   place_name: string
 }
 
-export default (t: ObjectDefinitionBlock<'Query'>) => {
+export default (t) => {
   t.crud.location()
   t.crud.locations()
   t.list.field('mapBoxLocations', {
     type: 'MapboxLocation',
     args: {
-      query: stringArg(),
+      query: schema.stringArg(),
     },
     resolve: async (parent, args, ctx) => {
       try {

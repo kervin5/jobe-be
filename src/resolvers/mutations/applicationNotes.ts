@@ -1,13 +1,12 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, arg, idArg, floatArg } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createApplicationNote', {
     type: 'ApplicationNote',
     nullable: true,
     args: {
-      id: idArg({ required: true }),
-      content: stringArg({ required: true }),
+      id: schema.idArg({ required: true }),
+      content: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
       try {

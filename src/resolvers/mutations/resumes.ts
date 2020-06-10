@@ -1,17 +1,16 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg } from '@nexus/schema'
+import { schema } from 'nexus'
 import { sign_s3_read } from '../../utils/aws'
 import request from '../../utils/request'
 import { findKeywords } from '../../utils/functions'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createResume', {
     type: 'Resume',
     nullable: true,
     args: {
-      path: stringArg({ required: true }),
-      type: stringArg({ required: true }),
-      title: stringArg({ required: true }),
+      path: schema.stringArg({ required: true }),
+      type: schema.stringArg({ required: true }),
+      title: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       const resumeUrl = await sign_s3_read(args.path)

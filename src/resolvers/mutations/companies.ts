@@ -1,13 +1,12 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createCompany', {
     type: 'Company',
     nullable: true,
     args: {
-      name: stringArg({ required: true }),
-      description: stringArg({ required: true }),
+      name: schema.stringArg({ required: true }),
+      description: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       const company = await ctx.db.company.create({

@@ -2,26 +2,18 @@ import { compare, genSalt, hash } from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { promisify } from 'util'
 import { randomBytes } from 'crypto'
-//const { forwardTo } = require("prisma-binding");
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, arg, idArg } from '@nexus/schema'
+import { schema } from 'nexus'
 import { can } from '../../permissions/auth'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
-interface JobFilter {
-  branch?: object
-  company?: object
-  author?: object
-}
-
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createUser', {
     type: 'User',
     args: {
-      name: stringArg({ required: true }),
-      email: stringArg({ required: true }),
-      role: idArg(),
-      branch: idArg(),
+      name: schema.stringArg({ required: true }),
+      email: schema.stringArg({ required: true }),
+      role: schema.idArg(),
+      branch: schema.idArg(),
     },
     resolve: async (parent, args, ctx) => {
       const salt = await genSalt(10)
@@ -58,9 +50,9 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.field('signup', {
     type: 'User',
     args: {
-      name: stringArg({ required: true }),
-      password: stringArg({ required: true }),
-      email: stringArg({ required: true }),
+      name: schema.stringArg({ required: true }),
+      password: schema.stringArg({ required: true }),
+      email: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       const salt = await genSalt(10)
@@ -195,8 +187,8 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.field('login', {
     type: 'User',
     args: {
-      email: stringArg({ nullable: false }),
-      password: stringArg({ nullable: false }),
+      email: schema.stringArg({ nullable: false }),
+      password: schema.stringArg({ nullable: false }),
     },
     resolve: async (_parent, { email, password }, ctx) => {
       const user = await ctx.db.user.findOne({
@@ -238,7 +230,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'User',
     nullable: true,
     args: {
-      id: idArg(),
+      id: schema.idArg(),
     },
     resolve: async (parent, args, ctx) => {
       await can('READ', 'BRANCH', ctx)
@@ -321,10 +313,10 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'User',
     nullable: true,
     args: {
-      id: idArg({ required: true }),
-      name: stringArg(),
-      branch: idArg(),
-      role: idArg(),
+      id: schema.idArg({ required: true }),
+      name: schema.stringArg(),
+      branch: schema.idArg(),
+      role: schema.idArg(),
     },
     resolve: async (parent, args, ctx) => {
       const name = args.name ? { name: args.name } : {}
@@ -346,7 +338,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   })
 
   t.string('requestReset', {
-    args: { email: stringArg({ required: true }) },
+    args: { email: schema.stringArg({ required: true }) },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
         where: { email: args.email },
@@ -378,9 +370,9 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.field('resetPassword', {
     type: 'User',
     args: {
-      token: stringArg({ required: true }),
-      password: stringArg({ required: true }),
-      confirmPassword: stringArg({ required: true }),
+      token: schema.stringArg({ required: true }),
+      password: schema.stringArg({ required: true }),
+      confirmPassword: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       // 1. Check if the passwords match
