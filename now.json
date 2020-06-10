@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "node_modules/.build",
+      "src": "*.ts",
       "use": "@now/node@canary",
       "config": {
         "maxLambdaSize": "25mb"
