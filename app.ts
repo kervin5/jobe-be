@@ -6,8 +6,6 @@ import dotenv from 'dotenv'
 import { injectMiddleware } from './src/context'
 import { permissions } from './src/permissions'
 
-// const PORT = process.env.PORT ?? 4000
-
 // const schemaWithMiddleware = applyMiddleware(schema, permissions)
 
 // const server = new ApolloServer({
@@ -37,8 +35,15 @@ import { permissions } from './src/permissions'
 // )
 import { use } from 'nexus'
 import { prisma } from 'nexus-plugin-prisma'
+import { settings } from 'nexus'
 
 dotenv.config()
+const PORT = parseInt(process.env.PORT ?? `${4000}`)
+settings.change({
+  server: {
+    port: PORT,
+  },
+})
 
 injectMiddleware()
 use(prisma())
