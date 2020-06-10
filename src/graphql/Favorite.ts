@@ -1,6 +1,6 @@
-import { objectType } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const Favorite = objectType({
+schema.objectType({
   name: 'Favorite',
   definition(t) {
     t.model.id()

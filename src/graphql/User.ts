@@ -1,7 +1,7 @@
-import { objectType } from '@nexus/schema'
 import fetch from 'node-fetch'
+import { schema } from 'nexus'
 
-export const User = objectType({
+schema.objectType({
   name: 'User',
   definition(t) {
     t.model.id()
@@ -11,8 +11,7 @@ export const User = objectType({
     t.model.branch()
     t.model.jobs({ filtering: true })
     t.model.favorites({ filtering: true })
-    t.model.resumes({ filtering: true , ordering: true
-    })
+    t.model.resumes({ filtering: true, ordering: true })
     t.model.role()
     t.model.location()
     t.model.status()
@@ -38,7 +37,7 @@ export const User = objectType({
   },
 })
 
-export const UserEEmpactData = objectType({
+export const UserEEmpactData = schema.objectType({
   name: 'UserEEmpactData',
   definition(t) {
     t.string('id', { nullable: true })

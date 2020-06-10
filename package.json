@@ -1,37 +1,26 @@
 {
   "name": "typescript-graphql",
   "scripts": {
-    "start": "node dist/server",
-    "clean": "rm -rf dist",
-    "build": "npm -s run clean && npm -s run generate && tsc",
-    "generate": "npm -s run generate:prisma && npm -s run generate:nexus",
-    "generate:prisma": "prisma generate",
-    "generate:nexus": "ts-node --transpile-only src/schema",
-    "postinstall": "npm -s run generate",
-    "dev": "ts-node-dev --no-notify --respawn --transpileOnly src/server"
+    "dev": "nexus dev",
+    "build": "nexus build",
+    "start": "node node_modules/.build"
   },
   "dependencies": {
-    "@nexus/schema": "^0.13.1",
-    "@prisma/client": "^2.0.0",
-    "apollo-server": "^2.13.1",
     "aws-sdk": "^2.666.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.5",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
-    "graphql": "14.6.0",
-    "graphql-middleware": "^4.0.2",
-    "graphql-shield": "^7.2.6",
     "jsonwebtoken": "^8.5.1",
-    "nexus": "^0.20.0",
-    "nexus-prisma": "^0.12.0",
+    "nexus": "^0.24.0-next.2",
+    "nexus-plugin-prisma": "^0.10.0-next.1",
+    "nexus-plugin-shield": "^0.1.4",
     "node-fetch": "^2.6.0",
     "nodemailer": "^6.4.6",
     "util": "^0.12.3",
     "uuid": "^8.0.0"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.0.0-beta.7",
     "@types/bcryptjs": "^2.4.2",
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.6",

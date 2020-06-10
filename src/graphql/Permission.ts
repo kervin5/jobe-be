@@ -1,6 +1,6 @@
-import { objectType } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const Permission = objectType({
+schema.objectType({
   name: 'Permission',
   definition(t) {
     t.model.id()

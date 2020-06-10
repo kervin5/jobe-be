@@ -1,6 +1,6 @@
-import { objectType, inputObjectType } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const Role = objectType({
+schema.objectType({
   name: 'Role',
   definition(t) {
     t.model.id()
@@ -10,7 +10,7 @@ export const Role = objectType({
   },
 })
 
-export const RolePermissionsInputType = inputObjectType({
+schema.inputObjectType({
   name: 'RolePermissionsInputType',
   definition(t) {
     t.string('object', { required: true }), t.string('actions', { list: true })

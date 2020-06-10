@@ -1,4 +1,4 @@
-import { queryType } from '@nexus/schema'
+import { schema } from 'nexus'
 import jobs from '../resolvers/queries/jobs'
 import users from '../resolvers/queries/users'
 import roles from '../resolvers/queries/roles'
@@ -11,7 +11,7 @@ import files from '../resolvers/queries/files'
 import terms from '../resolvers/queries/terms'
 import perks from '../resolvers/queries/perks'
 
-export const Query = queryType({
+schema.queryType({
   definition(t) {
     jobs(t)
     users(t)

@@ -1,4 +1,4 @@
-import { mutationType } from '@nexus/schema'
+import { schema } from 'nexus'
 
 import users from '../resolvers/mutations/users'
 import locations from '../resolvers/mutations/locations'
@@ -15,7 +15,7 @@ import resumes from '../resolvers/mutations/resumes'
 import companies from '../resolvers/mutations/companies'
 import jobCronTasks from '../resolvers/mutations/jobCronTasks'
 
-export const Mutation = mutationType({
+schema.mutationType({
   definition(t) {
     users(t)
     locations(t)

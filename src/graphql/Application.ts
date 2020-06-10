@@ -1,11 +1,6 @@
-import {
-  objectType,
-  inputObjectType,
-  extendInputType,
-  arg,
-} from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const Application = objectType({
+schema.objectType({
   name: 'Application',
   definition(t) {
     t.model.id()
@@ -19,14 +14,14 @@ export const Application = objectType({
   },
 })
 
-export const UniqueApplicationInputType = inputObjectType({
+schema.inputObjectType({
   name: 'UniqueApplicationInputType',
   definition(t) {
     t.string('id', { required: true })
   },
 })
 
-export const ApplicationWherInputWithStatus = extendInputType({
+schema.extendInputType({
   type: 'ApplicationWhereInput',
   definition: (t) => {
     t.field('status', {
@@ -36,7 +31,7 @@ export const ApplicationWherInputWithStatus = extendInputType({
   },
 })
 
-export const ApplicationStatusFilter = inputObjectType({
+schema.inputObjectType({
   name: 'ApplicationStatusFilter',
   definition(t) {
     t.field('in', {

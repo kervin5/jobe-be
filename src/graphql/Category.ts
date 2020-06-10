@@ -1,6 +1,6 @@
-import { objectType } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const Category = objectType({
+schema.objectType({
   name: 'Category',
   definition(t) {
     t.model.id()

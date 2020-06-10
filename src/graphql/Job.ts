@@ -1,6 +1,6 @@
-import { objectType, inputObjectType, extendInputType } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const Job = objectType({
+schema.objectType({
   name: 'Job',
   definition(t) {
     t.model.id()
@@ -26,7 +26,7 @@ export const Job = objectType({
   },
 })
 
-export const UpdateJobCustomInput = inputObjectType({
+schema.inputObjectType({
   name: 'UpdateJobCustomInput',
   definition(t) {
     t.string('title')
@@ -44,7 +44,7 @@ export const UpdateJobCustomInput = inputObjectType({
   },
 })
 
-export const JobWherInputWithStatus = extendInputType({
+schema.extendInputType({
   type: 'JobWhereInput',
   definition: (t) => {
     t.field('status', {
@@ -54,7 +54,7 @@ export const JobWherInputWithStatus = extendInputType({
   },
 })
 
-export const JobStatusFilter = inputObjectType({
+schema.inputObjectType({
   name: 'JobStatusFilter',
   definition(t) {
     t.field('in', {

@@ -1,4 +1,4 @@
-import { rule, shield, and, or } from 'graphql-shield'
+import { rule, shield, and, or } from 'nexus-plugin-shield'
 import { getUserId, can, IUserCan } from './auth'
 // import { Context } from '../context'
 
@@ -25,8 +25,8 @@ const rules = {
     }),
 }
 
-export const permissions = shield(
-  {
+export const permissions = shield({
+  rules: {
     Query: {
       application: and(
         rules.isAuthenticatedUser,
@@ -158,7 +158,7 @@ export const permissions = shield(
       ),
     },
   },
-  {
+  options: {
     allowExternalErrors: true,
   },
-)
+})
