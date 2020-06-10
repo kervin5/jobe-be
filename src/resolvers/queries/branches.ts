@@ -1,10 +1,10 @@
-import { arg } from '@nexus/schema'
+import { schema } from 'nexus'
 
 export default (t) => {
   t.list.field('branches', {
     type: 'Branch',
     args: {
-      where: arg({ type: 'BranchWhereInput' }),
+      where: schema.arg({ type: 'BranchWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
