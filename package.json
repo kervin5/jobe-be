@@ -3,8 +3,7 @@
   "scripts": {
     "dev": "nexus dev",
     "build": "nexus build -d heroku",
-    "start": "node .nexus/build",
-    "postinstall": "npx prisma generate"
+    "start": "node .nexus/build"
   },
   "dependencies": {
     "aws-sdk": "^2.666.0",
