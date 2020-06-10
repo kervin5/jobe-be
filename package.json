@@ -2,7 +2,7 @@
   "name": "typescript-graphql",
   "scripts": {
     "dev": "nexus dev",
-    "build": "nexus build",
+    "build": "nexus build -d heroku",
     "start": "node .nexus/build",
     "postinstall": "npx prisma generate"
   },
