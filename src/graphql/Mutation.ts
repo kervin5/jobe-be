@@ -15,7 +15,7 @@ import resumes from '../resolvers/mutations/resumes'
 import companies from '../resolvers/mutations/companies'
 import jobCronTasks from '../resolvers/mutations/jobCronTasks'
 
-schema.mutationType({
+export const Mutation = schema.mutationType({
   definition(t) {
     users(t)
     locations(t)

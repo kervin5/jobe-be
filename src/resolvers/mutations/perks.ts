@@ -9,7 +9,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       name: stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.perk.create({
+      return ctx.db.perk.create({
         data: {
           name: args.name,
           author: { connect: { id: ctx.request.user.id } },

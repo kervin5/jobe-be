@@ -10,7 +10,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     },
 
     resolve: async (parent, args, ctx) => {
-      const [file] = await ctx.prisma.file.findMany({
+      const [file] = await ctx.db.file.findMany({
         where: { path: { endsWith: args.AWSUrl } },
       })
       let result = null

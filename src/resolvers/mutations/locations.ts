@@ -12,7 +12,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       boundary: floatArg({ list: true, required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
-      return ctx.prisma.location.create({
+      return ctx.db.location.create({
         data: {
           ...args,
           boundary: { set: args.boundary },

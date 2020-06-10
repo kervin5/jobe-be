@@ -11,7 +11,7 @@ import files from '../resolvers/queries/files'
 import terms from '../resolvers/queries/terms'
 import perks from '../resolvers/queries/perks'
 
-schema.queryType({
+export const Query = schema.queryType({
   definition(t) {
     jobs(t)
     users(t)

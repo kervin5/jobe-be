@@ -18,7 +18,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       where: arg({ type: 'JobWhereInput' }),
     },
     resolve: (parent, args, ctx) => {
-      return ctx.prisma.job.findMany({
+      return ctx.db.job.findMany({
         where: {
           ...args.where,
           status: 'POSTED',
@@ -35,7 +35,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       skip: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -53,7 +53,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
         ownerFilter = { branch: { id: user?.branch?.id } }
       }
 
-      return ctx.prisma.job.findMany({
+      return ctx.db.job.findMany({
         where: { ...args.where, ...ownerFilter },
         orderBy: { updatedAt: 'desc' },
         ...(args.take ? { take: args.take, skip: args.skip } : {}),
@@ -73,7 +73,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     },
     resolve: async (parent, args, ctx) => {
       if (!args.location || args.location === '') {
-        return await ctx.prisma.job.findMany({
+        return await ctx.db.job.findMany({
           where: {
             OR: [
               { title: { contains: args.query?.toLowerCase() } },
@@ -107,7 +107,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
         args.radius ?? 5,
       )
 
-      return await ctx.prisma.job.findMany({
+      return await ctx.db.job.findMany({
         where: {
           AND: [
             {
@@ -150,7 +150,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       where: arg({ type: 'JobWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.job.count({
+      return ctx.db.job.count({
         where: { ...args.where, status: 'POSTED' },
       })
     },
@@ -161,7 +161,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       where: arg({ type: 'JobWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -179,7 +179,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
         //Gets all the jobs from the branch
         ownerFilter = { branch: { id: user?.branch?.id } }
       }
-      return await ctx.prisma.job.count({
+      return await ctx.db.job.count({
         where: { ...args.where, ...ownerFilter },
       })
     },

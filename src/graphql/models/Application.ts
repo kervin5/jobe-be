@@ -1,6 +1,6 @@
 import { schema } from 'nexus'
 
-schema.objectType({
+export const Application = schema.objectType({
   name: 'Application',
   definition(t) {
     t.model.id()
@@ -14,7 +14,7 @@ schema.objectType({
   },
 })
 
-schema.inputObjectType({
+export const UniqueApplicationInputType = schema.inputObjectType({
   name: 'UniqueApplicationInputType',
   definition(t) {
     t.string('id', { required: true })

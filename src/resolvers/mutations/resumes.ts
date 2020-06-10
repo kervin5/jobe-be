@@ -19,7 +19,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         url: resumeUrl,
       })
       const resumeText = `${resumeJson.parts.summary} ${resumeJson.parts.projects}  ${resumeJson.parts.certification} ${resumeJson.parts.certifications} ${resumeJson.parts.positions} ${resumeJson.parts.objective} ${resumeJson.parts.awards} ${resumeJson.parts.skills} ${resumeJson.parts.experience} ${resumeJson.parts.education}`.toLowerCase()
-      const allSkills = await ctx.prisma.skill.findMany()
+      const allSkills = await ctx.db.skill.findMany()
 
       const resumeSkills = findKeywords(
         resumeText,
@@ -30,25 +30,27 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         resumeSkills.includes(skill.name),
       )
 
-      
-      const skills = filteredSkills.length ? ({ skills: {
-        connect: filteredSkills.map((skill) => ({ id: skill.id }))
-      }}) : {};
-      
-     
-      const result = await ctx.prisma.resume.create({
+      const skills = filteredSkills.length
+        ? {
+            skills: {
+              connect: filteredSkills.map((skill) => ({ id: skill.id })),
+            },
+          }
+        : {}
+
+      const result = await ctx.db.resume.create({
         data: {
           file: {
-            create: {path: args.path, mimetype: args.type }
+            create: { path: args.path, mimetype: args.type },
           },
 
           user: {
-            connect: { id: ctx.request.user.id }
+            connect: { id: ctx.request.user.id },
           },
 
           title: args.title,
-         ...skills
-        }
+          ...skills,
+        },
       })
 
       return result

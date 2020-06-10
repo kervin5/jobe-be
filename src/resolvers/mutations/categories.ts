@@ -9,7 +9,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       name: stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.category.create({
+      return ctx.db.category.create({
         data: {
           ...args,
         },

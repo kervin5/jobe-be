@@ -5,12 +5,12 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
   t.list.field('popularTerms', {
     type: 'Term',
     resolve: async (parent, args, ctx) => {
-      let categories = await ctx.prisma.category.findMany({
+      let categories = await ctx.db.category.findMany({
         where: { jobs: { some: { status: 'POSTED' } } },
         include: { jobs: true },
       })
 
-      let locations = await ctx.prisma.location.findMany({
+      let locations = await ctx.db.location.findMany({
         where: { jobs: { some: { status: 'POSTED' } } },
         include: { jobs: true },
       })

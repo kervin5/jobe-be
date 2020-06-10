@@ -22,7 +22,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       isRecurring: booleanArg(),
     },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -36,12 +36,12 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
 
       // Checks if location exists in DB
       const locationExists =
-        (await ctx.prisma.location.findMany({ where: jobLocation })).length > 0
+        (await ctx.db.location.findMany({ where: jobLocation })).length > 0
 
       let location = {}
 
       if (locationExists) {
-        const existingLocations = await ctx.prisma.location.findMany({
+        const existingLocations = await ctx.db.location.findMany({
           where: jobLocation,
         })
 
@@ -72,7 +72,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         // console.log(args);
       }
 
-      const job = await ctx.prisma.job.create({
+      const job = await ctx.db.job.create({
         data: {
           ...args,
           categories: {
@@ -107,7 +107,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       id: idArg({ required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
-      const jobs = await ctx.prisma.job.findMany({
+      const jobs = await ctx.db.job.findMany({
         where: {
           id: args.id,
           author: { id: ctx.request.user.id },
@@ -119,7 +119,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         (await can('UPDATE', 'BRANCH', ctx)) ||
         (await can('UPDATE', 'COMPANY', ctx))
       ) {
-        await ctx.prisma.application.updateMany({
+        await ctx.db.application.updateMany({
           where: {
             job: { id: args.id },
             status: { notIn: ['ARCHIVED', 'HIRED'] },
@@ -127,7 +127,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
           data: { status: 'ARCHIVED' },
         })
 
-        return ctx.prisma.job.update({
+        return ctx.db.job.update({
           where: { id: args.id },
           data: { status: 'DELETED' },
         })
@@ -156,14 +156,14 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       ) {
         authorId = JobDataToUpdate.author
       } else {
-        const job = await ctx.prisma.job.findOne({
+        const job = await ctx.db.job.findOne({
           where: { id: args.where.id },
           include: { location: true, author: true },
         })
         authorId = job?.author.id
       }
 
-      const jobs = await ctx.prisma.job.findMany({
+      const jobs = await ctx.db.job.findMany({
         where: {
           id: args.where.id,
           author: { id: authorId },
@@ -178,13 +178,13 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         if (JobDataToUpdate.location) {
           const locationExists =
             (
-              await ctx.prisma.location.findMany({
+              await ctx.db.location.findMany({
                 where: { name: JobDataToUpdate.location },
               })
             ).length > 0
 
           if (locationExists) {
-            const existingLocations = await ctx.prisma.location.findMany({
+            const existingLocations = await ctx.db.location.findMany({
               where: {
                 name: JobDataToUpdate.location,
               },
@@ -229,14 +229,14 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
           JobDataToUpdate.status = 'DRAFT'
         }
 
-        const user = await ctx.prisma.user.findOne({
+        const user = await ctx.db.user.findOne({
           where: { id: authorId },
           include: { branch: { include: { company: true } } },
         })
 
         JobDataToUpdate.author = { connect: { id: authorId } }
         JobDataToUpdate['branch'] = { connect: { id: user?.branch?.id } }
-        const job = await ctx.prisma.job.update({
+        const job = await ctx.db.job.update({
           where: args.where,
           data: JobDataToUpdate,
         })

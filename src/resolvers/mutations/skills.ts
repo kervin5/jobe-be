@@ -9,7 +9,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       name: stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.skill.create({
+      return ctx.db.skill.create({
         data: {
           ...args,
         },

@@ -7,7 +7,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     type: 'Category',
     args: { where: arg({ type: 'CategoryWhereInput' }), take: intArg() },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.category.findMany({
+      return ctx.db.category.findMany({
         where: args.where,
         ...(args.take ? { take: args.take } : {}),
       })

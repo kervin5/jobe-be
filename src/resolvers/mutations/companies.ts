@@ -10,7 +10,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       description: stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
-      const company = await ctx.prisma.company.create({
+      const company = await ctx.db.company.create({
         data: {
           ...args,
         },

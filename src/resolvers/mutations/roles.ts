@@ -21,7 +21,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         }),
       )
 
-      return await ctx.prisma.role.create({
+      return await ctx.db.role.create({
         data: {
           name: args.name,
           permissions: {
@@ -41,12 +41,12 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       permissions: arg({ type: 'RolePermissionsInputType', list: true }),
     },
     resolve: async (parent, args, ctx) => {
-      const role = await ctx.prisma.role.findOne({
+      const role = await ctx.db.role.findOne({
         where: { id: args.id },
         include: { permissions: true },
       })
 
-      return ctx.prisma.role.update({
+      return ctx.db.role.update({
         data: {
           name: args.name || role?.name,
           permissions: {

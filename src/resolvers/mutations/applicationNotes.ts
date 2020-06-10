@@ -11,7 +11,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     },
     resolve: async (parent, args, ctx, info) => {
       try {
-        const applicationNote = await ctx.prisma.applicationNote.create({
+        const applicationNote = await ctx.db.applicationNote.create({
           data: {
             content: args.content,
             user: { connect: { id: ctx.request.user.id } },

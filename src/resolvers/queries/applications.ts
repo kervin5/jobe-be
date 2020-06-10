@@ -15,17 +15,17 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     resolve: async (parent, args, ctx) => {
       const applicationId = args.where?.id ? args.where.id : ''
 
-      const application = await ctx.prisma.application.findOne({
+      const application = await ctx.db.application.findOne({
         where: { id: applicationId },
       })
 
       if (application?.status === 'NEW') {
-        await ctx.prisma.application.update({
+        await ctx.db.application.update({
           where: { id: application.id },
           data: { status: 'VIEWED' },
         })
 
-        await ctx.prisma.applicationNote.create({
+        await ctx.db.applicationNote.create({
           data: {
             content: 'VIEWED',
             user: { connect: { id: ctx.request.user.id } },
@@ -34,7 +34,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
           },
         })
       }
-      return ctx.prisma.application.findOne(args)
+      return ctx.db.application.findOne(args)
     },
   })
 
@@ -46,7 +46,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       skip: intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -65,7 +65,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       //   ownerFilter = { branch: { id: user.branch.id } };
       // }
 
-      return await ctx.prisma.application.findMany({
+      return await ctx.db.application.findMany({
         ...args,
         where: {
           ...args.where,
@@ -83,7 +83,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       where: arg({ type: 'ApplicationWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -102,7 +102,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       //   //Gets all the jobs from the branch
       //   ownerFilter = { branch: { id: user.branch.id } };
       // }
-      return ctx.prisma.application.count({
+      return ctx.db.application.count({
         ...args,
         where: {
           ...args.where,
@@ -119,7 +119,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
     type: 'ApplicationNote',
     args: { id: stringArg() },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.applicationNote.findMany({
+      return ctx.db.applicationNote.findMany({
         where: { application: { id: args.id } },
         orderBy: { createdAt: 'desc' },
       })
