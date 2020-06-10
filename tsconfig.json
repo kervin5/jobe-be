@@ -8,5 +8,5 @@
     "moduleResolution": "node",
     "plugins": [{ "name": "nexus/typescript-language-service" }]
   },
-  "include": ["src/**/*", ".", "types"]
+  "include": ["."]
 }
