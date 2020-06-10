@@ -33,7 +33,7 @@ import { permissions } from './src/permissions'
 //     `🚀 Server ready at: http://localhost:${PORT}${server.graphqlPath}\n⭐️ See sample queries: http://pris.ly/e/ts/graphql-apollo-server#using-the-graphql-api`,
 //   ),
 // )
-import { use } from 'nexus'
+import app, { server, use } from 'nexus'
 import { prisma } from 'nexus-plugin-prisma'
 import { settings } from 'nexus'
 
@@ -49,3 +49,6 @@ settings.change({
 injectMiddleware()
 use(prisma())
 use(permissions)
+
+app.assemble()
+export default server.handlers.graphql
