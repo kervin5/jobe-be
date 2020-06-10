@@ -3,7 +3,7 @@
     "rootDir": ".",
     "lib": ["esnext", "DOM"],
     "esModuleInterop": true,
-    "strict": true,
+    "strict": false,
     "target": "ES2018",
     "moduleResolution": "node",
     "plugins": [{ "name": "nexus/typescript-language-service" }]

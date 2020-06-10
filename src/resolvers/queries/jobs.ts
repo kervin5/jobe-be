@@ -18,6 +18,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       where: arg({ type: 'JobWhereInput' }),
     },
     resolve: (parent, args, ctx) => {
+      console.log(ctx.request.user)
       return ctx.db.job.findMany({
         where: {
           ...args.where,

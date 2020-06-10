@@ -1,5 +1,5 @@
 import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { idArg, stringArg, arg } from '@nexus/schema'
+import { idArg, arg } from '@nexus/schema'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
 export default (t: ObjectDefinitionBlock<'Mutation'>) => {

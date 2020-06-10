@@ -21,7 +21,7 @@ export async function can(action: string, object: string, ctx: Context) {
     })
 
     return user?.role.permissions.some(
-      (permission) =>
+      (permission: any) =>
         permission.object === object && permission.actions.includes(action),
     )
   } catch (ex) {
