@@ -47,7 +47,7 @@ settings.change({
 })
 
 injectMiddleware()
-use(prisma())
+use(prisma({ features: { crud: true } }))
 use(permissions)
 
 app.assemble()
