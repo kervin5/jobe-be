@@ -13,7 +13,7 @@ export interface IUserCan {
 
 export async function can(action: string, object: string, ctx: Context) {
   try {
-    const user = await ctx.prisma.user.findOne({
+    const user = await ctx.db.user.findOne({
       where: { id: ctx.request.user.id },
       include: {
         role: { include: { permissions: true } },
@@ -21,7 +21,7 @@ export async function can(action: string, object: string, ctx: Context) {
     })
 
     return user?.role.permissions.some(
-      (permission) =>
+      (permission: any) =>
         permission.object === object && permission.actions.includes(action),
     )
   } catch (ex) {

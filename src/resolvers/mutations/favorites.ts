@@ -1,14 +1,13 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { idArg } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.id('addFavorite', {
     nullable: true,
     args: {
-      job: idArg({ required: true }),
+      job: schema.idArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
-      const favorites = await ctx.prisma.favorite.findMany({
+      const favorites = await ctx.db.favorite.findMany({
         where: { user: { id: ctx.request.user.id }, job: { id: args.job } },
       })
       const user = { connect: { id: ctx.request.user.id } }
@@ -16,7 +15,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
 
       try {
         if (favorites.length <= 0) {
-          await ctx.prisma.favorite.create({
+          await ctx.db.favorite.create({
             data: {
               user,
               job,
@@ -33,16 +32,16 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.id('deleteFavorite', {
     nullable: true,
     args: {
-      job: idArg({ required: true }),
+      job: schema.idArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       try {
-        const favorites = await ctx.prisma.favorite.findMany({
+        const favorites = await ctx.db.favorite.findMany({
           where: { user: { id: ctx.request.user.id }, job: { id: args.job } },
         })
 
         if (favorites.length > 0) {
-          await ctx.prisma.favorite.delete({
+          await ctx.db.favorite.delete({
             where: {
               id: favorites[0].id,
             },

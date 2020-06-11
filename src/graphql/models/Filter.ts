@@ -1,6 +1,6 @@
-import { objectType, inputObjectType, extendInputType } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const OrderByInput = inputObjectType({
+schema.inputObjectType({
   name: 'OrderByInput',
   definition(t) {
     t.string('createdAt', {

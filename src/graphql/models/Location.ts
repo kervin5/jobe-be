@@ -1,6 +1,6 @@
-import { objectType } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const Location = objectType({
+schema.objectType({
   name: 'Location',
   definition(t) {
     t.model.id()
@@ -12,7 +12,7 @@ export const Location = objectType({
   },
 })
 
-export const MapboxLocation = objectType({
+schema.objectType({
   name: 'MapboxLocation',
   definition(t) {
     t.string('id')

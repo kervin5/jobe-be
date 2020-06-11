@@ -1,15 +1,14 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createPerk', {
     type: 'Perk',
     nullable: true,
     args: {
-      name: stringArg({ required: true }),
+      name: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.perk.create({
+      return ctx.db.perk.create({
         data: {
           name: args.name,
           author: { connect: { id: ctx.request.user.id } },

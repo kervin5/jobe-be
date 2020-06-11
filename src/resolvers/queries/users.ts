@@ -1,7 +1,5 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, arg, intArg } from '@nexus/schema'
+import { arg, intArg } from '@nexus/schema'
 import { can } from '../../permissions/auth'
-import { debug } from '@prisma/client/runtime'
 
 export interface UserAccessFilter {
   branch?: object
@@ -10,7 +8,7 @@ export interface UserAccessFilter {
   id?: string
 }
 
-export default (t: ObjectDefinitionBlock<'Query'>) => {
+export default (t) => {
   t.field('me', {
     type: 'User',
     nullable: true,
@@ -18,7 +16,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       if (!ctx.request.user) {
         return null
       }
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
       })
 
@@ -36,7 +34,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       take: intArg(),
     },
     resolve: async (parent, args, ctx) => {
-      const requesterData = await ctx.prisma.user.findOne({
+      const requesterData = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -55,7 +53,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
         usersFilter = {}
       }
 
-      return ctx.prisma.user.findMany({
+      return ctx.db.user.findMany({
         where: { ...args.where, ...usersFilter },
         ...(args.take ? { take: args.take, skip: args.skip } : {}),
       })
@@ -67,7 +65,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       where: arg({ type: 'UserWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -84,7 +82,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
         //Gets all the jobs from the branch
         ownerFilter = { branch: { id: user?.branch?.id } }
       }
-      return await ctx.prisma.user.count({
+      return await ctx.db.user.count({
         where: { ...args.where, ...ownerFilter },
       })
     },
@@ -98,7 +96,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       take: intArg(),
     },
     resolve: async (parent, args, ctx) => {
-      const requesterData = await ctx.prisma.user.findOne({
+      const requesterData = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -117,7 +115,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
         usersFilter = {}
       }
 
-      return ctx.prisma.user.findMany({
+      return ctx.db.user.findMany({
         where: { ...args.where, ...usersFilter, role: { name: 'candidate' } },
 
         ...(args.take ? { take: args.take, skip: args.skip } : {}),
@@ -130,13 +128,13 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
       where: arg({ type: 'UserWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
 
       //TODO: Refactor hard code name of role
-      return await ctx.prisma.user.count({
+      return await ctx.db.user.count({
         where: {
           ...args.where,
           role: { name: 'candidate' },

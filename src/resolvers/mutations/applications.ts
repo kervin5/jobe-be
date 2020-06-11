@@ -1,24 +1,23 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { idArg, stringArg, arg } from '@nexus/schema'
+import { schema } from 'nexus'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createApplication', {
     type: 'Application',
     nullable: true,
-    args: { job: idArg({ required: true }) },
+    args: { job: schema.idArg({ required: true }) },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { resumes: true },
       })
 
-      const job = await ctx.prisma.job.findOne({
+      const job = await ctx.db.job.findOne({
         where: { id: args.job },
         include: { location: true, author: true },
       })
 
-      const application = await ctx.prisma.application.create({
+      const application = await ctx.db.application.create({
         data: {
           ...args,
           status: 'NEW',
@@ -66,18 +65,18 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'Application',
     nullable: true,
     args: {
-      id: idArg({ required: true }),
-      status: arg({ type: 'ApplicationStatus', required: true }),
+      id: schema.idArg({ required: true }),
+      status: schema.arg({ type: 'ApplicationStatus', required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
       try {
-        const application = await ctx.prisma.application.update({
+        const application = await ctx.db.application.update({
           where: { id: args.id },
           data: { status: args.status },
         })
 
         try {
-          const applicationNote = await ctx.prisma.applicationNote.create({
+          const applicationNote = await ctx.db.applicationNote.create({
             data: {
               content: args.status,
               user: { connect: { id: ctx.request.user.id } },

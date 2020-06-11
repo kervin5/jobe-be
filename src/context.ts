@@ -1,27 +1,37 @@
-import { PrismaClient } from '@prisma/client'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 import auth from './middleware/auth'
-
-const prisma = new PrismaClient()
+import { server, schema } from 'nexus'
 
 const cp = cookieParser()
-const addCookies = (req: any, res: any) =>
-  new Promise((resolve) => {
-    cp(req, res, resolve)
-  })
-const authorization = (req: any, res: any) =>
-  new Promise((resolve) => {
-    auth(req, res, resolve)
-  })
 
 export interface Context {
-  prisma: PrismaClient
   request: any
   response: any
+  db: any
 }
 
-export async function createContext(request: any): Promise<Context> {
-  await addCookies(request.req, request.res)
-  await authorization(request.req, request.res)
-  return { prisma, request: request.req, response: request.res }
+export async function injectMiddleware() {
+  server.express.use(
+    cors({
+      origin: [
+        'https://www.myexactjobs.com/',
+        'http://localhost:3000',
+        'https://myexactjobs.herokuapp.com',
+        'https://www.myexactjobs.com',
+        'https://jobboard-fe-next.now.sh',
+      ],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      methods: ['POST', 'GET'],
+    }),
+  )
+  server.express.use(cp)
+  server.express.use(auth)
+  server.express.use((request: Request, response: any, next: any) => {
+    schema.addToContext((req) => {
+      return { request: request, response: response }
+    })
+    next()
+  })
 }

@@ -1,6 +1,6 @@
-import { objectType } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const Branch = objectType({
+schema.objectType({
   name: 'Branch',
   definition(t) {
     t.model.id()

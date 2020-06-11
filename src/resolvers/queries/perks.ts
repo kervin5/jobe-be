@@ -1,5 +1,3 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-
-export default (t: ObjectDefinitionBlock<'Query'>) => {
+export default (t) => {
   t.crud.perks({ filtering: true, ordering: true, pagination: true })
 }

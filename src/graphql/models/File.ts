@@ -1,6 +1,6 @@
-import { objectType } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const File = objectType({
+schema.objectType({
   name: 'File',
   definition(t) {
     t.model.id()
@@ -11,7 +11,7 @@ export const File = objectType({
   },
 })
 
-export const SignedFileUploadRequest = objectType({
+schema.objectType({
   name: 'SignedFileUploadRequest',
   definition(t) {
     t.string('signedRequest', { nullable: true })

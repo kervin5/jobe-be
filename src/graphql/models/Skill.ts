@@ -1,6 +1,6 @@
-import { objectType } from '@nexus/schema'
+import { schema } from 'nexus'
 
-export const Skill = objectType({
+schema.objectType({
   name: 'Skill',
   definition(t) {
     t.model.id()

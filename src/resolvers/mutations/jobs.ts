@@ -1,28 +1,27 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, floatArg, booleanArg, idArg, arg } from '@nexus/schema'
+import { schema } from 'nexus'
 import { fetchLocation } from '../../utils/location'
 import { can } from '../../permissions/auth'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t) => {
   t.field('createJob', {
     type: 'Job',
     nullable: true,
     args: {
-      title: stringArg({ required: true }),
-      description: stringArg({ required: true }),
-      compensationType: stringArg({ required: true }),
-      disclaimer: stringArg(),
-      type: stringArg({ required: true }),
-      minCompensation: floatArg({ required: true }),
-      maxCompensation: floatArg(),
-      location: stringArg(),
-      categories: stringArg({ list: true, required: true }),
-      skills: stringArg({ list: true, required: true }),
-      author: stringArg(),
-      isRecurring: booleanArg(),
+      title: schema.stringArg({ required: true }),
+      description: schema.stringArg({ required: true }),
+      compensationType: schema.stringArg({ required: true }),
+      disclaimer: schema.stringArg(),
+      type: schema.stringArg({ required: true }),
+      minCompensation: schema.floatArg({ required: true }),
+      maxCompensation: schema.floatArg(),
+      location: schema.stringArg(),
+      categories: schema.stringArg({ list: true, required: true }),
+      skills: schema.stringArg({ list: true, required: true }),
+      author: schema.stringArg(),
+      isRecurring: schema.booleanArg(),
     },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -36,12 +35,12 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
 
       // Checks if location exists in DB
       const locationExists =
-        (await ctx.prisma.location.findMany({ where: jobLocation })).length > 0
+        (await ctx.db.location.findMany({ where: jobLocation })).length > 0
 
       let location = {}
 
       if (locationExists) {
-        const existingLocations = await ctx.prisma.location.findMany({
+        const existingLocations = await ctx.db.location.findMany({
           where: jobLocation,
         })
 
@@ -72,7 +71,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         // console.log(args);
       }
 
-      const job = await ctx.prisma.job.create({
+      const job = await ctx.db.job.create({
         data: {
           ...args,
           categories: {
@@ -104,10 +103,10 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'Job',
     nullable: true,
     args: {
-      id: idArg({ required: true }),
+      id: schema.idArg({ required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
-      const jobs = await ctx.prisma.job.findMany({
+      const jobs = await ctx.db.job.findMany({
         where: {
           id: args.id,
           author: { id: ctx.request.user.id },
@@ -119,7 +118,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         (await can('UPDATE', 'BRANCH', ctx)) ||
         (await can('UPDATE', 'COMPANY', ctx))
       ) {
-        await ctx.prisma.application.updateMany({
+        await ctx.db.application.updateMany({
           where: {
             job: { id: args.id },
             status: { notIn: ['ARCHIVED', 'HIRED'] },
@@ -127,7 +126,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
           data: { status: 'ARCHIVED' },
         })
 
-        return ctx.prisma.job.update({
+        return ctx.db.job.update({
           where: { id: args.id },
           data: { status: 'DELETED' },
         })
@@ -140,8 +139,8 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'Job',
     nullable: true,
     args: {
-      where: arg({ type: 'JobWhereUniqueInput', required: true }),
-      data: arg({ type: 'UpdateJobCustomInput', required: true }),
+      where: schema.arg({ type: 'JobWhereUniqueInput', required: true }),
+      data: schema.arg({ type: 'UpdateJobCustomInput', required: true }),
     },
     resolve: async (parent, args, ctx, info) => {
       let authorId = ctx.request.user.id
@@ -156,14 +155,14 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       ) {
         authorId = JobDataToUpdate.author
       } else {
-        const job = await ctx.prisma.job.findOne({
+        const job = await ctx.db.job.findOne({
           where: { id: args.where.id },
           include: { location: true, author: true },
         })
         authorId = job?.author.id
       }
 
-      const jobs = await ctx.prisma.job.findMany({
+      const jobs = await ctx.db.job.findMany({
         where: {
           id: args.where.id,
           author: { id: authorId },
@@ -178,13 +177,13 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         if (JobDataToUpdate.location) {
           const locationExists =
             (
-              await ctx.prisma.location.findMany({
+              await ctx.db.location.findMany({
                 where: { name: JobDataToUpdate.location },
               })
             ).length > 0
 
           if (locationExists) {
-            const existingLocations = await ctx.prisma.location.findMany({
+            const existingLocations = await ctx.db.location.findMany({
               where: {
                 name: JobDataToUpdate.location,
               },
@@ -229,14 +228,14 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
           JobDataToUpdate.status = 'DRAFT'
         }
 
-        const user = await ctx.prisma.user.findOne({
+        const user = await ctx.db.user.findOne({
           where: { id: authorId },
           include: { branch: { include: { company: true } } },
         })
 
         JobDataToUpdate.author = { connect: { id: authorId } }
         JobDataToUpdate['branch'] = { connect: { id: user?.branch?.id } }
-        const job = await ctx.prisma.job.update({
+        const job = await ctx.db.job.update({
           where: args.where,
           data: JobDataToUpdate,
         })

@@ -1,91 +1,91 @@
-import request from "./request";
-import {Context} from "../context";
+import request from './request'
+import { Context } from '../context'
 
-export async function searchBoundary (locationName: string, ctx:Context, radius:number = 10) {
+export async function searchBoundary(
+  locationName: string,
+  ctx: Context,
+  radius: number = 10,
+) {
   //Latitude Longitude degree to miles calculation times the radius
-  const radiusDistance = (1 / 68.703) * (radius || 10);
+  const radiusDistance = (1 / 68.703) * (radius || 10)
 
   //Gets data of location if it exists in database
-  const locations = await ctx.prisma.location.findMany({where: { name: locationName}})
+  const locations = await ctx.db.location.findMany({
+    where: { name: locationName },
+  })
 
-  let [location] = locations || [null];
+  let [location] = locations || [null]
 
   if (location) {
-    let [leftEdge,bottomEdge, rightEdge, topEdge] = [0,0,0,0];
+    let [leftEdge, bottomEdge, rightEdge, topEdge] = [0, 0, 0, 0]
 
-    if (location.boundary.every((edge:number) => edge === 0)) {
-      const foundLocation = await fetchLocation(locationName);
-     
+    if (location.boundary.every((edge: number) => edge === 0)) {
+      const foundLocation = await fetchLocation(locationName)
+
       if (!foundLocation) {
-        return [leftEdge, bottomEdge, rightEdge, topEdge];
+        return [leftEdge, bottomEdge, rightEdge, topEdge]
       }
 
-      location = await ctx.prisma.location.update(
-        {
-          data: {
-            name: locationName,
-            longitude: foundLocation.center[1],
-            latitude: foundLocation.center[0],
-            boundary: { set: foundLocation.bbox }
-          },
-          where: {
-            id: location.id
-          }
-        }
-      );
-    }
-
-    [leftEdge, bottomEdge, rightEdge, topEdge] = location.boundary;
-    return [
-      leftEdge - radiusDistance,
-      bottomEdge - radiusDistance,
-      rightEdge + radiusDistance,
-      topEdge + radiusDistance
-    ];
-  } else {
-    const foundLocation = await fetchLocation(locationName);
-    let [leftEdge,bottomEdge, rightEdge, topEdge] = [0,0,0,0];
-    // console.log(foundLocation);
-
-    if (!foundLocation) {
-      return [leftEdge, bottomEdge, rightEdge, topEdge];
-    }
-
-    location = await ctx.prisma.location.create(
-      {
+      location = await ctx.db.location.update({
         data: {
           name: locationName,
           longitude: foundLocation.center[1],
           latitude: foundLocation.center[0],
-          boundary: { set: foundLocation.bbox }
-        }
-      }
-    );
+          boundary: { set: foundLocation.bbox },
+        },
+        where: {
+          id: location.id,
+        },
+      })
+    }
 
-    [leftEdge, bottomEdge, rightEdge, topEdge] = location.boundary;
+    ;[leftEdge, bottomEdge, rightEdge, topEdge] = location.boundary
     return [
       leftEdge - radiusDistance,
       bottomEdge - radiusDistance,
       rightEdge + radiusDistance,
-      topEdge + radiusDistance
-    ];
+      topEdge + radiusDistance,
+    ]
+  } else {
+    const foundLocation = await fetchLocation(locationName)
+    let [leftEdge, bottomEdge, rightEdge, topEdge] = [0, 0, 0, 0]
+    // console.log(foundLocation);
+
+    if (!foundLocation) {
+      return [leftEdge, bottomEdge, rightEdge, topEdge]
+    }
+
+    location = await ctx.db.location.create({
+      data: {
+        name: locationName,
+        longitude: foundLocation.center[1],
+        latitude: foundLocation.center[0],
+        boundary: { set: foundLocation.bbox },
+      },
+    })
+
+    ;[leftEdge, bottomEdge, rightEdge, topEdge] = location.boundary
+    return [
+      leftEdge - radiusDistance,
+      bottomEdge - radiusDistance,
+      rightEdge + radiusDistance,
+      topEdge + radiusDistance,
+    ]
   }
-
-  
-};
-
-export async function fetchLocation(locationName:string) {
-  return (await request(
-    `https://api.mapbox.com/geocoding/v5/mapbox.places/
-      ${locationName}.json?access_token=${
-      process.env.MAPBOX_TOKEN
-    }&types=country,region,postcode,place`,
-    {},
-    "GET"
-  )).features[0];
 }
 
-module.exports = { searchBoundary, fetchLocation };
+export async function fetchLocation(locationName: string) {
+  return (
+    await request(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/
+      ${locationName}.json?access_token=${process.env.MAPBOX_TOKEN}&types=country,region,postcode,place`,
+      {},
+      'GET',
+    )
+  ).features[0]
+}
+
+module.exports = { searchBoundary, fetchLocation }
 
 // async updateBoundaries(parent, args, ctx, info) {
 //   const locations = (await ctx.db.query.locations({},`{id name boundary latitude longitude}`)).filter(location => {
