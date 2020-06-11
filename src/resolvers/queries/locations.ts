@@ -1,12 +1,13 @@
-import request from '../../utils/request'
 import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
+import request from '../../utils/request'
 
 interface IMapboxLocation {
   id: string
   place_name: string
 }
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   t.crud.location()
   t.crud.locations()
   t.list.field('mapBoxLocations', {

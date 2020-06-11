@@ -1,4 +1,5 @@
-import { arg, intArg } from '@nexus/schema'
+import { core } from 'nexus/components/schema'
+import { schema } from 'nexus'
 import { can } from '../../permissions/auth'
 
 export interface UserAccessFilter {
@@ -8,7 +9,7 @@ export interface UserAccessFilter {
   id?: string
 }
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   t.field('me', {
     type: 'User',
     nullable: true,
@@ -29,9 +30,9 @@ export default (t) => {
   t.list.field('users', {
     type: 'User',
     args: {
-      where: arg({ type: 'UserWhereInput' }),
-      skip: intArg(),
-      take: intArg(),
+      where: schema.arg({ type: 'UserWhereInput' }),
+      skip: schema.intArg(),
+      take: schema.intArg(),
     },
     resolve: async (parent, args, ctx) => {
       const requesterData = await ctx.db.user.findOne({
@@ -62,7 +63,7 @@ export default (t) => {
 
   t.int('usersConnection', {
     args: {
-      where: arg({ type: 'UserWhereInput' }),
+      where: schema.arg({ type: 'UserWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
@@ -91,9 +92,9 @@ export default (t) => {
   t.list.field('candidates', {
     type: 'User',
     args: {
-      where: arg({ type: 'UserWhereInput' }),
-      skip: intArg(),
-      take: intArg(),
+      where: schema.arg({ type: 'UserWhereInput' }),
+      skip: schema.intArg(),
+      take: schema.intArg(),
     },
     resolve: async (parent, args, ctx) => {
       const requesterData = await ctx.db.user.findOne({
@@ -125,7 +126,7 @@ export default (t) => {
 
   t.int('candidatesConnection', {
     args: {
-      where: arg({ type: 'UserWhereInput' }),
+      where: schema.arg({ type: 'UserWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({

@@ -1,6 +1,7 @@
+import { core } from 'nexus/components/schema'
 import { shuffleArray } from '../../utils/functions'
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   t.list.field('popularTerms', {
     type: 'Term',
     resolve: async (parent, args, ctx) => {

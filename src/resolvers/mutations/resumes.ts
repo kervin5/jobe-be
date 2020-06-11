@@ -1,9 +1,10 @@
 import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
 import { sign_s3_read } from '../../utils/aws'
 import request from '../../utils/request'
 import { findKeywords } from '../../utils/functions'
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createResume', {
     type: 'Resume',
     nullable: true,

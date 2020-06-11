@@ -1,4 +1,5 @@
 import { compare, genSalt, hash } from 'bcryptjs'
+import { core } from 'nexus/components/schema'
 import jwt from 'jsonwebtoken'
 import { promisify } from 'util'
 import { randomBytes } from 'crypto'
@@ -6,7 +7,7 @@ import { schema } from 'nexus'
 import { can } from '../../permissions/auth'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createUser', {
     type: 'User',
     args: {

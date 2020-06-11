@@ -1,6 +1,7 @@
 import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createRole', {
     type: 'Role',
     nullable: true,

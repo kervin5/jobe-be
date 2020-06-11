@@ -1,8 +1,9 @@
 import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
 import { fetchLocation } from '../../utils/location'
 import { can } from '../../permissions/auth'
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createJob', {
     type: 'Job',
     nullable: true,

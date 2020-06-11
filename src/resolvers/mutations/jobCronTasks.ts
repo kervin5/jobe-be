@@ -1,5 +1,6 @@
 import { schema } from 'nexus'
-export default (t) => {
+import { core } from 'nexus/components/schema'
+export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   //TODO: reimplement crontask procedure
   t.string('schedule', {
     nullable: true,

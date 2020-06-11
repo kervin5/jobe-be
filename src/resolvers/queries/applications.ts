@@ -1,8 +1,9 @@
 import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
 import { UserAccessFilter } from './users'
 import { can } from '../../permissions/auth'
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   // t.crud.application()
 
   t.field('application', {

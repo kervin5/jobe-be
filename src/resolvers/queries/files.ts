@@ -1,7 +1,8 @@
 import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
 import { sign_s3_read } from '../../utils/aws'
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   t.string('getSignedFileUrl', {
     nullable: true,
     args: {

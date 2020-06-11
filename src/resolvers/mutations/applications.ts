@@ -1,7 +1,8 @@
 import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createApplication', {
     type: 'Application',
     nullable: true,

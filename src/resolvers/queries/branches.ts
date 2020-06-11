@@ -1,6 +1,7 @@
+import { core } from 'nexus/components/schema'
 import { schema } from 'nexus'
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   t.list.field('branches', {
     type: 'Branch',
     args: {

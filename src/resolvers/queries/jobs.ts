@@ -1,9 +1,10 @@
-import { searchBoundary } from '../../utils/location'
 import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
 import { UserAccessFilter } from './users'
 import { can } from '../../permissions/auth'
+import { searchBoundary } from '../../utils/location'
 
-export default (t) => {
+export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   //Fetch single job
   t.crud.job()
 
