@@ -19,6 +19,7 @@ injectMiddleware()
 schema.addToContext((req) => {
   //@ts-ignore
   const contextRequest: ContextRequest = { ...req }
+  //@ts-ignore
   return { request: contextRequest, response: req.res }
 })
 
