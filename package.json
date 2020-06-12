@@ -1,5 +1,6 @@
 {
   "name": "typescript-graphql",
+  "version": "1.0.0",
   "scripts": {
     "dev": "nexus dev",
     "build": "nexus build -d vercel",
@@ -8,7 +9,7 @@
     "prisma:generate": "prisma generate --schema=./prisma/schema.prisma"
   },
   "dependencies": {
-    "aws-sdk": "^2.666.0",
+    "aws-sdk": "^2.695.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
