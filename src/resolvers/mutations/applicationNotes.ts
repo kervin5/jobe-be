@@ -1,7 +1,7 @@
 import { schema } from 'nexus'
 import { core } from 'nexus/components/schema'
 
-export default (t: core.ObjectDefinitionBlock<'<Mutation'>) => {
+export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createApplicationNote', {
     type: 'ApplicationNote',
     nullable: true,
@@ -14,6 +14,7 @@ export default (t: core.ObjectDefinitionBlock<'<Mutation'>) => {
         const applicationNote = await ctx.db.applicationNote.create({
           data: {
             content: args.content,
+
             user: { connect: { id: ctx.request.user.id } },
             application: { connect: { id: args.id } },
             type: 'NOTE',

@@ -55,6 +55,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       }
 
       return ctx.db.user.findMany({
+        //@ts-ignore
         where: { ...args.where, ...usersFilter },
         ...(args.take ? { take: args.take, skip: args.skip } : {}),
       })
@@ -84,6 +85,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ownerFilter = { branch: { id: user?.branch?.id } }
       }
       return await ctx.db.user.count({
+        //@ts-ignore
         where: { ...args.where, ...ownerFilter },
       })
     },
@@ -117,6 +119,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       }
 
       return ctx.db.user.findMany({
+        //@ts-ignore
         where: { ...args.where, ...usersFilter, role: { name: 'candidate' } },
 
         ...(args.take ? { take: args.take, skip: args.skip } : {}),
@@ -136,6 +139,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
 
       //TODO: Refactor hard code name of role
       return await ctx.db.user.count({
+        //@ts-ignore
         where: {
           ...args.where,
           role: { name: 'candidate' },

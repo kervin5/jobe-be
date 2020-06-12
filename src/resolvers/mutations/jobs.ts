@@ -15,7 +15,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       type: schema.stringArg({ required: true }),
       minCompensation: schema.floatArg({ required: true }),
       maxCompensation: schema.floatArg(),
-      location: schema.stringArg(),
+      location: schema.stringArg({ required: true }),
       categories: schema.stringArg({ list: true, required: true }),
       skills: schema.stringArg({ list: true, required: true }),
       author: schema.stringArg(),
@@ -157,14 +157,17 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         authorId = JobDataToUpdate.author
       } else {
         const job = await ctx.db.job.findOne({
+          //@ts-ignore
           where: { id: args.where.id },
           include: { location: true, author: true },
         })
+        //@ts-ignore
         authorId = job?.author.id
       }
 
       const jobs = await ctx.db.job.findMany({
         where: {
+          //@ts-ignore
           id: args.where.id,
           author: { id: authorId },
         },
@@ -237,6 +240,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         JobDataToUpdate.author = { connect: { id: authorId } }
         JobDataToUpdate['branch'] = { connect: { id: user?.branch?.id } }
         const job = await ctx.db.job.update({
+          //@ts-ignore
           where: args.where,
           data: JobDataToUpdate,
         })

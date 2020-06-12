@@ -1,5 +1,5 @@
 import request from './request'
-import { Context } from '../context'
+import { Context } from '../../types/context'
 
 export async function searchBoundary(
   locationName: string,
@@ -63,7 +63,6 @@ export async function searchBoundary(
         boundary: { set: foundLocation.bbox },
       },
     })
-
     ;[leftEdge, bottomEdge, rightEdge, topEdge] = location.boundary
     return [
       leftEdge - radiusDistance,

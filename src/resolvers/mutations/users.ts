@@ -27,9 +27,10 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         data: {
           ...args,
           branch: {
+            //@ts-ignore
             connect: { id: args.branch },
           },
-          status: 'ACTIVE',
+          status: 'ACTIVE', //@ts-ignore
           role: { connect: { id: args.role } },
           password: await hash(resetToken + resetTokenExpiry, salt),
           resetToken,
@@ -171,6 +172,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           process.env.APP_SECRET as string,
         )
         // 4. Set the cookie with the token
+
         ctx.response.header('token', token)
         ctx.response.cookie('token', token, {
           httpOnly: true,
@@ -238,11 +240,13 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
 
       //get userData
       const user = await ctx.db.user.findOne({
+        //@ts-ignore
         where: { id: args.id },
         include: { branch: true },
       })
 
       const jobs = await ctx.db.job.findMany({
+        //@ts-ignore
         where: { status: { not: 'DELETED' }, author: { id: args.id } },
       })
 
@@ -250,6 +254,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         //Find next user from the same branch
         const recruiters = await ctx.db.user.findMany({
           where: {
+            //@ts-ignore
             branch: { id: user?.branch?.id },
             id: { not: user?.id },
             role: { name: 'recruiter' },
@@ -269,6 +274,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         } else {
           const managers = await ctx.db.user.findMany({
             where: {
+              //@ts-ignore
               branch: { id: user?.branch?.id },
               id: { not: user?.id },
               role: { name: 'manager' },

@@ -3,7 +3,7 @@ import jobs from '../resolvers/queries/jobs'
 import users from '../resolvers/queries/users'
 import roles from '../resolvers/queries/roles'
 import applications from '../resolvers/queries/applications'
-// import branches from '../resolvers/queries/branches'
+import branches from '../resolvers/queries/branches'
 import locations from '../resolvers/queries/locations'
 import categories from '../resolvers/queries/categories'
 import skills from '../resolvers/queries/skills'
@@ -17,23 +17,7 @@ export const Query = schema.queryType({
     users(t)
     roles(t)
     applications(t)
-    // branches(t)
-    t.list.field('branches2', {
-      type: 'Branch',
-      args: {
-        where: schema.arg({ type: 'BranchWhereInput' }),
-      },
-      resolve: async (parent, args, ctx) => {
-        const user = await ctx.db.user.findOne({
-          where: { id: ctx.request.user.id },
-          include: { branch: { include: { company: true } } },
-        })
-
-        return ctx.db.branch.findMany({
-          where: { company: { id: user?.branch?.company.id } },
-        })
-      },
-    })
+    branches(t)
     locations(t)
     categories(t)
     skills(t)

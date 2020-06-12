@@ -11,6 +11,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       const favorites = await ctx.db.favorite.findMany({
         where: { user: { id: ctx.request.user.id }, job: { id: args.job } },
       })
+
       const user = { connect: { id: ctx.request.user.id } }
       const job = { connect: { id: args.job } }
 

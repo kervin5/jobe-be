@@ -32,6 +32,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
               id: args.job,
             },
           },
+          //@ts-ignore
           user: { connect: { id: ctx.request.user.id } },
         },
       })
@@ -80,6 +81,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           const applicationNote = await ctx.db.applicationNote.create({
             data: {
               content: args.status,
+              //@ts-ignore
               user: { connect: { id: ctx.request.user.id } },
               application: { connect: { id: args.id } },
               type: 'STATUS',

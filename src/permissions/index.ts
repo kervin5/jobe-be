@@ -8,17 +8,6 @@ const rules = {
 
     return Boolean(user && user.id)
   }),
-  isPostOwner: rule()(async (parent, { id }, context) => {
-    const userId = getUserId(context)
-    const author = await context.prisma.post
-      .findOne({
-        where: {
-          id: Number(id),
-        },
-      })
-      .author()
-    return userId === author.id
-  }),
   can: (userPermission: IUserCan) =>
     rule({ cache: 'contextual' })(async (parent, args, ctx, info) => {
       return !!(await can(userPermission.action, userPermission.object, ctx))

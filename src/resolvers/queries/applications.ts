@@ -64,6 +64,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ...args,
         where: {
           ...args.where,
+          //@ts-ignore
           job: {
             ...(args.where && args.where.job ? args.where.job : {}),
             ...ownerFilter,
@@ -101,6 +102,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ...args,
         where: {
           ...args.where,
+          //@ts-ignore
           job: {
             ...(args.where && args.where.job ? args.where.job : {}),
             ...ownerFilter,
@@ -115,6 +117,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     args: { id: schema.stringArg() },
     resolve: async (parent, args, ctx) => {
       return ctx.db.applicationNote.findMany({
+        //@ts-ignore
         where: { application: { id: args.id } },
         orderBy: { createdAt: 'desc' },
       })

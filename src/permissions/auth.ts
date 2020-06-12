@@ -1,5 +1,5 @@
 import { verify, Secret } from 'jsonwebtoken'
-import { Context } from '../context'
+import { Context } from '../../types/context'
 import { Request } from 'express'
 
 export interface Token {
@@ -32,8 +32,10 @@ export async function can(action: string, object: string, ctx: Context) {
 
 export function getUserId(req: Request) {
   const token = getUserToken(req)
+
   if (token) {
     const decoded = verify(token, process.env.APP_SECRET as Secret) as Token
+
     return decoded
   }
 }
@@ -41,7 +43,7 @@ export function getUserId(req: Request) {
 export function getUserToken(req: Request) {
   const authorization =
     req.cookies?.token ||
-    (req.headers.Authorization
+    (req.headers?.Authorization
       ? req.headers.Authorization
       : req.headers.authorization || null)
 

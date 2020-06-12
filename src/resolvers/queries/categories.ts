@@ -11,6 +11,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     },
     resolve: async (parent, args, ctx) => {
       return ctx.db.category.findMany({
+        //@ts-ignore
         where: { ...args.where },
         ...(args.take ? { take: args.take } : {}),
       })

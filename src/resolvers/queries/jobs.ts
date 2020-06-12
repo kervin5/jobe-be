@@ -17,6 +17,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     },
     resolve: (parent, args, ctx) => {
       return ctx.db.job.findMany({
+        //@ts-ignore
         where: {
           ...args.where,
           status: 'POSTED',
@@ -52,6 +53,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       }
 
       return ctx.db.job.findMany({
+        //@ts-ignore
         where: { ...args.where, ...ownerFilter },
         orderBy: { updatedAt: 'desc' },
         ...(args.take ? { take: args.take, skip: args.skip } : {}),
@@ -73,6 +75,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       if (!args.location || args.location === '') {
         return await ctx.db.job.findMany({
           where: {
+            //@ts-ignore
             OR: [
               { title: { contains: args.query?.toLowerCase() } },
               { description: { contains: args.query?.toLowerCase() } },
@@ -107,6 +110,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
 
       return await ctx.db.job.findMany({
         where: {
+          //@ts-ignore
           AND: [
             {
               OR: [
@@ -149,6 +153,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     },
     resolve: async (parent, args, ctx) => {
       return ctx.db.job.count({
+        //@ts-ignore
         where: { ...args.where, status: 'POSTED' },
       })
     },
@@ -178,6 +183,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ownerFilter = { branch: { id: user?.branch?.id } }
       }
       return await ctx.db.job.count({
+        //@ts-ignore
         where: { ...args.where, ...ownerFilter },
       })
     },

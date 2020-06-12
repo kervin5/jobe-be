@@ -1,9 +1,10 @@
 import dotenv from 'dotenv'
-import { injectMiddleware } from './src/context'
+import { injectMiddleware } from './src/middleware'
 import { permissions } from './src/permissions'
 import app, { server, use, schema } from 'nexus'
 import { prisma } from 'nexus-plugin-prisma'
 import { settings } from 'nexus'
+import { ContextRequest } from './types/context'
 
 dotenv.config()
 const PORT = parseInt(process.env.PORT ?? `${4000}`)
@@ -14,10 +15,11 @@ settings.change({
   },
 })
 
-const expressContext = injectMiddleware()
-
+injectMiddleware()
 schema.addToContext((req) => {
-  return { ...expressContext }
+  //@ts-ignore
+  const contextRequest: ContextRequest = { ...req }
+  return { request: contextRequest, response: req.res }
 })
 
 use(prisma({ features: { crud: true } }))

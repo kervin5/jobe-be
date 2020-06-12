@@ -1,18 +1,11 @@
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import auth from './middleware/auth'
+import auth from './auth'
 import { server } from 'nexus'
 
 const cp = cookieParser()
 
-export interface Context {
-  request: any
-  response: any
-  db: any
-}
-
-export function injectMiddleware(): { response: any; request: any } {
-  let expressContext: any
+export function injectMiddleware() {
   server.express.use(
     cors({
       origin: [
@@ -29,10 +22,4 @@ export function injectMiddleware(): { response: any; request: any } {
   )
   server.express.use(cp)
   server.express.use(auth)
-  server.express.use((request: Request, response: any, next: any) => {
-    expressContext = { request: request, response: response }
-    next()
-  })
-
-  return expressContext
 }
