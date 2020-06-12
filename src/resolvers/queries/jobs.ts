@@ -76,12 +76,18 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
         return await ctx.prisma.job.findMany({
           where: {
             OR: [
-              { title: { contains: args.query?.toLowerCase() } },
-              { description: { contains: args.query?.toLowerCase() } },
-              { title: { contains: args.query?.toUpperCase() } },
-              { description: { contains: args.query?.toUpperCase() } },
-              { title: { contains: titleCase(args.query ?? '') } },
-              { description: { contains: titleCase(args.query ?? '') } },
+              ...(args.query
+                ? [
+                    { title: { contains: args.query?.toLowerCase() } },
+                    { description: { contains: args.query?.toLowerCase() } },
+                    { title: { contains: args.query?.toUpperCase() } },
+                    { description: { contains: args.query?.toUpperCase() } },
+                    { title: { contains: titleCase(args.query ?? '') } },
+                    { description: { contains: titleCase(args.query ?? '') } },
+                    { title: { contains: args.query } },
+                    { description: { contains: args.query } },
+                  ]
+                : []),
               {
                 location: {
                   OR: [
@@ -112,12 +118,20 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
           AND: [
             {
               OR: [
-                { title: { contains: args.query?.toLowerCase() } },
-                { description: { contains: args.query?.toLowerCase() } },
-                { title: { contains: args.query?.toUpperCase() } },
-                { description: { contains: args.query?.toUpperCase() } },
-                { title: { contains: titleCase(args.query ?? '') } },
-                { description: { contains: titleCase(args.query ?? '') } },
+                ...(args.query
+                  ? [
+                      { title: { contains: args.query?.toLowerCase() } },
+                      { description: { contains: args.query?.toLowerCase() } },
+                      { title: { contains: args.query?.toUpperCase() } },
+                      { description: { contains: args.query?.toUpperCase() } },
+                      { title: { contains: titleCase(args.query ?? '') } },
+                      {
+                        description: { contains: titleCase(args.query ?? '') },
+                      },
+                      { title: { contains: args.query } },
+                      { description: { contains: args.query } },
+                    ]
+                  : []),
               ],
             },
             {
