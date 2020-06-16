@@ -18,6 +18,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       location: schema.stringArg({ required: true }),
       categories: schema.stringArg({ list: true, required: true }),
       skills: schema.stringArg({ list: true, required: true }),
+      perks: schema.stringArg({ list: true }),
       author: schema.stringArg(),
       isRecurring: schema.booleanArg(),
     },
@@ -72,6 +73,22 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         // console.log(args);
       }
 
+      //Verify if perks exist
+      const allPerks = (await ctx.db.perk.findMany()).map((perk) => perk.id)
+      const incomingPerks = args.perks ?? []
+      let perksToCreate: any = []
+      let perksToConnect = []
+
+      if (!!incomingPerks.length) {
+        perksToCreate = incomingPerks.filter(
+          (incomingPerk) => !allPerks.includes(incomingPerk),
+        )
+      }
+
+      perksToConnect = incomingPerks.filter((incomingPerk) =>
+        allPerks.includes(incomingPerk),
+      )
+
       const job = await ctx.db.job.create({
         data: {
           ...args,
@@ -82,6 +99,13 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           },
           skills: {
             connect: args.skills.map((skill: string) => ({ id: skill })),
+          },
+          perks: {
+            create: perksToCreate.map((perk: any) => ({
+              name: perk,
+              author: { connect: { id: ctx.request.user.id } },
+            })),
+            connect: perksToConnect.map((perk) => ({ id: perk })),
           },
           status: 'DRAFT',
           author: { connect: { id: authorId } },

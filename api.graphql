@@ -419,7 +419,7 @@ type Mutation {
   createApplicationNote(content: String!, id: ID!): ApplicationNote
   createCategory(name: String!): Category
   createCompany(description: String!, name: String!): Company
-  createJob(author: String, categories: [String!]!, compensationType: String!, description: String!, disclaimer: String, isRecurring: Boolean, location: String!, maxCompensation: Float, minCompensation: Float!, skills: [String!]!, title: String!, type: String!): Job
+  createJob(author: String, categories: [String!]!, compensationType: String!, description: String!, disclaimer: String, isRecurring: Boolean, location: String!, maxCompensation: Float, minCompensation: Float!, perks: [String!], skills: [String!]!, title: String!, type: String!): Job
   createLocation(boundary: [Float!]!, latitude: Float!, longitude: Float!, name: String!): Location
   createManyPerks(perks: [String!]!): [Perk!]
   createPerk(name: String!): Perk
@@ -496,6 +496,13 @@ input PerkOrderByInput {
   authorId: OrderByArg
   id: OrderByArg
   name: OrderByArg
+  status: OrderByArg
+}
+
+enum PerkStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
 }
 
 input PerkWhereInput {
@@ -508,6 +515,7 @@ input PerkWhereInput {
   name: StringFilter
   NOT: [PerkWhereInput!]
   OR: [PerkWhereInput!]
+  status: PerkStatus
 }
 
 input PerkWhereUniqueInput {
