@@ -39,6 +39,7 @@ schema.inputObjectType({
     t.string('location')
     t.string('categories', { list: true })
     t.string('skills', { list: true })
+    t.string('perks', { list: true })
     t.field('status', { type: 'JobStatus' })
     t.string('author')
   },

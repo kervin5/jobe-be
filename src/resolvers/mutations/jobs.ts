@@ -252,6 +252,32 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           }
         }
 
+        const allPerks = (await ctx.db.perk.findMany()).map((perk) => perk.id)
+        const incomingPerks = JobDataToUpdate.perks ?? []
+
+        let perksToCreate: any = []
+        let perksToConnect = []
+
+        if (JobDataToUpdate.perks) {
+          if (!!incomingPerks.length) {
+            perksToCreate = incomingPerks.filter(
+              (incomingPerk: any) => !allPerks.includes(incomingPerk),
+            )
+          }
+
+          perksToConnect = incomingPerks.filter((incomingPerk: any) =>
+            allPerks.includes(incomingPerk),
+          )
+
+          JobDataToUpdate.perks = {
+            create: perksToCreate.map((perk: any) => ({
+              name: perk,
+              author: { connect: { id: ctx.request.user.id } },
+            })),
+            set: perksToConnect.map((perk: any) => ({ id: perk })),
+          }
+        }
+
         if (!JobDataToUpdate.status) {
           JobDataToUpdate.status = 'DRAFT'
         }
