@@ -17,6 +17,7 @@ schema.objectType({
     t.model.status()
     t.model.applications({ filtering: true })
     t.model.createdAt()
+    t.model.createdPerks()
     t.field('eEmpact', {
       type: 'UserEEmpactData',
       async resolve(parent, args, ctx) {

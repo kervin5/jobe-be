@@ -421,6 +421,7 @@ type Mutation {
   createCompany(description: String!, name: String!): Company
   createJob(author: String, categories: [String!]!, compensationType: String!, description: String!, disclaimer: String, isRecurring: Boolean, location: String!, maxCompensation: Float, minCompensation: Float!, skills: [String!]!, title: String!, type: String!): Job
   createLocation(boundary: [Float!]!, latitude: Float!, longitude: Float!, name: String!): Location
+  createManyPerks(perks: [String!]!): [Perk!]
   createPerk(name: String!): Perk
   createResume(path: String!, title: String!, type: String!): Resume
   createRole(name: String!, permissions: [RolePermissionsInputType!]!): Role
@@ -511,6 +512,7 @@ input PerkWhereInput {
 
 input PerkWhereUniqueInput {
   id: String
+  name: String
 }
 
 type Permission {
@@ -725,6 +727,7 @@ type User {
   applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, where: ApplicationWhereInput): [Application!]!
   branch: Branch
   createdAt: DateTime!
+  createdPerks(after: PerkWhereUniqueInput, before: PerkWhereUniqueInput, first: Int, last: Int): [Perk!]!
   eEmpact: UserEEmpactData
   email: String!
   favorites(after: FavoriteWhereUniqueInput, before: FavoriteWhereUniqueInput, first: Int, last: Int, where: FavoriteWhereInput): [Favorite!]!
@@ -762,6 +765,7 @@ input UserWhereInput {
   branchId: NullableStringFilter
   createdAt: DateTimeFilter
   createdJobTemplates: JobTemplateFilter
+  createdPerks: PerkFilter
   email: StringFilter
   favorites: FavoriteFilter
   id: StringFilter
@@ -773,7 +777,6 @@ input UserWhereInput {
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   password: StringFilter
-  perks: PerkFilter
   resetToken: NullableStringFilter
   resetTokenExpiry: NullableFloatFilter
   resumes: ResumeFilter

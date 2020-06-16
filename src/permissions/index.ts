@@ -145,6 +145,10 @@ export const permissions = shield({
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'COMPANY' }),
       ),
+      createManyPerks: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'PERK' }),
+      ),
     },
   },
   options: {
