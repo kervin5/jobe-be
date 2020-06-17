@@ -11,7 +11,7 @@ schema.objectType({
     t.model.branch()
     t.model.jobs({ filtering: true })
     t.model.favorites({ filtering: true })
-    t.model.resumes({ filtering: true, ordering: true })
+    t.model.resumes({ filtering: true, ordering: true, pagination: true })
     t.model.role()
     t.model.location()
     t.model.status()
