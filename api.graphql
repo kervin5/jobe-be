@@ -484,19 +484,13 @@ type Perk {
   id: String!
   jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, where: JobWhereInput): [Job!]!
   name: String!
+  status: PerkStatus!
 }
 
 input PerkFilter {
   every: PerkWhereInput
   none: PerkWhereInput
   some: PerkWhereInput
-}
-
-input PerkOrderByInput {
-  authorId: OrderByArg
-  id: OrderByArg
-  name: OrderByArg
-  status: OrderByArg
 }
 
 enum PerkStatus {
@@ -567,7 +561,8 @@ type Query {
   locations(after: LocationWhereUniqueInput, before: LocationWhereUniqueInput, first: Int, last: Int): [Location!]!
   mapBoxLocations(query: String): [MapboxLocation!]
   me: User
-  perks(after: PerkWhereUniqueInput, before: PerkWhereUniqueInput, first: Int, last: Int, orderBy: PerkOrderByInput, where: PerkWhereInput): [Perk!]!
+  perks(skip: Int, take: Int, where: PerkWhereInput): [Perk!]
+  perksConnection(where: PerkWhereInput): Int
   popularTerms: [Term!]
   protectedJobs(skip: Int, take: Int, where: JobWhereInput): [Job!]
   protectedJobsConnection(where: JobWhereInput): Int

@@ -7,5 +7,6 @@ schema.objectType({
     t.model.name()
     t.model.jobs({ filtering: true })
     t.model.author()
+    t.model.status()
   },
 })
