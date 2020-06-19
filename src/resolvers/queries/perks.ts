@@ -12,8 +12,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     },
     resolve: async (parent, args, ctx) => {
       return ctx.db.perk.findMany({
-        take: args.take ?? 10,
-        skip: args.skip ?? 0,
+        ...(args.take ? { take: args.take, skip: args.skip } : {}),
         ...(args.orderBy ? { orderBy: args.orderBy } : {}),
       })
     },
