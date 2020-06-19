@@ -6,3 +6,6 @@
 20200609152017-create-job-template
 20200615124036-make-perk-name-unique
 20200616100526-add-status-to-perk
+20200619101606-expose-perk-create-and-update-fields
+20200619101713-expose-update-and-create-of-perk
+20200619101834-expose-perk-create-and-update

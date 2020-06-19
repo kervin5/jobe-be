@@ -22,7 +22,7 @@ schema.objectType({
     t.model.disclaimer()
     t.model.categories()
     t.model.cronTask()
-    t.model.perks()
+    t.model.perks({ filtering: true, ordering: true })
   },
 })
 

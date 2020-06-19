@@ -8,5 +8,7 @@ schema.objectType({
     t.model.jobs({ filtering: true })
     t.model.author()
     t.model.status()
+    t.model.createdAt()
+    t.model.updatedAt()
   },
 })

@@ -272,7 +272,7 @@ type Job {
   location: Location!
   maxCompensation: Float!
   minCompensation: Float!
-  perks(after: PerkWhereUniqueInput, before: PerkWhereUniqueInput, first: Int, last: Int): [Perk!]!
+  perks(after: PerkWhereUniqueInput, before: PerkWhereUniqueInput, first: Int, last: Int, orderBy: PerkOrderByInput, where: PerkWhereInput): [Perk!]!
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int): [Skill!]!
   status: JobStatus!
   title: String!
@@ -414,6 +414,7 @@ type MapboxLocation {
 }
 
 type Mutation {
+  activatePerk(id: ID!): Perk
   addFavorite(job: ID!): ID
   createApplication(job: ID!): Application
   createApplicationNote(content: String!, id: ID!): ApplicationNote
@@ -430,6 +431,7 @@ type Mutation {
   deleteFavorite(job: ID!): ID
   deleteJob(id: ID!): Job
   deleteUser(id: ID): User
+  inactivatePerk(id: ID!): Perk
   login(email: String!, password: String!): User
   logout: String
   requestReset(email: String!): String
@@ -481,16 +483,27 @@ input OrderByInput {
 
 type Perk {
   author: User!
+  createdAt: DateTime!
   id: String!
   jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, where: JobWhereInput): [Job!]!
   name: String!
   status: PerkStatus!
+  updatedAt: DateTime!
 }
 
 input PerkFilter {
   every: PerkWhereInput
   none: PerkWhereInput
   some: PerkWhereInput
+}
+
+input PerkOrderByInput {
+  authorId: OrderByArg
+  createdAt: OrderByArg
+  id: OrderByArg
+  name: OrderByArg
+  status: OrderByArg
+  updatedAt: OrderByArg
 }
 
 enum PerkStatus {
@@ -503,6 +516,7 @@ input PerkWhereInput {
   AND: [PerkWhereInput!]
   author: UserWhereInput
   authorId: StringFilter
+  createdAt: DateTimeFilter
   id: StringFilter
   jobs: JobFilter
   JobTemplates: JobTemplateFilter
@@ -510,6 +524,7 @@ input PerkWhereInput {
   NOT: [PerkWhereInput!]
   OR: [PerkWhereInput!]
   status: PerkStatus
+  updatedAt: DateTimeFilter
 }
 
 input PerkWhereUniqueInput {
@@ -561,7 +576,7 @@ type Query {
   locations(after: LocationWhereUniqueInput, before: LocationWhereUniqueInput, first: Int, last: Int): [Location!]!
   mapBoxLocations(query: String): [MapboxLocation!]
   me: User
-  perks(skip: Int, take: Int, where: PerkWhereInput): [Perk!]
+  perks(orderBy: PerkOrderByInput, skip: Int, take: Int, where: PerkWhereInput): [Perk!]
   perksConnection(where: PerkWhereInput): Int
   popularTerms: [Term!]
   protectedJobs(skip: Int, take: Int, where: JobWhereInput): [Job!]

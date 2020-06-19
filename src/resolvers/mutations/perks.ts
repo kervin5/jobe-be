@@ -49,4 +49,36 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       return ctx.db.perk.findMany()
     },
   })
+
+  t.field('activatePerk', {
+    type: 'Perk',
+    nullable: true,
+    args: {
+      id: schema.idArg({ required: true }),
+    },
+    resolve: async (parent, args, ctx) => {
+      return ctx.db.perk.update({
+        where: { id: args.id },
+        data: {
+          status: 'ACTIVE',
+        },
+      })
+    },
+  })
+
+  t.field('inactivatePerk', {
+    type: 'Perk',
+    nullable: true,
+    args: {
+      id: schema.idArg({ required: true }),
+    },
+    resolve: async (parent, args, ctx) => {
+      return ctx.db.perk.update({
+        where: { id: args.id },
+        data: {
+          status: 'INACTIVE',
+        },
+      })
+    },
+  })
 }
