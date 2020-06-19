@@ -134,7 +134,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
                       { title: { contains: args.query } },
                       { description: { contains: args.query } },
                     ]
-                  : []),
+                  : [{ title: { contains: '' } }]),
               ],
             },
             {
