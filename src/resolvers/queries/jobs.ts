@@ -89,7 +89,6 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
                     { description: { contains: args.query } },
                   ]
                 : []),
-
               {
                 location: {
                   OR: [
