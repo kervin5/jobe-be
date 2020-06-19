@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    //"rootDir": "src",
+    "rootDir": ".",
     "lib": ["esnext", "DOM"],
     "esModuleInterop": true,
     "strict": true,
     "target": "ES2018",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "plugins": [{ "name": "nexus/typescript-language-service" }],
+    "typeRoots": ["node_modules/@types", "types"],
+    "noEmit": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", ".", "types.d.ts"]
 }

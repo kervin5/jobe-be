@@ -1,12 +1,10 @@
-import { searchBoundary } from '../../utils/location'
-//const { forwardTo } = require("prisma-binding");
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, arg, intArg } from '@nexus/schema'
+import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
 import { UserAccessFilter } from './users'
 import { can } from '../../permissions/auth'
-import { OrderByArg } from '@prisma/client'
+import { searchBoundary } from '../../utils/location'
 
-export default (t: ObjectDefinitionBlock<'Query'>) => {
+export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   //Fetch single job
   t.crud.job()
 
@@ -15,10 +13,11 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
   t.list.field('jobs', {
     type: 'Job',
     args: {
-      where: arg({ type: 'JobWhereInput' }),
+      where: schema.arg({ type: 'JobWhereInput' }),
     },
     resolve: (parent, args, ctx) => {
-      return ctx.prisma.job.findMany({
+      return ctx.db.job.findMany({
+        //@ts-ignore
         where: {
           ...args.where,
           status: 'POSTED',
@@ -30,12 +29,12 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
   t.list.field('protectedJobs', {
     type: 'Job',
     args: {
-      where: arg({ type: 'JobWhereInput' }),
-      take: intArg({ nullable: true }),
-      skip: intArg({ nullable: true }),
+      where: schema.arg({ type: 'JobWhereInput' }),
+      take: schema.intArg({ nullable: true }),
+      skip: schema.intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -53,7 +52,8 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
         ownerFilter = { branch: { id: user?.branch?.id } }
       }
 
-      return ctx.prisma.job.findMany({
+      return ctx.db.job.findMany({
+        //@ts-ignore
         where: { ...args.where, ...ownerFilter },
         orderBy: { updatedAt: 'desc' },
         ...(args.take ? { take: args.take, skip: args.skip } : {}),
@@ -64,17 +64,18 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
   t.list.field('searchJobs', {
     type: 'Job',
     args: {
-      radius: intArg({ nullable: true, default: 5 }),
-      location: stringArg({ nullable: true }),
-      query: stringArg(),
-      where: arg({ type: 'JobWhereInput' }),
-      take: intArg({ nullable: true }),
-      skip: intArg({ nullable: true }),
+      radius: schema.intArg({ nullable: true, default: 5 }),
+      location: schema.stringArg({ nullable: true }),
+      query: schema.stringArg(),
+      where: schema.arg({ type: 'JobWhereInput' }),
+      take: schema.intArg({ nullable: true }),
+      skip: schema.intArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
       if (!args.location || args.location === '') {
-        return await ctx.prisma.job.findMany({
+        return ctx.db.job.findMany({
           where: {
+            //@ts-ignore
             OR: [
               ...(args.query
                 ? [
@@ -113,8 +114,9 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
         args.radius ?? 5,
       )
 
-      return await ctx.prisma.job.findMany({
+      return await ctx.db.job.findMany({
         where: {
+          //@ts-ignore
           AND: [
             {
               OR: [
@@ -131,7 +133,7 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
                       { title: { contains: args.query } },
                       { description: { contains: args.query } },
                     ]
-                  : []),
+                  : [{ title: { contains: '' } }]),
               ],
             },
             {
@@ -161,10 +163,11 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
 
   t.int('jobsConnection', {
     args: {
-      where: arg({ type: 'JobWhereInput' }),
+      where: schema.arg({ type: 'JobWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.job.count({
+      return ctx.db.job.count({
+        //@ts-ignore
         where: { ...args.where, status: 'POSTED' },
       })
     },
@@ -172,10 +175,10 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
 
   t.int('protectedJobsConnection', {
     args: {
-      where: arg({ type: 'JobWhereInput' }),
+      where: schema.arg({ type: 'JobWhereInput' }),
     },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
@@ -193,7 +196,8 @@ export default (t: ObjectDefinitionBlock<'Query'>) => {
         //Gets all the jobs from the branch
         ownerFilter = { branch: { id: user?.branch?.id } }
       }
-      return await ctx.prisma.job.count({
+      return await ctx.db.job.count({
+        //@ts-ignore
         where: { ...args.where, ...ownerFilter },
       })
     },

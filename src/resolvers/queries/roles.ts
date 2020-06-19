@@ -1,5 +1,4 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-
-export default (t: ObjectDefinitionBlock<'Query'>) => {
-  t.crud.roles({filtering: true})
+import { core } from 'nexus/components/schema'
+export default (t: core.ObjectDefinitionBlock<'Query'>) => {
+  t.crud.roles({ filtering: true })
 }

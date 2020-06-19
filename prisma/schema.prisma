@@ -36,6 +36,12 @@ enum JobStatus {
   PENDING
 }
 
+enum PerkStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
 model Application {
   id String @id @default(cuid())
 
@@ -239,18 +245,21 @@ model User {
   resetTokenExpiry     Float?
   status               UserStatus        @default(ACTIVE)
   applicationNotes     ApplicationNote[]
-  perks                Perk[]
+  createdPerks         Perk[]
   createdJobTemplates  JobTemplate[]
   modifiedJobTemplates JobTemplate[]     @relation("lastModifiedJobTemplates")
 }
 
 model Perk {
   id           String        @id @default(cuid())
-  name         String
+  name         String        @unique
   jobs         Job[]         @relation(references: [id])
   authorId     String        @map("author")
   author       User          @relation(fields: [authorId], references: [id])
   JobTemplates JobTemplate[] @relation(references: [id])
+  status       PerkStatus    @default(PENDING)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt @default(now())
 }
 
 model JobTemplate {

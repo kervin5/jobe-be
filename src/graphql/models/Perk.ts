@@ -1,0 +1,14 @@
+import { schema } from 'nexus'
+
+schema.objectType({
+  name: 'Perk',
+  definition(t) {
+    t.model.id()
+    t.model.name()
+    t.model.jobs({ filtering: true })
+    t.model.author()
+    t.model.status()
+    t.model.createdAt()
+    t.model.updatedAt()
+  },
+})

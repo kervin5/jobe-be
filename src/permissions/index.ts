@@ -1,4 +1,4 @@
-import { rule, shield, and, or } from 'graphql-shield'
+import { rule, shield, and, or } from 'nexus-plugin-shield'
 import { getUserId, can, IUserCan } from './auth'
 // import { Context } from '../context'
 
@@ -8,25 +8,14 @@ const rules = {
 
     return Boolean(user && user.id)
   }),
-  isPostOwner: rule()(async (parent, { id }, context) => {
-    const userId = getUserId(context)
-    const author = await context.prisma.post
-      .findOne({
-        where: {
-          id: Number(id),
-        },
-      })
-      .author()
-    return userId === author.id
-  }),
   can: (userPermission: IUserCan) =>
     rule({ cache: 'contextual' })(async (parent, args, ctx, info) => {
       return !!(await can(userPermission.action, userPermission.object, ctx))
     }),
 }
 
-export const permissions = shield(
-  {
+export const permissions = shield({
+  rules: {
     Query: {
       application: and(
         rules.isAuthenticatedUser,
@@ -156,9 +145,13 @@ export const permissions = shield(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'COMPANY' }),
       ),
+      createManyPerks: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'PERK' }),
+      ),
     },
   },
-  {
+  options: {
     allowExternalErrors: true,
   },
-)
+})

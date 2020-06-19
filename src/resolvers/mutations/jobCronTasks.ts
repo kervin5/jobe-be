@@ -1,12 +1,11 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg } from '@nexus/schema'
-
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
+export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   //TODO: reimplement crontask procedure
   t.string('schedule', {
     nullable: true,
     args: {
-      id: stringArg({ required: true }),
+      id: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       return ''
@@ -16,7 +15,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.string('unschedule', {
     nullable: true,
     args: {
-      id: stringArg({ required: true }),
+      id: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       return ''
