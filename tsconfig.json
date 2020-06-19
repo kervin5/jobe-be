@@ -6,7 +6,9 @@
     "strict": true,
     "target": "ES2018",
     "moduleResolution": "node",
-    "plugins": [{ "name": "nexus/typescript-language-service" }]
+    "plugins": [{ "name": "nexus/typescript-language-service" }],
+    "typeRoots": ["node_modules/@types", "types"],
+    "noEmit": true
   },
-  "include": ["src/**/*", "."]
+  "include": ["src/**/*", ".", "types.d.ts"]
 }
