@@ -1,27 +1,20 @@
 import { compare, genSalt, hash } from 'bcryptjs'
+import { core } from 'nexus/components/schema'
 import jwt from 'jsonwebtoken'
 import { promisify } from 'util'
 import { randomBytes } from 'crypto'
-//const { forwardTo } = require("prisma-binding");
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg, arg, idArg } from '@nexus/schema'
+import { schema } from 'nexus'
 import { can } from '../../permissions/auth'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
-interface JobFilter {
-  branch?: object
-  company?: object
-  author?: object
-}
-
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createUser', {
     type: 'User',
     args: {
-      name: stringArg({ required: true }),
-      email: stringArg({ required: true }),
-      role: idArg(),
-      branch: idArg(),
+      name: schema.stringArg({ required: true }),
+      email: schema.stringArg({ required: true }),
+      role: schema.idArg(),
+      branch: schema.idArg(),
     },
     resolve: async (parent, args, ctx) => {
       const salt = await genSalt(10)
@@ -30,13 +23,14 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       const resetToken = (await randomBytesPromisified(20)).toString('hex')
       const resetTokenExpiry = (Date.now() + 3600000) * 24 // 1 hour from now
 
-      const user = await ctx.prisma.user.create({
+      const user = await ctx.db.user.create({
         data: {
           ...args,
           branch: {
+            //@ts-ignore
             connect: { id: args.branch },
           },
-          status: 'ACTIVE',
+          status: 'ACTIVE', //@ts-ignore
           role: { connect: { id: args.role } },
           password: await hash(resetToken + resetTokenExpiry, salt),
           resetToken,
@@ -58,22 +52,22 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.field('signup', {
     type: 'User',
     args: {
-      name: stringArg({ required: true }),
-      password: stringArg({ required: true }),
-      email: stringArg({ required: true }),
+      name: schema.stringArg({ required: true }),
+      password: schema.stringArg({ required: true }),
+      email: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       const salt = await genSalt(10)
 
-      let usersCount = await ctx.prisma.user.count()
+      let usersCount = await ctx.db.user.count()
 
       //A role must exist in the database
-      let [defaultRole] = await ctx.prisma.role.findMany({
+      let [defaultRole] = await ctx.db.role.findMany({
         where: { name: 'candidate' },
       })
 
       if (!defaultRole) {
-        defaultRole = await ctx.prisma.role.create({
+        defaultRole = await ctx.db.role.create({
           data: {
             name: 'candidate',
             permissions: {
@@ -101,7 +95,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       }
 
       if (!usersCount) {
-        defaultRole = await ctx.prisma.role.create({
+        defaultRole = await ctx.db.role.create({
           data: {
             name: 'administrator',
             permissions: {
@@ -161,7 +155,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       }
 
       try {
-        const user = await ctx.prisma.user.create({
+        const user = await ctx.db.user.create({
           data: {
             ...args,
             password: await hash(args.password, salt),
@@ -178,6 +172,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
           process.env.APP_SECRET as string,
         )
         // 4. Set the cookie with the token
+
         ctx.response.header('token', token)
         ctx.response.cookie('token', token, {
           httpOnly: true,
@@ -195,11 +190,11 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.field('login', {
     type: 'User',
     args: {
-      email: stringArg({ nullable: false }),
-      password: stringArg({ nullable: false }),
+      email: schema.stringArg({ nullable: false }),
+      password: schema.stringArg({ nullable: false }),
     },
     resolve: async (_parent, { email, password }, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: {
           email,
         },
@@ -238,25 +233,28 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'User',
     nullable: true,
     args: {
-      id: idArg(),
+      id: schema.idArg(),
     },
     resolve: async (parent, args, ctx) => {
       await can('READ', 'BRANCH', ctx)
 
       //get userData
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
+        //@ts-ignore
         where: { id: args.id },
         include: { branch: true },
       })
 
-      const jobs = await ctx.prisma.job.findMany({
+      const jobs = await ctx.db.job.findMany({
+        //@ts-ignore
         where: { status: { not: 'DELETED' }, author: { id: args.id } },
       })
 
       if (jobs.length) {
         //Find next user from the same branch
-        const recruiters = await ctx.prisma.user.findMany({
+        const recruiters = await ctx.db.user.findMany({
           where: {
+            //@ts-ignore
             branch: { id: user?.branch?.id },
             id: { not: user?.id },
             role: { name: 'recruiter' },
@@ -267,15 +265,16 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
         if (recruiters.length) {
           const [coworker] = recruiters
           const result = jobs.map((job) =>
-            ctx.prisma.job.update({
+            ctx.db.job.update({
               where: { id: job.id },
               data: { author: { connect: { id: coworker.id } } },
             }),
           )
           await Promise.all(result)
         } else {
-          const managers = await ctx.prisma.user.findMany({
+          const managers = await ctx.db.user.findMany({
             where: {
+              //@ts-ignore
               branch: { id: user?.branch?.id },
               id: { not: user?.id },
               role: { name: 'manager' },
@@ -286,21 +285,21 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
           if (managers.length) {
             const [coworker] = managers
             const result = jobs.map((job) =>
-              ctx.prisma.job.update({
+              ctx.db.job.update({
                 where: { id: job.id },
                 data: { author: { connect: { id: coworker.id } } },
               }),
             )
             await Promise.all(result)
           } else {
-            await ctx.prisma.job.updateMany({
+            await ctx.db.job.updateMany({
               where: { author: { id: user?.id } },
               data: {
                 status: 'DELETED',
               },
             })
 
-            await ctx.prisma.application.updateMany({
+            await ctx.db.application.updateMany({
               where: { job: { author: { id: user?.id } } },
               data: { status: 'ARCHIVED' },
             })
@@ -310,7 +309,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
 
       // console.log(user);
       // console.log(jobs);
-      return ctx.prisma.user.update({
+      return ctx.db.user.update({
         where: { id: user?.id },
         data: { status: 'DELETED' },
       })
@@ -321,10 +320,10 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
     type: 'User',
     nullable: true,
     args: {
-      id: idArg({ required: true }),
-      name: stringArg(),
-      branch: idArg(),
-      role: idArg(),
+      id: schema.idArg({ required: true }),
+      name: schema.stringArg(),
+      branch: schema.idArg(),
+      role: schema.idArg(),
     },
     resolve: async (parent, args, ctx) => {
       const name = args.name ? { name: args.name } : {}
@@ -334,7 +333,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
           }
         : {}
       const role = args.role ? { role: { connect: { id: args.role } } } : {}
-      return ctx.prisma.user.update({
+      return ctx.db.user.update({
         where: { id: args.id },
         data: {
           ...name,
@@ -346,9 +345,9 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   })
 
   t.string('requestReset', {
-    args: { email: stringArg({ required: true }) },
+    args: { email: schema.stringArg({ required: true }) },
     resolve: async (parent, args, ctx) => {
-      const user = await ctx.prisma.user.findOne({
+      const user = await ctx.db.user.findOne({
         where: { email: args.email },
       })
       if (!user) throw new Error('Invalid user')
@@ -357,7 +356,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       const resetToken = (await randomBytesPromisified(20)).toString('hex')
       const resetTokenExpiry = Date.now() + 3600000 // 1 hour from now
 
-      const res = await ctx.prisma.user.update({
+      const res = await ctx.db.user.update({
         where: { email: args.email },
         data: { resetToken, resetTokenExpiry },
       })
@@ -378,9 +377,9 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
   t.field('resetPassword', {
     type: 'User',
     args: {
-      token: stringArg({ required: true }),
-      password: stringArg({ required: true }),
-      confirmPassword: stringArg({ required: true }),
+      token: schema.stringArg({ required: true }),
+      password: schema.stringArg({ required: true }),
+      confirmPassword: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       // 1. Check if the passwords match
@@ -389,7 +388,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       }
       // 2. Check if its a legit reset token
       // 3. Check if its expired
-      const [user] = await ctx.prisma.user.findMany({
+      const [user] = await ctx.db.user.findMany({
         where: {
           resetToken: args.token,
           resetTokenExpiry: { gte: Date.now() - 3600000 },
@@ -400,7 +399,7 @@ export default (t: ObjectDefinitionBlock<'Mutation'>) => {
       // 4. Hash their new password
       const password = await hash(args.password, 10)
       // 5. Save the new password to the user and remove old reset token fields
-      const updatedUser = await ctx.prisma.user.update({
+      const updatedUser = await ctx.db.user.update({
         where: { email: user.email },
         data: {
           password,

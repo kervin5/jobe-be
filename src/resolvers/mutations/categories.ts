@@ -1,15 +1,15 @@
-import { ObjectDefinitionBlock } from '@nexus/schema/dist/definitions/objectType'
-import { stringArg } from '@nexus/schema'
+import { schema } from 'nexus'
+import { core } from 'nexus/components/schema'
 
-export default (t: ObjectDefinitionBlock<'Mutation'>) => {
+export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createCategory', {
     type: 'Category',
     nullable: true,
     args: {
-      name: stringArg({ required: true }),
+      name: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
-      return ctx.prisma.category.create({
+      return ctx.db.category.create({
         data: {
           ...args,
         },
