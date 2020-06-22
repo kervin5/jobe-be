@@ -65,20 +65,20 @@ export const permissions = shield({
       candidates: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'JOB' }),
-        or(
-          rules.can({ action: 'READ', object: 'USER' }),
-          rules.can({ action: 'READ', object: 'COMPANY' }),
-          rules.can({ action: 'READ', object: 'BRANCH' }),
-        ),
+        // or(
+        //   rules.can({ action: 'READ', object: 'USER' }),
+        //   rules.can({ action: 'READ', object: 'COMPANY' }),
+        //   rules.can({ action: 'READ', object: 'BRANCH' }),
+        // ),
       ),
       candidatesConnection: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'JOB' }),
-        or(
-          rules.can({ action: 'READ', object: 'USER' }),
-          rules.can({ action: 'READ', object: 'COMPANY' }),
-          rules.can({ action: 'READ', object: 'BRANCH' }),
-        ),
+        // or(
+        //   rules.can({ action: 'READ', object: 'USER' }),
+        //   rules.can({ action: 'READ', object: 'COMPANY' }),
+        //   rules.can({ action: 'READ', object: 'BRANCH' }),
+        // ),
       ),
 
       branches: rules.isAuthenticatedUser,
