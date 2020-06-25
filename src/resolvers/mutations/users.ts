@@ -199,9 +199,22 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           email,
         },
       })
+
       if (!user) {
         throw new Error(`No user found for email: ${email}`)
       }
+
+      const userIsActive = await ctx.db.user.count({
+        where: {
+          email: user.email,
+          status: 'ACTIVE',
+        },
+      })
+
+      if (!userIsActive) {
+        throw new Error('Your account is not active, please contact support')
+      }
+
       const passwordValid = await compare(password, user.password)
       if (!passwordValid) {
         throw new Error('Invalid password')
