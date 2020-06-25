@@ -89,6 +89,10 @@ export const permissions = shield({
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'USER' }),
       ),
+      activateUser: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'USER' }),
+      ),
       deleteUser: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'DELETE', object: 'USER' }),

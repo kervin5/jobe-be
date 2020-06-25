@@ -425,6 +425,7 @@ type MapboxLocation {
 
 type Mutation {
   activatePerk(id: ID!): Perk
+  activateUser(id: ID!): User
   addFavorite(job: ID!): ID
   createApplication(job: ID!): Application
   createApplicationNote(content: String!, id: ID!): ApplicationNote

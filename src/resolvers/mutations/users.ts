@@ -249,8 +249,6 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       id: schema.idArg(),
     },
     resolve: async (parent, args, ctx) => {
-      await can('READ', 'BRANCH', ctx)
-
       //get userData
       const user = await ctx.db.user.findOne({
         //@ts-ignore
@@ -329,6 +327,20 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
     },
   })
 
+  t.field('activateUser', {
+    type: 'User',
+    nullable: true,
+    args: {
+      id: schema.idArg({ required: true }),
+    },
+    resolve: async (parent, args, ctx) => {
+      return ctx.db.user.update({
+        where: { id: args.id },
+        data: { status: 'ACTIVE' },
+      })
+    },
+  })
+
   t.field('updateUser', {
     type: 'User',
     nullable: true,
@@ -363,7 +375,15 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       const user = await ctx.db.user.findOne({
         where: { email: args.email },
       })
+
       if (!user) throw new Error('Invalid user')
+
+      const userIsActive = await ctx.db.user.count({
+        where: { email: args.email, status: 'ACTIVE' },
+      })
+
+      if (!userIsActive)
+        throw new Error('Your account is not active, please contact support.')
 
       const randomBytesPromisified = promisify(randomBytes)
       const resetToken = (await randomBytesPromisified(20)).toString('hex')
