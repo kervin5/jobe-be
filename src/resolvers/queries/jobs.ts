@@ -40,7 +40,8 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       })
 
       //Gets jobs created by this user by default;
-      let ownerFilter: UserAccessFilter = { author: { id: user?.id } }
+      // let ownerFilter: UserAccessFilter = { author: { id: user?.id } }// allow to read only jobs created
+      let ownerFilter: UserAccessFilter = { branch: { id: user?.branch?.id } }
 
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
@@ -184,10 +185,10 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       })
 
       //Gets jobs created by this user by default;
-      let ownerFilter: UserAccessFilter = {
-        author: { id: ctx.request.user.id },
-      }
-
+      // let ownerFilter: UserAccessFilter = {
+      //   author: { id: ctx.request.user.id },
+      // }
+      let ownerFilter: UserAccessFilter = { branch: { id: user?.branch?.id } }
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
         //Gets all the jobs from the company
