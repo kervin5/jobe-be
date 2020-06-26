@@ -37,6 +37,12 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         },
       })
 
+      //update location of user based on location of job
+      await ctx.db.user.update({
+        where: { id: ctx.request.user.id },
+        data: { location: { connect: { id: job?.location.id } } },
+      })
+
       try {
         const mailRes = await transport.sendMail({
           from: 'noreply@myexactjobs.com',

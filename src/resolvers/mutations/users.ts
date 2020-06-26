@@ -4,10 +4,55 @@ import jwt from 'jsonwebtoken'
 import { promisify } from 'util'
 import { randomBytes } from 'crypto'
 import { schema } from 'nexus'
-import { can } from '../../permissions/auth'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
+  // t.int('updateLocation', {
+  //   resolve: async (parent, args, ctx) => {
+  //     const users = (
+  //       await ctx.db.user.findMany({
+  //         where: { location: null },
+  //         select: {
+  //           id: true,
+  //           applications: { include: { job: { include: { location: true } } } },
+  //           favorites: { include: { job: { include: { location: true } } } },
+  //         },
+  //       })
+  //     ).filter((user) => user.applications.length || user.favorites.length)
+
+  //     const updateData = users.map((user) => {
+  //       const lastApplication = user.applications.pop()
+  //       const lastFavorite = user.favorites.pop()
+  //       const userData = {
+  //         location: lastApplication
+  //           ? lastApplication.job.location.id
+  //           : lastFavorite?.job.location.id,
+  //         id: user.id,
+  //       }
+  //       return userData
+  //     })
+
+  //     async function* generateSequence(usersToUpdate: any) {
+  //       for (let i = 0; i < usersToUpdate.length; i++) {
+  //         const userData = usersToUpdate[i]
+  //         // yay, can use await!
+  //         // await new Promise(resolve => setTimeout(resolve, 1000));
+  //         const updateResult = await ctx.db.user.update({
+  //           where: { id: userData.id },
+  //           data: { location: { connect: { id: userData.location } } },
+  //         })
+  //         yield { i: `${i} of ${usersToUpdate.length}`, updateResult }
+  //       }
+  //     }
+
+  //     const generator = generateSequence(updateData)
+
+  //     for await (let result of generator) {
+  //       console.log(result)
+  //     }
+  //     return updateData.length
+  //   },
+  // })
   t.field('createUser', {
     type: 'User',
     args: {
