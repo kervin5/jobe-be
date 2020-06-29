@@ -294,6 +294,7 @@ type Job {
   title: String!
   type: String!
   updatedAt: DateTime!
+  views: Int!
 }
 
 type JobCronTask {
@@ -593,7 +594,7 @@ type Query {
   categories(take: Int, where: CategoryWhereInput): [Category!]
   category(where: CategoryWhereUniqueInput!): Category
   getSignedFileUrl(AWSUrl: String!): String
-  job(id: String!): Job
+  job(where: JobWhereUniqueInput!): Job
   jobs(where: JobWhereInput): [Job!]
   jobsConnection(where: JobWhereInput): Int
   location(where: LocationWhereUniqueInput!): Location

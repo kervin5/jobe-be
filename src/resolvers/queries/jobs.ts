@@ -6,17 +6,17 @@ import { searchBoundary } from '../../utils/location'
 
 export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   //Fetch single job
-  // t.crud.job()
-  t.field('job', {
-    type: 'Job',
-    nullable: true,
-    args: {
-      id: schema.stringArg({ required: true }),
-    },
-    resolve: async (parent, args, ctx) => {
-      return ctx.db.job.findOne({ where: { id: args.id } })
-    },
-  })
+  t.crud.job()
+  // t.field('job', {
+  //   type: 'Job',
+  //   nullable: true,
+  //   args: {
+  //     id: schema.stringArg({ required: true }),
+  //   },
+  //   resolve: async (parent, args, ctx) => {
+  //     return ctx.db.job.findOne({ where: { id: args.id } })
+  //   },
+  // })
 
   //Fetch list of posted jobs
   // t.crud.jobs({filtering: true, })
