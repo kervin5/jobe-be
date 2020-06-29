@@ -1,12 +1,20 @@
 import { schema } from 'nexus'
-import { core } from 'nexus/components/schema'
+import { core, arg } from 'nexus/components/schema'
 import { UserAccessFilter } from './users'
 import { can } from '../../permissions/auth'
 import { searchBoundary } from '../../utils/location'
 
 export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   //Fetch single job
-  t.crud.job()
+  // t.crud.job()
+  t.field('job', {
+    type: 'Job',
+    nullable: true,
+    args: { id: schema.stringArg({ required: true }) },
+    resolve: async (parent, args, ctx) => {
+      return ctx.db.job.findOne({ where: { id: args.id } })
+    },
+  })
 
   //Fetch list of posted jobs
   // t.crud.jobs({filtering: true, })

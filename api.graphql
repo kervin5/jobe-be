@@ -262,6 +262,17 @@ input FloatFilter {
   notIn: [Float!]
 }
 
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
+
 type Job {
   applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int): [Application!]!
   author: User!
@@ -380,6 +391,7 @@ input JobWhereInput {
   title: StringFilter
   type: StringFilter
   updatedAt: DateTimeFilter
+  views: IntFilter
 }
 
 input JobWhereUniqueInput {
@@ -580,7 +592,7 @@ type Query {
   categories(take: Int, where: CategoryWhereInput): [Category!]
   category(where: CategoryWhereUniqueInput!): Category
   getSignedFileUrl(AWSUrl: String!): String
-  job(where: JobWhereUniqueInput!): Job
+  job(id: String!): Job
   jobs(where: JobWhereInput): [Job!]
   jobsConnection(where: JobWhereInput): Int
   location(where: LocationWhereUniqueInput!): Location
