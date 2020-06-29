@@ -10,7 +10,9 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   t.field('job', {
     type: 'Job',
     nullable: true,
-    args: { id: schema.stringArg({ required: true }) },
+    args: {
+      id: schema.stringArg({ required: true }),
+    },
     resolve: async (parent, args, ctx) => {
       return ctx.db.job.findOne({ where: { id: args.id } })
     },

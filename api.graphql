@@ -455,6 +455,7 @@ type Mutation {
   deleteJob(id: ID!): Job
   deleteUser(id: ID): User
   inactivatePerk(id: ID!): Perk
+  incrementJobViewCount(id: String!): Job
   login(email: String!, password: String!): User
   logout: String
   requestReset(email: String!): String

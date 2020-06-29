@@ -4,6 +4,17 @@ import { fetchLocation } from '../../utils/location'
 import { can } from '../../permissions/auth'
 
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
+  t.field('incrementJobViewCount', {
+    type: 'Job',
+    args: { id: schema.stringArg({ required: true }) },
+    resolve: async (parent, args, ctx) => {
+      const job = await ctx.db.job.findOne({ where: { id: args.id } })
+      return ctx.db.job.update({
+        where: { id: args.id },
+        data: { views: job?.views ? job.views + 1 : 1 },
+      })
+    },
+  })
   t.field('createJob', {
     type: 'Job',
     nullable: true,
