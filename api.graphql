@@ -331,6 +331,25 @@ input JobFilter {
   some: JobWhereInput
 }
 
+input JobOrderByInput {
+  authorId: OrderByArg
+  branchId: OrderByArg
+  compensationType: OrderByArg
+  createdAt: OrderByArg
+  cronTaskId: OrderByArg
+  description: OrderByArg
+  disclaimer: OrderByArg
+  id: OrderByArg
+  locationId: OrderByArg
+  maxCompensation: OrderByArg
+  minCompensation: OrderByArg
+  status: OrderByArg
+  title: OrderByArg
+  type: OrderByArg
+  updatedAt: OrderByArg
+  views: OrderByArg
+}
+
 enum JobStatus {
   DELETED
   DRAFT
@@ -616,10 +635,10 @@ type Query {
   perks(orderBy: PerkOrderByInput, skip: Int, take: Int, where: PerkWhereInput): [Perk!]
   perksConnection(where: PerkWhereInput): Int
   popularTerms: [Term!]
-  protectedJobs(skip: Int, take: Int, where: JobWhereInput): [Job!]
+  protectedJobs(orderBy: JobOrderByInput, skip: Int, take: Int, where: JobWhereInput): [Job!]
   protectedJobsConnection(where: JobWhereInput): Int
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, where: RoleWhereInput): [Role!]!
-  searchJobs(location: String, query: String, radius: Int = 5, skip: Int, take: Int, where: JobWhereInput): [Job!]
+  searchJobs(location: String, orderBy: JobOrderByInput, query: String, radius: Int = 5, skip: Int, take: Int, where: JobWhereInput): [Job!]
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, orderBy: SkillOrderByInput, where: SkillWhereInput): [Skill!]!
   user(where: UserWhereUniqueInput!): User
   users(skip: Int, take: Int, where: UserWhereInput): [User!]
@@ -788,7 +807,7 @@ type User {
   email: String!
   favorites(after: FavoriteWhereUniqueInput, before: FavoriteWhereUniqueInput, first: Int, last: Int, where: FavoriteWhereInput): [Favorite!]!
   id: String!
-  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, where: JobWhereInput): [Job!]!
+  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, orderBy: JobOrderByInput, where: JobWhereInput): [Job!]!
   location: Location
   name: String!
   resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, orderBy: ResumeOrderByInput, where: ResumeWhereInput): [Resume!]!

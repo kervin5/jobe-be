@@ -9,7 +9,7 @@ schema.objectType({
     t.model.name()
     t.model.email()
     t.model.branch()
-    t.model.jobs({ filtering: true })
+    t.model.jobs({ filtering: true, ordering: true })
     t.model.favorites({ filtering: true })
     t.model.resumes({ filtering: true, ordering: true, pagination: true })
     t.model.role()

@@ -42,6 +42,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       where: schema.arg({ type: 'JobWhereInput' }),
       take: schema.intArg({ nullable: true }),
       skip: schema.intArg({ nullable: true }),
+      orderBy: schema.arg({ type: 'JobOrderByInput' }),
     },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
@@ -66,7 +67,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       return ctx.db.job.findMany({
         //@ts-ignore
         where: { ...args.where, ...ownerFilter },
-        orderBy: { updatedAt: 'desc' },
+        orderBy: args.orderBy ? args.orderBy : { createdAt: 'desc' },
         ...(args.take ? { take: args.take, skip: args.skip } : {}),
       })
     },
@@ -81,6 +82,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       where: schema.arg({ type: 'JobWhereInput' }),
       take: schema.intArg({ nullable: true }),
       skip: schema.intArg({ nullable: true }),
+      orderBy: schema.arg({ type: 'JobOrderByInput' }),
     },
     resolve: async (parent, args, ctx) => {
       if (!args.location || args.location === '') {
@@ -114,7 +116,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
             status: 'POSTED',
           },
           ...(args.take ? { take: args.take, skip: args.skip } : {}),
-          orderBy: { updatedAt: 'desc' },
+          orderBy: args.orderBy ? args.orderBy : { updatedAt: 'desc' },
         })
       }
 
