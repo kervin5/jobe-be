@@ -11,7 +11,7 @@ schema.objectType({
     t.model.status()
     t.model.location()
     t.model.branch()
-    t.model.applications()
+    t.model.applications({ ordering: true })
     t.model.favorites()
     t.model.description()
     t.model.maxCompensation()

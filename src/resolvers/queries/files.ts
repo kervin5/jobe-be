@@ -18,7 +18,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       if (file) {
         result = await sign_s3_read(file.path)
       }
-      console.log({ result, file })
+      // console.log({ result, file })
       return result
     },
   })

@@ -58,6 +58,16 @@ input ApplicationNoteWhereUniqueInput {
   id: String
 }
 
+input ApplicationOrderByInput {
+  createdAt: OrderByArg
+  id: OrderByArg
+  jobId: OrderByArg
+  resumeId: OrderByArg
+  status: OrderByArg
+  updatedAt: OrderByArg
+  userId: OrderByArg
+}
+
 enum ApplicationStatus {
   ARCHIVED
   CONTACTED
@@ -205,6 +215,7 @@ input DateTimeFilter {
 }
 
 type Favorite {
+  createdAt: DateTime!
   id: String!
   job: Job!
   user: User!
@@ -218,6 +229,7 @@ input FavoriteFilter {
 
 input FavoriteWhereInput {
   AND: [FavoriteWhereInput!]
+  createdAt: DateTimeFilter
   id: StringFilter
   job: JobWhereInput
   jobId: StringFilter
@@ -274,7 +286,7 @@ input IntFilter {
 }
 
 type Job {
-  applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int): [Application!]!
+  applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, orderBy: ApplicationOrderByInput): [Application!]!
   author: User!
   branch: Branch!
   categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int): [Category!]!
