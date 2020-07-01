@@ -617,7 +617,7 @@ input PermissionWhereUniqueInput {
 type Query {
   application(where: UniqueApplicationInputType!): Application
   applicationNotes(id: String): [ApplicationNote!]
-  applications(skip: Int, take: Int, where: ApplicationWhereInput): [Application!]
+  applications(orderBy: ApplicationOrderByInput, skip: Int, take: Int, where: ApplicationWhereInput): [Application!]
   applicationsConnection(where: ApplicationWhereInput): Int
   branches(where: BranchWhereInput): [Branch!]
   candidates(skip: Int, take: Int, where: UserWhereInput): [User!]
