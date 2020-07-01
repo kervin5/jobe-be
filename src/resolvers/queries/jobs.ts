@@ -85,7 +85,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       orderBy: schema.arg({ type: 'JobOrderByInput' }),
     },
     resolve: async (parent, args, ctx) => {
-      if (!args.location || args.location === '') {
+      if (!args.location || args.location === '' || args.location === 'fasf') {
         return ctx.db.job.findMany({
           where: {
             //@ts-ignore
