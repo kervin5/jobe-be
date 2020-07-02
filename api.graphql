@@ -618,6 +618,7 @@ type Query {
   application(where: UniqueApplicationInputType!): Application
   applicationNotes(id: String): [ApplicationNote!]
   applications(orderBy: ApplicationOrderByInput, skip: Int, take: Int, where: ApplicationWhereInput): [Application!]
+  applicationsByBranch: [ReportApplicationByBranch!]
   applicationsConnection(where: ApplicationWhereInput): Int
   branches(where: BranchWhereInput): [Branch!]
   candidates(skip: Int, take: Int, where: UserWhereInput): [User!]
@@ -643,6 +644,12 @@ type Query {
   user(where: UserWhereUniqueInput!): User
   users(skip: Int, take: Int, where: UserWhereInput): [User!]
   usersConnection(where: UserWhereInput): Int
+}
+
+type ReportApplicationByBranch {
+  applications: Float
+  name: String
+  status: String
 }
 
 type Resume {

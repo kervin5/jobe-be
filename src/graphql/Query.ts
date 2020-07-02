@@ -10,6 +10,7 @@ import skills from '../resolvers/queries/skills'
 import files from '../resolvers/queries/files'
 import terms from '../resolvers/queries/terms'
 import perks from '../resolvers/queries/perks'
+import reports from '../resolvers/queries/reports'
 
 export const Query = schema.queryType({
   definition(t) {
@@ -24,5 +25,6 @@ export const Query = schema.queryType({
     files(t)
     terms(t)
     perks(t)
+    reports(t)
   },
 })
