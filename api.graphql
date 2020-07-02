@@ -618,7 +618,6 @@ type Query {
   application(where: UniqueApplicationInputType!): Application
   applicationNotes(id: String): [ApplicationNote!]
   applications(orderBy: ApplicationOrderByInput, skip: Int, take: Int, where: ApplicationWhereInput): [Application!]
-  applicationsByBranch: [ReportApplicationByBranch!]
   applicationsConnection(where: ApplicationWhereInput): Int
   branches(where: BranchWhereInput): [Branch!]
   candidates(skip: Int, take: Int, where: UserWhereInput): [User!]
@@ -641,15 +640,13 @@ type Query {
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, where: RoleWhereInput): [Role!]!
   searchJobs(location: String, orderBy: JobOrderByInput, query: String, radius: Int = 5, skip: Int, take: Int, where: JobWhereInput): [Job!]
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, orderBy: SkillOrderByInput, where: SkillWhereInput): [Skill!]!
+  statsApplicationsByBranch: [StatisticCountByBranch!]
+  statsJobsByBranch: [StatisticCountByBranch!]
+  statsPowerUsers: [StatisticCountWithLabel!]
+  statsYTDJobsAndApplications: [StatisticCountWithLabel!]
   user(where: UserWhereUniqueInput!): User
   users(skip: Int, take: Int, where: UserWhereInput): [User!]
   usersConnection(where: UserWhereInput): Int
-}
-
-type ReportApplicationByBranch {
-  applications: Float
-  name: String
-  status: String
 }
 
 type Resume {
@@ -763,6 +760,19 @@ input SkillWhereInput {
 input SkillWhereUniqueInput {
   id: String
   name: String
+}
+
+type StatisticCountByBranch {
+  count: Float
+  name: String
+  status: String
+}
+
+type StatisticCountWithLabel {
+  count: Float
+  count2: Float
+  label: String
+  label2: String
 }
 
 input StringFilter {
