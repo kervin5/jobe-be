@@ -331,6 +331,18 @@ input JobFilter {
   some: JobWhereInput
 }
 
+type JobGridItem {
+  applications: Int
+  author: String
+  branch: String
+  cronTask: String
+  id: String
+  location: String
+  status: String
+  title: String
+  updatedAt: DateTime
+}
+
 input JobOrderByInput {
   authorId: OrderByArg
   branchId: OrderByArg
@@ -628,6 +640,7 @@ type Query {
   job(where: JobWhereUniqueInput!): Job
   jobs(where: JobWhereInput): [Job!]
   jobsConnection(where: JobWhereInput): Int
+  jobsGrid(orderBy: String, skip: Int, take: Int): [JobGridItem!]
   location(where: LocationWhereUniqueInput!): Location
   locations(after: LocationWhereUniqueInput, before: LocationWhereUniqueInput, first: Int, last: Int): [Location!]!
   mapBoxLocations(query: String): [MapboxLocation!]

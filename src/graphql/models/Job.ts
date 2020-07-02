@@ -1,4 +1,5 @@
 import { schema } from 'nexus'
+import { strict } from 'assert'
 
 schema.objectType({
   name: 'Job',
@@ -73,5 +74,20 @@ schema.inputObjectType({
       type: 'JobStatus',
       nullable: true,
     })
+  },
+})
+
+schema.objectType({
+  name: 'JobGridItem',
+  definition(t) {
+    t.string('id')
+    t.string('title')
+    t.string('status')
+    t.string('author')
+    t.string('location')
+    t.int('applications')
+    t.string('branch')
+    t.date('updatedAt')
+    t.string('cronTask')
   },
 })

@@ -7,19 +7,6 @@ import { searchBoundary } from '../../utils/location'
 export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   //Fetch single job
   t.crud.job()
-  // t.field('job', {
-  //   type: 'Job',
-  //   nullable: true,
-  //   args: {
-  //     id: schema.stringArg({ required: true }),
-  //   },
-  //   resolve: async (parent, args, ctx) => {
-  //     return ctx.db.job.findOne({ where: { id: args.id } })
-  //   },
-  // })
-
-  //Fetch list of posted jobs
-  // t.crud.jobs({filtering: true, })
   t.list.field('jobs', {
     type: 'Job',
     args: {
@@ -213,6 +200,62 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         //@ts-ignore
         where: { ...args.where, ...ownerFilter },
       })
+    },
+  })
+
+  t.list.field('jobsGrid', {
+    type: 'JobGridItem',
+    args: {
+      take: schema.intArg({ nullable: true }),
+      skip: schema.intArg({ nullable: true }),
+      orderBy: schema.stringArg({ nullable: true }),
+    },
+    resolve: async (parent, args, ctx) => {
+      const limit = args.take ? `LIMIT ${args.take}` : ''
+      const skip = args.skip ? `OFFSET ${args.skip}` : ''
+      const orderBy = args.orderBy ? `ORDER BY ${args.orderBy}` : ''
+
+      const user = await ctx.db.user.findOne({
+        where: { id: ctx.request.user.id },
+        include: { branch: { include: { company: true } } },
+      })
+
+      let ownerFilter = `brn.id = '${user?.branch?.id}'`
+      //Define jobs filter based on access level
+      if (await can('READ', 'COMPANY', ctx)) {
+        //Gets all the jobs from the company
+        // ownerFilter = { branch: { company: { id: user?.branch?.company.id } } }
+        ownerFilter = `cmp.id = '${user?.branch?.company?.id}'`
+      } else if (await can('READ', 'BRANCH', ctx)) {
+        //Gets all the jobs from the branch
+        ownerFilter = `brn.id = '${user?.branch?.id}'`
+      }
+
+      const result = await ctx.db.queryRaw(`
+      SELECT
+      "Job".id,
+      "Job".title,
+      "Job".status,
+      "User".name as author,
+      loc.name as location,
+      (SELECT count(*) FROM "myexactjobs-prisma-prod$prod"."Application" as app WHERE app.job = "Job".id AND app.status not in ('HIRED','ARCHIVED')) as applications,
+      brn.name as branch,
+      "Job"."updatedAt",
+       "Job"."cronTask"
+      FROM "myexactjobs-prisma-prod$prod"."Job"
+      JOIN "myexactjobs-prisma-prod$prod"."User" ON "Job".author = "User".id
+      JOIN "myexactjobs-prisma-prod$prod"."Location" loc ON "Job".location = loc.id
+      JOIN "myexactjobs-prisma-prod$prod"."Branch" brn ON "Job".branch = brn.id
+      JOIN "myexactjobs-prisma-prod$prod"."Company" cmp ON brn.company = cmp.id
+      WHERE ${ownerFilter}
+      ${orderBy}
+      ${limit}
+      ${skip}
+    
+      ;
+      `)
+
+      return result
     },
   })
 }
