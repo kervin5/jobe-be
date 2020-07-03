@@ -209,6 +209,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       take: schema.intArg({ nullable: true }),
       skip: schema.intArg({ nullable: true }),
       orderBy: schema.stringArg({ nullable: true }),
+      query: schema.stringArg({ nullable: true }),
     },
     resolve: async (parent, args, ctx) => {
       const limit = args.take ? `LIMIT ${args.take}` : ''
@@ -241,7 +242,8 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       (SELECT count(*) FROM "myexactjobs-prisma-prod$prod"."Application" as app WHERE app.job = "Job".id AND app.status not in ('HIRED','ARCHIVED')) as applications,
       brn.name as branch,
       "Job"."updatedAt",
-       "Job"."cronTask"
+       "Job"."cronTask",
+       "Job"."createdAt"
       FROM "myexactjobs-prisma-prod$prod"."Job"
       JOIN "myexactjobs-prisma-prod$prod"."User" ON "Job".author = "User".id
       JOIN "myexactjobs-prisma-prod$prod"."Location" loc ON "Job".location = loc.id

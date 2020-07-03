@@ -335,6 +335,7 @@ type JobGridItem {
   applications: Int
   author: String
   branch: String
+  createdAt: DateTime
   cronTask: String
   id: String
   location: String
@@ -640,7 +641,7 @@ type Query {
   job(where: JobWhereUniqueInput!): Job
   jobs(where: JobWhereInput): [Job!]
   jobsConnection(where: JobWhereInput): Int
-  jobsGrid(orderBy: String, skip: Int, take: Int): [JobGridItem!]
+  jobsGrid(orderBy: String, query: String, skip: Int, take: Int): [JobGridItem!]
   location(where: LocationWhereUniqueInput!): Location
   locations(after: LocationWhereUniqueInput, before: LocationWhereUniqueInput, first: Int, last: Int): [Location!]!
   mapBoxLocations(query: String): [MapboxLocation!]

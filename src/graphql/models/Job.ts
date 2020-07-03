@@ -1,5 +1,4 @@
 import { schema } from 'nexus'
-import { strict } from 'assert'
 
 schema.objectType({
   name: 'Job',
@@ -88,6 +87,7 @@ schema.objectType({
     t.int('applications')
     t.string('branch')
     t.date('updatedAt')
+    t.date('createdAt')
     t.string('cronTask')
   },
 })
