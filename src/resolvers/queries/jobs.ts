@@ -23,43 +23,6 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     },
   })
 
-  t.list.field('protectedJobs', {
-    type: 'Job',
-    args: {
-      where: schema.arg({ type: 'JobWhereInput' }),
-      take: schema.intArg({ nullable: true }),
-      skip: schema.intArg({ nullable: true }),
-      orderBy: schema.arg({ type: 'JobOrderByInput' }),
-    },
-    resolve: async (parent, args, ctx) => {
-      const user = await ctx.db.user.findOne({
-        where: { id: ctx.request.user.id },
-        include: { branch: { include: { company: true } } },
-      })
-
-      //Gets jobs created by this user by default;
-      // let ownerFilter: UserAccessFilter = { author: { id: user?.id } }// allow to read only jobs created
-      let ownerFilter: UserAccessFilter = { branch: { id: user?.branch?.id } }
-
-      //Define jobs filter based on access level
-      if (await can('READ', 'COMPANY', ctx)) {
-        //Gets all the jobs from the company
-
-        ownerFilter = { branch: { company: { id: user?.branch?.company.id } } }
-      } else if (await can('READ', 'BRANCH', ctx)) {
-        //Gets all the jobs from the branch
-        ownerFilter = { branch: { id: user?.branch?.id } }
-      }
-
-      return ctx.db.job.findMany({
-        //@ts-ignore
-        where: { ...args.where, ...ownerFilter },
-        orderBy: args.orderBy ? args.orderBy : { createdAt: 'desc' },
-        ...(args.take ? { take: args.take, skip: args.skip } : {}),
-      })
-    },
-  })
-
   t.list.field('searchJobs', {
     type: 'Job',
     args: {
@@ -173,33 +136,48 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     },
   })
 
-  t.int('protectedJobsConnection', {
+  t.int('jobsGridCount', {
     args: {
-      where: schema.arg({ type: 'JobWhereInput' }),
+      query: schema.stringArg({ nullable: true }),
+      status: schema.stringArg({ nullable: true, list: true }),
     },
     resolve: async (parent, args, ctx) => {
+      const queryFilter = args.query
+        ? `AND ("Job".title ILIKE '%${args.query}%' OR loc.name ILIKE '%${args.query}%' OR brn.name ILIKE '%${args.query}%' OR "User".name ILIKE '%${args.query}%')`
+        : ''
+      const statusFilter = args.status
+        ? `AND "Job".status in ('${args.status.join(`','`)}')`
+        : ''
+
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
         include: { branch: { include: { company: true } } },
       })
 
-      //Gets jobs created by this user by default;
-      // let ownerFilter: UserAccessFilter = {
-      //   author: { id: ctx.request.user.id },
-      // }
-      let ownerFilter: UserAccessFilter = { branch: { id: user?.branch?.id } }
+      let ownerFilter = `brn.id = '${user?.branch?.id}'`
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
         //Gets all the jobs from the company
-        ownerFilter = { branch: { company: { id: user?.branch?.company.id } } }
+        // ownerFilter = { branch: { company: { id: user?.branch?.company.id } } }
+        ownerFilter = `cmp.id = '${user?.branch?.company?.id}'`
       } else if (await can('READ', 'BRANCH', ctx)) {
         //Gets all the jobs from the branch
-        ownerFilter = { branch: { id: user?.branch?.id } }
+        ownerFilter = `brn.id = '${user?.branch?.id}'`
       }
-      return await ctx.db.job.count({
-        //@ts-ignore
-        where: { ...args.where, ...ownerFilter },
-      })
+
+      const result = await ctx.db.queryRaw(`
+      SELECT
+      count(*)
+      
+      FROM "myexactjobs-prisma-prod$prod"."Job"
+      JOIN "myexactjobs-prisma-prod$prod"."User" ON "Job".author = "User".id
+      JOIN "myexactjobs-prisma-prod$prod"."Location" loc ON "Job".location = loc.id
+      JOIN "myexactjobs-prisma-prod$prod"."Branch" brn ON "Job".branch = brn.id
+      JOIN "myexactjobs-prisma-prod$prod"."Company" cmp ON brn.company = cmp.id
+      WHERE ${ownerFilter} ${queryFilter} ${statusFilter};
+      `)
+
+      return result?.[0].count
     },
   })
 
@@ -210,11 +188,18 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       skip: schema.intArg({ nullable: true }),
       orderBy: schema.stringArg({ nullable: true }),
       query: schema.stringArg({ nullable: true }),
+      status: schema.stringArg({ nullable: true, list: true }),
     },
     resolve: async (parent, args, ctx) => {
       const limit = args.take ? `LIMIT ${args.take}` : ''
       const skip = args.skip ? `OFFSET ${args.skip}` : ''
       const orderBy = args.orderBy ? `ORDER BY ${args.orderBy}` : ''
+      const queryFilter = args.query
+        ? `AND ("Job".title ILIKE '%${args.query}%' OR loc.name ILIKE '%${args.query}%' OR brn.name ILIKE '%${args.query}%' OR "User".name ILIKE '%${args.query}%')`
+        : ''
+      const statusFilter = args.status
+        ? `AND "Job".status in ('${args.status.join(`','`)}')`
+        : ''
 
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
@@ -249,12 +234,10 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       JOIN "myexactjobs-prisma-prod$prod"."Location" loc ON "Job".location = loc.id
       JOIN "myexactjobs-prisma-prod$prod"."Branch" brn ON "Job".branch = brn.id
       JOIN "myexactjobs-prisma-prod$prod"."Company" cmp ON brn.company = cmp.id
-      WHERE ${ownerFilter}
+      WHERE ${ownerFilter} ${queryFilter} ${statusFilter}
       ${orderBy}
       ${limit}
-      ${skip}
-    
-      ;
+      ${skip};
       `)
 
       return result

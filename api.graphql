@@ -641,7 +641,8 @@ type Query {
   job(where: JobWhereUniqueInput!): Job
   jobs(where: JobWhereInput): [Job!]
   jobsConnection(where: JobWhereInput): Int
-  jobsGrid(orderBy: String, query: String, skip: Int, take: Int): [JobGridItem!]
+  jobsGrid(orderBy: String, query: String, skip: Int, status: [String!], take: Int): [JobGridItem!]
+  jobsGridCount(query: String, status: [String!]): Int
   location(where: LocationWhereUniqueInput!): Location
   locations(after: LocationWhereUniqueInput, before: LocationWhereUniqueInput, first: Int, last: Int): [Location!]!
   mapBoxLocations(query: String): [MapboxLocation!]
@@ -649,8 +650,6 @@ type Query {
   perks(orderBy: PerkOrderByInput, skip: Int, take: Int, where: PerkWhereInput): [Perk!]
   perksConnection(where: PerkWhereInput): Int
   popularTerms: [Term!]
-  protectedJobs(orderBy: JobOrderByInput, skip: Int, take: Int, where: JobWhereInput): [Job!]
-  protectedJobsConnection(where: JobWhereInput): Int
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, where: RoleWhereInput): [Role!]!
   searchJobs(location: String, orderBy: JobOrderByInput, query: String, radius: Int = 5, skip: Int, take: Int, where: JobWhereInput): [Job!]
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, orderBy: SkillOrderByInput, where: SkillWhereInput): [Skill!]!
