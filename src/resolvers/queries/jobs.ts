@@ -169,11 +169,11 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       SELECT
       count(*)
       
-      FROM "myexactjobs-prisma-prod$prod"."Job"
-      JOIN "myexactjobs-prisma-prod$prod"."User" ON "Job".author = "User".id
-      JOIN "myexactjobs-prisma-prod$prod"."Location" loc ON "Job".location = loc.id
-      JOIN "myexactjobs-prisma-prod$prod"."Branch" brn ON "Job".branch = brn.id
-      JOIN "myexactjobs-prisma-prod$prod"."Company" cmp ON brn.company = cmp.id
+      FROM "${process.env.DATABASE_SCHEMA}"."Job"
+      JOIN "${process.env.DATABASE_SCHEMA}"."User" ON "Job".author = "User".id
+      JOIN "${process.env.DATABASE_SCHEMA}"."Location" loc ON "Job".location = loc.id
+      JOIN "${process.env.DATABASE_SCHEMA}"."Branch" brn ON "Job".branch = brn.id
+      JOIN "${process.env.DATABASE_SCHEMA}"."Company" cmp ON brn.company = cmp.id
       WHERE ${ownerFilter} ${queryFilter} ${statusFilter};
       `)
 
@@ -224,16 +224,16 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       "Job".status,
       "User".name as author,
       loc.name as location,
-      (SELECT count(*) FROM "myexactjobs-prisma-prod$prod"."Application" as app WHERE app.job = "Job".id AND app.status not in ('HIRED','ARCHIVED')) as applications,
+      (SELECT count(*) FROM "${process.env.DATABASE_SCHEMA}"."Application" as app WHERE app.job = "Job".id AND app.status not in ('HIRED','ARCHIVED')) as applications,
       brn.name as branch,
       "Job"."updatedAt",
        "Job"."cronTask",
        "Job"."createdAt"
-      FROM "myexactjobs-prisma-prod$prod"."Job"
-      JOIN "myexactjobs-prisma-prod$prod"."User" ON "Job".author = "User".id
-      JOIN "myexactjobs-prisma-prod$prod"."Location" loc ON "Job".location = loc.id
-      JOIN "myexactjobs-prisma-prod$prod"."Branch" brn ON "Job".branch = brn.id
-      JOIN "myexactjobs-prisma-prod$prod"."Company" cmp ON brn.company = cmp.id
+      FROM "${process.env.DATABASE_SCHEMA}"."Job"
+      JOIN "${process.env.DATABASE_SCHEMA}"."User" ON "Job".author = "User".id
+      JOIN "${process.env.DATABASE_SCHEMA}"."Location" loc ON "Job".location = loc.id
+      JOIN "${process.env.DATABASE_SCHEMA}"."Branch" brn ON "Job".branch = brn.id
+      JOIN "${process.env.DATABASE_SCHEMA}"."Company" cmp ON brn.company = cmp.id
       WHERE ${ownerFilter} ${queryFilter} ${statusFilter}
       ${orderBy}
       ${limit}
