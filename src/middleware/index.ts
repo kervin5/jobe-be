@@ -8,13 +8,7 @@ const cp = cookieParser()
 export function injectMiddleware() {
   server.express.use(
     cors({
-      origin: [
-        'https://www.myexactjobs.com/',
-        'http://localhost:3000',
-        'https://myexactjobs.herokuapp.com',
-        'https://www.myexactjobs.com',
-        'https://jobboard-fe-next.vercel.app',
-      ],
+      origin: [process.env.FRONTEND_URL as string, 'http://localhost:3000'],
       credentials: true,
       optionsSuccessStatus: 200,
       methods: ['POST', 'GET'],
