@@ -146,7 +146,9 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ? `AND ("Job".title ILIKE '%${args.query}%' OR loc.name ILIKE '%${args.query}%' OR brn.name ILIKE '%${args.query}%' OR "User".name ILIKE '%${args.query}%')`
         : ''
       const statusFilter = args.status
-        ? `AND "Job".status in ('${args.status.join(`','`)}')`
+        ? `AND "Job".status in ('${args.status.join(
+            `','`,
+          )}') AND "Job".status != 'DELETED'`
         : ''
 
       const user = await ctx.db.user.findOne({
@@ -174,6 +176,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       JOIN "${process.env.DATABASE_SCHEMA}"."Location" loc ON "Job".location = loc.id
       JOIN "${process.env.DATABASE_SCHEMA}"."Branch" brn ON "Job".branch = brn.id
       JOIN "${process.env.DATABASE_SCHEMA}"."Company" cmp ON brn.company = cmp.id
+
       WHERE ${ownerFilter} ${queryFilter} ${statusFilter};
       `)
 
@@ -198,7 +201,9 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ? `AND ("Job".title ILIKE '%${args.query}%' OR loc.name ILIKE '%${args.query}%' OR brn.name ILIKE '%${args.query}%' OR "User".name ILIKE '%${args.query}%')`
         : ''
       const statusFilter = args.status
-        ? `AND "Job".status in ('${args.status.join(`','`)}')`
+        ? `AND "Job".status in ('${args.status.join(
+            `','`,
+          )}') AND "Job".status != 'DELETED'`
         : ''
 
       const user = await ctx.db.user.findOne({
