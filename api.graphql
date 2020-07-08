@@ -58,6 +58,16 @@ input ApplicationNoteWhereUniqueInput {
   id: String
 }
 
+input ApplicationOrderByInput {
+  createdAt: OrderByArg
+  id: OrderByArg
+  jobId: OrderByArg
+  resumeId: OrderByArg
+  status: OrderByArg
+  updatedAt: OrderByArg
+  userId: OrderByArg
+}
+
 enum ApplicationStatus {
   ARCHIVED
   CONTACTED
@@ -205,6 +215,7 @@ input DateTimeFilter {
 }
 
 type Favorite {
+  createdAt: DateTime!
   id: String!
   job: Job!
   user: User!
@@ -218,6 +229,7 @@ input FavoriteFilter {
 
 input FavoriteWhereInput {
   AND: [FavoriteWhereInput!]
+  createdAt: DateTimeFilter
   id: StringFilter
   job: JobWhereInput
   jobId: StringFilter
@@ -262,8 +274,19 @@ input FloatFilter {
   notIn: [Float!]
 }
 
+input IntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: Int
+  notIn: [Int!]
+}
+
 type Job {
-  applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int): [Application!]!
+  applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, orderBy: ApplicationOrderByInput): [Application!]!
   author: User!
   branch: Branch!
   categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int): [Category!]!
@@ -283,6 +306,7 @@ type Job {
   title: String!
   type: String!
   updatedAt: DateTime!
+  views: Int!
 }
 
 type JobCronTask {
@@ -305,6 +329,38 @@ input JobFilter {
   every: JobWhereInput
   none: JobWhereInput
   some: JobWhereInput
+}
+
+type JobGridItem {
+  applications: Int
+  author: String
+  branch: String
+  createdAt: DateTime
+  cronTask: String
+  id: String
+  location: String
+  status: String
+  title: String
+  updatedAt: DateTime
+}
+
+input JobOrderByInput {
+  authorId: OrderByArg
+  branchId: OrderByArg
+  compensationType: OrderByArg
+  createdAt: OrderByArg
+  cronTaskId: OrderByArg
+  description: OrderByArg
+  disclaimer: OrderByArg
+  id: OrderByArg
+  locationId: OrderByArg
+  maxCompensation: OrderByArg
+  minCompensation: OrderByArg
+  status: OrderByArg
+  title: OrderByArg
+  type: OrderByArg
+  updatedAt: OrderByArg
+  views: OrderByArg
 }
 
 enum JobStatus {
@@ -380,6 +436,7 @@ input JobWhereInput {
   title: StringFilter
   type: StringFilter
   updatedAt: DateTimeFilter
+  views: IntFilter
 }
 
 input JobWhereUniqueInput {
@@ -425,6 +482,7 @@ type MapboxLocation {
 
 type Mutation {
   activatePerk(id: ID!): Perk
+  activateUser(id: ID!): User
   addFavorite(job: ID!): ID
   createApplication(job: ID!): Application
   createApplicationNote(content: String!, id: ID!): ApplicationNote
@@ -442,6 +500,7 @@ type Mutation {
   deleteJob(id: ID!): Job
   deleteUser(id: ID): User
   inactivatePerk(id: ID!): Perk
+  incrementJobViewCount(id: String!): Job
   login(email: String!, password: String!): User
   logout: String
   requestReset(email: String!): String
@@ -571,7 +630,7 @@ input PermissionWhereUniqueInput {
 type Query {
   application(where: UniqueApplicationInputType!): Application
   applicationNotes(id: String): [ApplicationNote!]
-  applications(skip: Int, take: Int, where: ApplicationWhereInput): [Application!]
+  applications(orderBy: ApplicationOrderByInput, skip: Int, take: Int, where: ApplicationWhereInput): [Application!]
   applicationsConnection(where: ApplicationWhereInput): Int
   branches(where: BranchWhereInput): [Branch!]
   candidates(skip: Int, take: Int, where: UserWhereInput): [User!]
@@ -582,6 +641,8 @@ type Query {
   job(where: JobWhereUniqueInput!): Job
   jobs(where: JobWhereInput): [Job!]
   jobsConnection(where: JobWhereInput): Int
+  jobsGrid(orderBy: String, query: String, skip: Int, status: [String!], take: Int): [JobGridItem!]
+  jobsGridCount(query: String, status: [String!]): Int
   location(where: LocationWhereUniqueInput!): Location
   locations(after: LocationWhereUniqueInput, before: LocationWhereUniqueInput, first: Int, last: Int): [Location!]!
   mapBoxLocations(query: String): [MapboxLocation!]
@@ -589,11 +650,13 @@ type Query {
   perks(orderBy: PerkOrderByInput, skip: Int, take: Int, where: PerkWhereInput): [Perk!]
   perksConnection(where: PerkWhereInput): Int
   popularTerms: [Term!]
-  protectedJobs(skip: Int, take: Int, where: JobWhereInput): [Job!]
-  protectedJobsConnection(where: JobWhereInput): Int
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, where: RoleWhereInput): [Role!]!
-  searchJobs(location: String, query: String, radius: Int = 5, skip: Int, take: Int, where: JobWhereInput): [Job!]
+  searchJobs(location: String, orderBy: JobOrderByInput, query: String, radius: Int = 5, skip: Int, take: Int, where: JobWhereInput): [Job!]
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, orderBy: SkillOrderByInput, where: SkillWhereInput): [Skill!]!
+  statsApplicationsByBranch: [StatisticCountByBranch!]
+  statsJobsByBranch: [StatisticCountByBranch!]
+  statsPowerUsers: [StatisticCountWithLabel!]
+  statsYTDJobsAndApplications: [StatisticCountWithLabel!]
   user(where: UserWhereUniqueInput!): User
   users(skip: Int, take: Int, where: UserWhereInput): [User!]
   usersConnection(where: UserWhereInput): Int
@@ -712,6 +775,19 @@ input SkillWhereUniqueInput {
   name: String
 }
 
+type StatisticCountByBranch {
+  count: Float
+  name: String
+  status: String
+}
+
+type StatisticCountWithLabel {
+  count: Float
+  count2: Float
+  label: String
+  label2: String
+}
+
 input StringFilter {
   contains: String
   endsWith: String
@@ -761,7 +837,7 @@ type User {
   email: String!
   favorites(after: FavoriteWhereUniqueInput, before: FavoriteWhereUniqueInput, first: Int, last: Int, where: FavoriteWhereInput): [Favorite!]!
   id: String!
-  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, where: JobWhereInput): [Job!]!
+  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, orderBy: JobOrderByInput, where: JobWhereInput): [Job!]!
   location: Location
   name: String!
   resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, orderBy: ResumeOrderByInput, where: ResumeWhereInput): [Resume!]!

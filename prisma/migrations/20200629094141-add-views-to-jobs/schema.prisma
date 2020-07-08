@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 enum UserStatus {
@@ -116,9 +116,8 @@ model Favorite {
   userId String @map("user")
   user   User   @relation(fields: [userId], references: [id])
 
-  jobId     String   @map("job")
-  job       Job      @relation(fields: [jobId], references: [id])
-  createdAt DateTime @default(now())
+  jobId String @map("job")
+  job   Job    @relation(fields: [jobId], references: [id])
 }
 
 model File {

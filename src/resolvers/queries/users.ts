@@ -6,6 +6,7 @@ export interface UserAccessFilter {
   branch?: object
   company?: object
   author?: object
+  applications?: object
   id?: string
 }
 
@@ -105,17 +106,27 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       })
 
       let usersFilter: UserAccessFilter = {
-        branch: { id: requesterData?.branch?.id },
+        applications: {
+          some: { job: { branch: { id: requesterData?.branch?.id } } },
+        },
       }
 
       if (await can('READ', 'COMPANY', ctx)) {
         usersFilter = {
-          branch: { company: { id: requesterData?.branch?.company.id } },
+          applications: {
+            some: {
+              job: {
+                branch: { company: { id: requesterData?.branch?.company.id } },
+              },
+            },
+          },
         }
       }
 
       if (await can('READ', 'USER', ctx)) {
-        usersFilter = {}
+        usersFilter = {
+          // branch: { company: { id: requesterData?.branch?.company.id } },
+        }
       }
 
       return ctx.db.user.findMany({
@@ -137,13 +148,36 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         include: { branch: { include: { company: true } } },
       })
 
+      let usersFilter: UserAccessFilter = {
+        applications: {
+          some: { job: { branch: { id: user?.branch?.id } } },
+        },
+      }
+
+      if (await can('READ', 'COMPANY', ctx)) {
+        usersFilter = {
+          applications: {
+            some: {
+              job: {
+                branch: { company: { id: user?.branch?.company.id } },
+              },
+            },
+          },
+        }
+      }
+
+      if (await can('READ', 'USER', ctx)) {
+        usersFilter = {
+          // branch: { company: { id: user?.branch?.company.id } },
+        }
+      }
       //TODO: Refactor hard code name of role
       return await ctx.db.user.count({
         //@ts-ignore
         where: {
           ...args.where,
+          ...usersFilter,
           role: { name: 'candidate' },
-          applications: { some: { job: { branch: { id: user?.branch?.id } } } },
         },
       })
     },

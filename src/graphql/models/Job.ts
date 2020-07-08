@@ -11,7 +11,7 @@ schema.objectType({
     t.model.status()
     t.model.location()
     t.model.branch()
-    t.model.applications()
+    t.model.applications({ ordering: true })
     t.model.favorites()
     t.model.description()
     t.model.maxCompensation()
@@ -23,6 +23,7 @@ schema.objectType({
     t.model.categories()
     t.model.cronTask()
     t.model.perks({ filtering: true, ordering: true })
+    t.model.views()
   },
 })
 
@@ -72,5 +73,21 @@ schema.inputObjectType({
       type: 'JobStatus',
       nullable: true,
     })
+  },
+})
+
+schema.objectType({
+  name: 'JobGridItem',
+  definition(t) {
+    t.string('id')
+    t.string('title')
+    t.string('status')
+    t.string('author')
+    t.string('location')
+    t.int('applications')
+    t.string('branch')
+    t.date('updatedAt')
+    t.date('createdAt')
+    t.string('cronTask')
   },
 })

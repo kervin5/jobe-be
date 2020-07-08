@@ -4,10 +4,55 @@ import jwt from 'jsonwebtoken'
 import { promisify } from 'util'
 import { randomBytes } from 'crypto'
 import { schema } from 'nexus'
-import { can } from '../../permissions/auth'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
+  // t.int('updateLocation', {
+  //   resolve: async (parent, args, ctx) => {
+  //     const users = (
+  //       await ctx.db.user.findMany({
+  //         where: { location: null },
+  //         select: {
+  //           id: true,
+  //           applications: { include: { job: { include: { location: true } } } },
+  //           favorites: { include: { job: { include: { location: true } } } },
+  //         },
+  //       })
+  //     ).filter((user) => user.applications.length || user.favorites.length)
+
+  //     const updateData = users.map((user) => {
+  //       const lastApplication = user.applications.pop()
+  //       const lastFavorite = user.favorites.pop()
+  //       const userData = {
+  //         location: lastApplication
+  //           ? lastApplication.job.location.id
+  //           : lastFavorite?.job.location.id,
+  //         id: user.id,
+  //       }
+  //       return userData
+  //     })
+
+  //     async function* generateSequence(usersToUpdate: any) {
+  //       for (let i = 0; i < usersToUpdate.length; i++) {
+  //         const userData = usersToUpdate[i]
+  //         // yay, can use await!
+  //         // await new Promise(resolve => setTimeout(resolve, 1000));
+  //         const updateResult = await ctx.db.user.update({
+  //           where: { id: userData.id },
+  //           data: { location: { connect: { id: userData.location } } },
+  //         })
+  //         yield { i: `${i} of ${usersToUpdate.length}`, updateResult }
+  //       }
+  //     }
+
+  //     const generator = generateSequence(updateData)
+
+  //     for await (let result of generator) {
+  //       console.log(result)
+  //     }
+  //     return updateData.length
+  //   },
+  // })
   t.field('createUser', {
     type: 'User',
     args: {
@@ -199,9 +244,22 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           email,
         },
       })
+
       if (!user) {
         throw new Error(`No user found for email: ${email}`)
       }
+
+      const userIsActive = await ctx.db.user.count({
+        where: {
+          email: user.email,
+          status: 'ACTIVE',
+        },
+      })
+
+      if (!userIsActive) {
+        throw new Error('Your account is not active, please contact support')
+      }
+
       const passwordValid = await compare(password, user.password)
       if (!passwordValid) {
         throw new Error('Invalid password')
@@ -236,8 +294,6 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       id: schema.idArg(),
     },
     resolve: async (parent, args, ctx) => {
-      await can('READ', 'BRANCH', ctx)
-
       //get userData
       const user = await ctx.db.user.findOne({
         //@ts-ignore
@@ -316,6 +372,20 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
     },
   })
 
+  t.field('activateUser', {
+    type: 'User',
+    nullable: true,
+    args: {
+      id: schema.idArg({ required: true }),
+    },
+    resolve: async (parent, args, ctx) => {
+      return ctx.db.user.update({
+        where: { id: args.id },
+        data: { status: 'ACTIVE' },
+      })
+    },
+  })
+
   t.field('updateUser', {
     type: 'User',
     nullable: true,
@@ -350,7 +420,15 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       const user = await ctx.db.user.findOne({
         where: { email: args.email },
       })
+
       if (!user) throw new Error('Invalid user')
+
+      const userIsActive = await ctx.db.user.count({
+        where: { email: args.email, status: 'ACTIVE' },
+      })
+
+      if (!userIsActive)
+        throw new Error('Your account is not active, please contact support.')
 
       const randomBytesPromisified = promisify(randomBytes)
       const resetToken = (await randomBytesPromisified(20)).toString('hex')

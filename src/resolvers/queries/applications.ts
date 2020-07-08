@@ -44,6 +44,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       where: schema.arg({ type: 'ApplicationWhereInput' }),
       take: schema.intArg({ nullable: true }),
       skip: schema.intArg({ nullable: true }),
+      orderBy: schema.arg({ type: 'ApplicationOrderByInput' }),
     },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
@@ -70,6 +71,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
             ...ownerFilter,
           },
         },
+        ...(args.orderBy ? { orderBy: args.orderBy } : {}),
       })
     },
   })

@@ -64,21 +64,21 @@ export const permissions = shield({
       ),
       candidates: and(
         rules.isAuthenticatedUser,
-        rules.can({ action: 'CREATE', object: 'JOB' }),
-        or(
-          rules.can({ action: 'READ', object: 'USER' }),
-          rules.can({ action: 'READ', object: 'COMPANY' }),
-          rules.can({ action: 'READ', object: 'BRANCH' }),
-        ),
+        // rules.can({ action: 'CREATE', object: 'JOB' }),
+        // or(
+        //   rules.can({ action: 'READ', object: 'USER' }),
+        //   rules.can({ action: 'READ', object: 'COMPANY' }),
+        //   rules.can({ action: 'READ', object: 'BRANCH' }),
+        // ),
       ),
       candidatesConnection: and(
         rules.isAuthenticatedUser,
-        rules.can({ action: 'CREATE', object: 'JOB' }),
-        or(
-          rules.can({ action: 'READ', object: 'USER' }),
-          rules.can({ action: 'READ', object: 'COMPANY' }),
-          rules.can({ action: 'READ', object: 'BRANCH' }),
-        ),
+        // rules.can({ action: 'CREATE', object: 'JOB' }),
+        // or(
+        //   rules.can({ action: 'READ', object: 'USER' }),
+        //   rules.can({ action: 'READ', object: 'COMPANY' }),
+        //   rules.can({ action: 'READ', object: 'BRANCH' }),
+        // ),
       ),
 
       branches: rules.isAuthenticatedUser,
@@ -86,6 +86,10 @@ export const permissions = shield({
     },
     Mutation: {
       createUser: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'USER' }),
+      ),
+      activateUser: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'USER' }),
       ),

@@ -13,7 +13,7 @@ export function injectMiddleware() {
         'http://localhost:3000',
         'https://myexactjobs.herokuapp.com',
         'https://www.myexactjobs.com',
-        'https://jobboard-fe-next.now.sh',
+        'https://jobboard-fe-next.vercel.app',
       ],
       credentials: true,
       optionsSuccessStatus: 200,

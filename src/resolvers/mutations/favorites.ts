@@ -1,5 +1,5 @@
 import { schema } from 'nexus'
-import { core } from 'nexus/components/schema'
+import { core, arg } from 'nexus/components/schema'
 
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.id('addFavorite', {
@@ -14,6 +14,10 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
 
       const user = { connect: { id: ctx.request.user.id } }
       const job = { connect: { id: args.job } }
+      const jobData = await ctx.db.job.findOne({
+        where: { id: args.job },
+        include: { location: true },
+      })
 
       try {
         if (favorites.length <= 0) {
@@ -22,6 +26,11 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
               user,
               job,
             },
+          })
+          //Update location of user based on location of job
+          await ctx.db.user.update({
+            where: { id: ctx.request.user.id },
+            data: { location: { connect: { id: jobData?.location.id } } },
           })
         }
         return args.job
