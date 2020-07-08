@@ -230,6 +230,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       "User".name as author,
       loc.name as location,
       (SELECT count(*) FROM "${process.env.DATABASE_SCHEMA}"."Application" as app WHERE app.job = "Job".id AND app.status not in ('HIRED','ARCHIVED')) as applications,
+      (SELECT count(*) FROM "${process.env.DATABASE_SCHEMA}"."_JobToPerk" as perk WHERE perk."A" = "Job".id) as perks,
       brn.name as branch,
       "Job"."updatedAt",
        "Job"."cronTask",

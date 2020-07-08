@@ -339,6 +339,7 @@ type JobGridItem {
   cronTask: String
   id: String
   location: String
+  perks: Int
   status: String
   title: String
   updatedAt: DateTime

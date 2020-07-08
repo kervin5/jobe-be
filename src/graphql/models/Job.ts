@@ -85,6 +85,7 @@ schema.objectType({
     t.string('author')
     t.string('location')
     t.int('applications')
+    t.int('perks')
     t.string('branch')
     t.date('updatedAt')
     t.date('createdAt')
