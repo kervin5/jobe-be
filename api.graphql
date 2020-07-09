@@ -640,7 +640,7 @@ type Query {
   category(where: CategoryWhereUniqueInput!): Category
   getSignedFileUrl(AWSUrl: String!): String
   job(where: JobWhereUniqueInput!): Job
-  jobs(take: Int = 100, where: JobWhereInput): [Job!]
+  jobs(take: Int = 10, where: JobWhereInput): [Job!]
   jobsConnection(where: JobWhereInput): Int
   jobsGrid(orderBy: String, query: String, skip: Int, status: [String!], take: Int): [JobGridItem!]
   jobsGridCount(query: String, status: [String!]): Int
