@@ -5,7 +5,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     type: 'StatisticCountByBranch',
     resolve: async (parent, args, ctx) => {
       const result = await ctx.db
-        .queryRaw(`SELECT count(*) as count, "Branch".name, "Application".status FROM dcchv2o3d4942b."${process.env.DATABASE_SCHEMA}"."Application"
+        .queryRaw(`SELECT count(*) as count, "Branch".name, "Application".status FROM "${process.env.DATABASE_SCHEMA}"."Application"
       JOIN "${process.env.DATABASE_SCHEMA}"."Job" ON "Application".job = "Job".id
       JOIN "${process.env.DATABASE_SCHEMA}"."Branch" ON "Job".branch = "Branch".id
       GROUP BY "Branch".name, "Application".status ORDER BY count DESC`)
