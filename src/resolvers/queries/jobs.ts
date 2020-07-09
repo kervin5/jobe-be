@@ -11,6 +11,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     type: 'Job',
     args: {
       where: schema.arg({ type: 'JobWhereInput' }),
+      take: schema.intArg({ nullable: true, default: 10 }),
     },
     resolve: (parent, args, ctx) => {
       return ctx.db.job.findMany({
@@ -19,6 +20,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
           ...args.where,
           status: 'POSTED',
         },
+        orderBy: { createdAt: 'desc' },
       })
     },
   })
