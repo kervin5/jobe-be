@@ -20,6 +20,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
           ...args.where,
           status: 'POSTED',
         },
+        take: args.take ?? 10,
         orderBy: { createdAt: 'desc' },
       })
     },
