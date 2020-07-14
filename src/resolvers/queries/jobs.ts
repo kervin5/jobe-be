@@ -11,6 +11,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     type: 'Job',
     args: {
       where: schema.arg({ type: 'JobWhereInput' }),
+      take: schema.intArg({ nullable: true, default: 10 }),
     },
     resolve: (parent, args, ctx) => {
       return ctx.db.job.findMany({
@@ -19,6 +20,8 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
           ...args.where,
           status: 'POSTED',
         },
+        take: args.take ?? 10,
+        orderBy: { createdAt: 'desc' },
       })
     },
   })
@@ -230,6 +233,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       "User".name as author,
       loc.name as location,
       (SELECT count(*) FROM "${process.env.DATABASE_SCHEMA}"."Application" as app WHERE app.job = "Job".id AND app.status not in ('HIRED','ARCHIVED')) as applications,
+      (SELECT count(*) FROM "${process.env.DATABASE_SCHEMA}"."_JobToPerk" as perk WHERE perk."A" = "Job".id) as perks,
       brn.name as branch,
       "Job"."updatedAt",
        "Job"."cronTask",
