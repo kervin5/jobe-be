@@ -5,6 +5,7 @@ import { promisify } from 'util'
 import { randomBytes } from 'crypto'
 import { schema } from 'nexus'
 import { transport, makeANiceEmail } from '../../utils/mail'
+import appText from '../../../lang/appText'
 
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   // t.int('updateLocation', {
@@ -84,11 +85,11 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       })
 
       const mailRes = await transport.sendMail({
-        from: 'noreply@myexactjobs.com',
+        from: process.env.EMAIL_FROM,
         to: user.email,
-        subject: 'My Exact Jobs Invite',
+        subject: appText.emails.users.invite,
         html: makeANiceEmail(
-          `${args.name}, an account at MyExactJobs has been created for you, please click on the following link to setup your password! \n\n <a href="${process.env.FRONTEND_URL}/user/password/reset?resetToken=${resetToken}">Click Here to Create Password</a>`,
+          appText.emails.users.invite.body(resetToken, args.name),
         ),
       })
       return user
@@ -227,7 +228,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         return user
       } catch (error) {
         console.log({ error })
-        throw new Error(`An user with this email already exists`)
+        throw new Error(appText.messages.user.alreadyExists)
       }
     },
   })
@@ -246,7 +247,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       })
 
       if (!user) {
-        throw new Error(`No user found for email: ${email}`)
+        throw new Error(appText.messages.user.doesnExist(email))
       }
 
       const userIsActive = await ctx.db.user.count({
@@ -257,12 +258,12 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       })
 
       if (!userIsActive) {
-        throw new Error('Your account is not active, please contact support')
+        throw new Error(appText.messages.user.notActive)
       }
 
       const passwordValid = await compare(password, user.password)
       if (!passwordValid) {
-        throw new Error('Invalid password')
+        throw new Error(appText.messages.user.invalidPassword)
       }
       // 3. generate the JWT Token
       const token = jwt.sign({ id: user.id }, process.env.APP_SECRET as string)
@@ -427,8 +428,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         where: { email: args.email, status: 'ACTIVE' },
       })
 
-      if (!userIsActive)
-        throw new Error('Your account is not active, please contact support.')
+      if (!userIsActive) throw new Error(appText.messages.user.notActive)
 
       const randomBytesPromisified = promisify(randomBytes)
       const resetToken = (await randomBytesPromisified(20)).toString('hex')
@@ -440,12 +440,10 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       })
 
       const mailRes = await transport.sendMail({
-        from: 'noreply@myexactjobs.com',
+        from: process.env.EMAIL_FROM,
         to: user.email,
-        subject: 'Your Password Reset Token',
-        html: makeANiceEmail(
-          `Your password Reset Token is here! \n\n <a href="${process.env.FRONTEND_URL}/user/password/reset?resetToken=${resetToken}">Click Here to Reset</a>`,
-        ),
+        subject: appText.emails.users.reset.subject,
+        html: makeANiceEmail(appText.emails.users.reset.body(resetToken)),
       })
 
       return args.email
@@ -462,7 +460,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
     resolve: async (parent, args, ctx) => {
       // 1. Check if the passwords match
       if (args.password !== args.confirmPassword) {
-        throw new Error("Passwords don't match!")
+        throw new Error(`${appText.messages.user.passwordsDontMatch}!`)
       }
       // 2. Check if its a legit reset token
       // 3. Check if its expired
@@ -473,7 +471,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         },
       })
 
-      if (!user) throw new Error('This token is either invalid or expired!')
+      if (!user) throw new Error(`${appText.messages.user.invalidToken}!`)
       // 4. Hash their new password
       const password = await hash(args.password, 10)
       // 5. Save the new password to the user and remove old reset token fields

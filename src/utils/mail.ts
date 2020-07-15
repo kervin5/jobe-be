@@ -1,3 +1,4 @@
+import appText from '../../lang/appText'
 const nodemailer = require('nodemailer')
 let aws = require('aws-sdk')
 
@@ -45,9 +46,9 @@ export const makeANiceEmail = (text: string) => `
         line-height: 2;
         font-size: 20px;
     ">
-        <h2>Hello There!</h2>
+        <h2>${appText.emails.salutation}!</h2>
         <p>${text}</p>
-        <p>MyExactJobs Team 😎,</p>
+        <p>${appText.emails.signature} 😎,</p>
     </div>
 `
 
