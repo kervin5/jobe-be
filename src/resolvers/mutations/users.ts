@@ -100,6 +100,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       name: schema.stringArg({ required: true }),
       password: schema.stringArg({ required: true }),
       email: schema.stringArg({ required: true }),
+      phone: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       const salt = await genSalt(10)
