@@ -14,7 +14,7 @@ export default {
       },
       hasNewApplication: {
         subject: (title?: string) =>
-          `Your listing for ${title} has a new application!`,
+          `Has recibido una nueva solicitud para el puesto ${title}!`,
         body: (
           author?: string,
           applicant?: string,
