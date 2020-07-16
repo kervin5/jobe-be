@@ -1,10 +1,12 @@
 import appText from '../../lang/appText'
-const nodemailer = require('nodemailer')
-let aws = require('aws-sdk')
+import nodemailer from 'nodemailer'
+import aws from 'aws-sdk'
+
+const currentRegion = process.env.AWS_CUSTOM_REGION
 
 // configure AWS SDK
 aws.config.update({
-  region: process.env.AWS_CUSTOM_REGION, // Put your aws region here
+  region: currentRegion, // Put your aws region here
   accessKeyId: process.env.AWS_SES_ACCESS_KEY,
   secretAccessKey: process.env.AWS_SES_SECRET_KEY,
 })
@@ -15,8 +17,8 @@ export const transport = nodemailer.createTransport({
     apiVersion: '2010-12-01',
     accessKeyId: process.env.AWS_SES_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SES_SECRET_KEY,
-    region: process.env.AWS_CUSTOM_REGION,
-    endpoint: `email.${process.env.AWS_CUSTOM_REGION}.amazonaws.com`,
+    region: currentRegion,
+    endpoint: `email.${currentRegion}.amazonaws.com`,
   }),
   sendingRate: 14,
 })

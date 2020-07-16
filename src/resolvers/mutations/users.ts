@@ -92,7 +92,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       const mailRes = await transport.sendMail({
         from: process.env.EMAIL_FROM,
         to: user.email,
-        subject: appText.emails.users.invite,
+        subject: appText.emails.users.invite.subject,
         html: makeANiceEmail(
           appText.emails.users.invite.body(resetToken, args.name),
         ),
