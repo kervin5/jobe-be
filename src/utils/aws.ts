@@ -21,7 +21,7 @@ export const sign_s3_upload = async ({
   // console.log(process.env.AWSAccessKeyId,process.env.AWSSecretKey);
   const uniquefolder = 'resumes/' + uuidv4() + fileName.replace(' ', '-')
   const s3 = new aws.S3({
-    region: 'us-west-1',
+    region: process.env.AWS_REGION,
     accessKeyId: process.env.AWSAccessKeyId,
     secretAccessKey: process.env.AWSSecretKey,
   }) // Create a new instance of S3
@@ -68,7 +68,7 @@ interface IsuccessSignedFile {
 
 export const sign_s3_read = async (filePath: string) => {
   const s3 = new aws.S3({
-    region: 'us-west-1',
+    region: process.env.AWS_BUCKET,
     accessKeyId: process.env.AWSAccessKeyId,
     secretAccessKey: process.env.AWSSecretKey,
   }) // Create a new instance of S3

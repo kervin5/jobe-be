@@ -10,7 +10,7 @@ export const transport = nodemailer.createTransport({
     apiVersion: '2010-12-01',
     accessKeyId: process.env.AWS_SES_AccessKey,
     secretAccessKey: process.env.AWS_SES_SecretKey,
-    region: 'us-east-1',
+    region: process.env.AWS_BUCKET,
   }),
   sendingRate: 14,
 })
