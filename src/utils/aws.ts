@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 // Configure aws with your accessKeyId and your secretAccessKey
 aws.config.update({
-  region: process.env.AWS_REGION, // Put your aws region here
+  region: process.env.AWS_CUSTOM_REGION, // Put your aws region here
   accessKeyId: process.env.AWSAccessKeyId,
   secretAccessKey: process.env.AWSSecretKey,
 })
@@ -21,7 +21,7 @@ export const sign_s3_upload = async ({
   // console.log(process.env.AWSAccessKeyId,process.env.AWSSecretKey);
   const uniquefolder = 'resumes/' + uuidv4() + fileName.replace(' ', '-')
   const s3 = new aws.S3({
-    region: process.env.AWS_REGION,
+    region: process.env.AWS_CUSTOM_REGION,
     accessKeyId: process.env.AWSAccessKeyId,
     secretAccessKey: process.env.AWSSecretKey,
   }) // Create a new instance of S3
@@ -68,7 +68,7 @@ interface IsuccessSignedFile {
 
 export const sign_s3_read = async (filePath: string) => {
   const s3 = new aws.S3({
-    region: process.env.AWS_BUCKET,
+    region: process.env.AWS_CUSTOM_REGION,
     accessKeyId: process.env.AWSAccessKeyId,
     secretAccessKey: process.env.AWSSecretKey,
   }) // Create a new instance of S3
