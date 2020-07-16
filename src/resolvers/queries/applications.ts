@@ -125,4 +125,19 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       })
     },
   })
+
+  t.list.field('applicationsGrid', {
+    type: 'Application',
+    nullable: true,
+    args: {
+      take: schema.intArg({ nullable: true }),
+      skip: schema.intArg({ nullable: true }),
+      orderBy: schema.stringArg({ nullable: true }),
+      query: schema.stringArg({ nullable: true }),
+      status: schema.stringArg({ nullable: true, list: true }),
+    },
+    resolve: async (parent, args, ctx) => {
+      return null
+    },
+  })
 }

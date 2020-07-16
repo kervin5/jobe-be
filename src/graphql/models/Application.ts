@@ -50,6 +50,25 @@ schema.inputObjectType({
     })
   },
 })
+
+schema.objectType({
+  name: 'ApplicationGridItem',
+  definition(t) {
+    t.string('id')
+    t.string('jobTitle')
+    t.string('jobId')
+    t.string('location')
+    t.string('branch')
+    t.string('owner')
+    t.string('status')
+    t.date('applied')
+    t.date('createdAt')
+    t.string('email')
+    t.string('phone')
+    t.string('eEmpact')
+  },
+})
+
 /*
 export const ApplicationCreateInpuType = inputObjectType({
   name: 'ApplicationCreateInpuType',
