@@ -18,6 +18,7 @@ schema.objectType({
     t.model.applications({ filtering: true })
     t.model.createdAt()
     t.model.createdPerks()
+    t.model.phone()
     t.field('eEmpact', {
       type: 'UserEEmpactData',
       async resolve(parent, args, ctx) {

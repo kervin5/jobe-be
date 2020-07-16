@@ -6,6 +6,11 @@ import { randomBytes } from 'crypto'
 import { schema } from 'nexus'
 import { transport, makeANiceEmail } from '../../utils/mail'
 
+//TODO: DELETE
+import { sign_s3_read } from '../../utils/aws'
+import request from '../../utils/request'
+import { findKeywords } from '../../utils/functions'
+
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   // t.int('updateLocation', {
   //   resolve: async (parent, args, ctx) => {
@@ -100,6 +105,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       name: schema.stringArg({ required: true }),
       password: schema.stringArg({ required: true }),
       email: schema.stringArg({ required: true }),
+      phone: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       const salt = await genSalt(10)
@@ -203,6 +209,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         const user = await ctx.db.user.create({
           data: {
             ...args,
+            phone: sanitizePhoneNumber(args.phone),
             password: await hash(args.password, salt),
             status: 'ACTIVE',
             role: {
@@ -500,6 +507,91 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       // 9. Amazing
     },
   })
+
+  t.string('updatePhones', {
+    nullable: true,
+    resolve: async (parent, args, ctx) => {
+      const resumes = await ctx.db.resume.findMany({
+        include: { file: true, user: true },
+      })
+
+      async function* generateSequence(fetchedResumes: any) {
+        for (let i = 0; i < fetchedResumes.length; i++) {
+          const resume = fetchedResumes[i]
+          console.log(
+            '\n=====================',
+            resume.user.name,
+            resume.user.id,
+            ' ',
+            i + 1,
+            ' of',
+            fetchedResumes.length,
+            '=====================\n',
+          )
+          let resultPhone
+          if (true) {
+            const resumeUrl = await sign_s3_read(resume.file.path)
+            let resumeJson
+            try {
+              resumeJson = await request(process.env.RESUME_PARSER_API, {
+                url: resumeUrl,
+              })
+            } catch (error) {
+              console.log('fetchFailed')
+            }
+            const phoneNumber = sanitizePhoneNumber(resumeJson?.parts?.phone)
+            if (phoneNumber) {
+              try {
+                await ctx.db.user.update({
+                  where: { id: resume.user.id },
+                  data: { phone: phoneNumber },
+                })
+              } catch (error) {
+                console.log('>>>>>Duplicate', phoneNumber)
+              }
+            }
+            resultPhone = phoneNumber
+          } else {
+            resultPhone = resume.user.phone
+          }
+
+          // console.log(resumeJson)
+          // console.log(resumeJson?.parts?.phone)
+          // await new Promise((resolve) => setTimeout(resolve, 1000))
+
+          try {
+            yield {
+              id: resume.id,
+              userId: resume.user.id,
+              name: resume.user.name,
+              phone: resultPhone,
+            }
+          } catch (ex) {
+            console.log('Error')
+            yield {
+              id: resume.id,
+              userId: resume.user.id,
+              name: resume.user.name,
+              phone: ex.messsage,
+            }
+          }
+        }
+      }
+
+      let generator = generateSequence(resumes)
+      for await (let value of generator) {
+        console.log(value) // 1, then 2, then 3, then 4, then 5
+      }
+      // const resumeUrl = await sign_s3_read(args.path)
+      // const resumeJson = await request(process.env.RESUME_PARSER_API, {
+      //   url: resumeUrl,
+      // })
+      // const resumeText = `${resumeJson.parts.summary} ${resumeJson.parts.projects}  ${resumeJson.parts.certification} ${resumeJson.parts.certifications} ${resumeJson.parts.positions} ${resumeJson.parts.objective} ${resumeJson.parts.awards} ${resumeJson.parts.skills} ${resumeJson.parts.experience} ${resumeJson.parts.education}`.toLowerCase()
+      // const allSkills = await ctx.db.skill.findMany()
+
+      return 'done'
+    },
+  })
 }
 
 function titleCase(str: string = '') {
@@ -508,4 +600,18 @@ function titleCase(str: string = '') {
     string[i] = string[i].charAt(0).toUpperCase() + string[i].slice(1)
   }
   return string.join(' ')
+}
+
+export function sanitizePhoneNumber(phone: string) {
+  const result = phone
+    ? (phone.includes('\n') ? phone.split('\n')[1] : phone).replace(/\D/g, '')
+    : undefined
+
+  return result
+    ? result.length > 10
+      ? result.substring(result.length - 10, result.length)
+      : result.length === 7 || result.length > 9
+      ? result
+      : undefined
+    : undefined
 }
