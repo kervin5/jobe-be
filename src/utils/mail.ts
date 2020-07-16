@@ -3,6 +3,11 @@ const nodemailer = require('nodemailer')
 let aws = require('aws-sdk')
 
 // configure AWS SDK
+aws.config.update({
+  region: process.env.AWS_CUSTOM_REGION, // Put your aws region here
+  accessKeyId: process.env.AWS_SES_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SES_SECRET_KEY,
+})
 
 // create Nodemailer SES transport
 export const transport = nodemailer.createTransport({
