@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 enum UserStatus {
@@ -227,7 +227,7 @@ model User {
   id           String        @id @default(cuid())
   name         String
   email        String        @unique
-  phone        String?       @unique
+  phone        String?
   password     String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt

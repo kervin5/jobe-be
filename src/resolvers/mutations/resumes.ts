@@ -3,6 +3,7 @@ import { core } from 'nexus/components/schema'
 import { sign_s3_read } from '../../utils/aws'
 import request from '../../utils/request'
 import { findKeywords } from '../../utils/functions'
+import { sanitizePhoneNumber } from './users'
 
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createResume', {
@@ -18,6 +19,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       const resumeJson = await request(process.env.RESUME_PARSER_API, {
         url: resumeUrl,
       })
+      const phoneNumber = sanitizePhoneNumber(resumeJson?.parts?.phone)
       const resumeText = `${resumeJson.parts.summary} ${resumeJson.parts.projects}  ${resumeJson.parts.certification} ${resumeJson.parts.certifications} ${resumeJson.parts.positions} ${resumeJson.parts.objective} ${resumeJson.parts.awards} ${resumeJson.parts.skills} ${resumeJson.parts.experience} ${resumeJson.parts.education}`.toLowerCase()
       const allSkills = await ctx.db.skill.findMany()
 
@@ -52,6 +54,13 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           ...skills,
         },
       })
+
+      if (phoneNumber) {
+        await ctx.db.user.update({
+          where: { id: ctx.request.user.id },
+          data: { phone: phoneNumber },
+        })
+      }
 
       return result
     },

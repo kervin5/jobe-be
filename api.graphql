@@ -508,10 +508,11 @@ type Mutation {
   resetPassword(confirmPassword: String!, password: String!, token: String!): User
   schedule(id: String!): String
   signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
-  signup(email: String!, name: String!, password: String!): User
+  signup(email: String!, name: String!, password: String!, phone: String!): User
   unschedule(id: String!): String
   updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
   updateJob(data: UpdateJobCustomInput!, where: JobWhereUniqueInput!): Job
+  updatePhones: String
   updateRole(id: ID!, name: String, permissions: [RolePermissionsInputType!]): Role
   updateUser(branch: ID, id: ID!, name: String, role: ID): User
 }
@@ -841,6 +842,7 @@ type User {
   jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, orderBy: JobOrderByInput, where: JobWhereInput): [Job!]!
   location: Location
   name: String!
+  phone: String
   resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, orderBy: ResumeOrderByInput, where: ResumeWhereInput): [Resume!]!
   role: Role!
   status: UserStatus!
@@ -883,6 +885,7 @@ input UserWhereInput {
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
   password: StringFilter
+  phone: NullableStringFilter
   resetToken: NullableStringFilter
   resetTokenExpiry: NullableFloatFilter
   resumes: ResumeFilter
@@ -896,4 +899,5 @@ input UserWhereInput {
 input UserWhereUniqueInput {
   email: String
   id: String
+  phone: String
 }
