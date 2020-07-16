@@ -18,7 +18,6 @@ export const transport = nodemailer.createTransport({
     accessKeyId: process.env.AWS_SES_ACCESS_KEY,
     secretAccessKey: process.env.AWS_SES_SECRET_KEY,
     region: currentRegion,
-    endpoint: `email.${currentRegion}.amazonaws.com`,
   }),
   sendingRate: 14,
 })
