@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "nexus dev",
-    "build": "nexus build -d vercel",
+    "build": "nexus build -d heroku",
     "start": "node .nexus/build",
     "postinstall": "npm -s run prisma:generate",
     "prisma:generate": "prisma generate --schema=./prisma/schema.prisma"
