@@ -512,7 +512,6 @@ type Mutation {
   unschedule(id: String!): String
   updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
   updateJob(data: UpdateJobCustomInput!, where: JobWhereUniqueInput!): Job
-  updatePhones: String
   updateRole(id: ID!, name: String, permissions: [RolePermissionsInputType!]): Role
   updateUser(branch: ID, id: ID!, name: String, role: ID): User
 }
