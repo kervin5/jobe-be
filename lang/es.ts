@@ -10,7 +10,7 @@ export default {
         subject: (jobTitle?: String) =>
           `Tú solicitud para ${jobTitle} esta en camino`,
         body: (name?: string, title?: string, location?: string) =>
-          `Felicidades${name}, \n\ntu solicitud para la posición ${title} en ${location} esta en camino😁. No te detengas y sigue explorando otras oportunidades en\n\n <a href="${process.env.FRONTEND_URL}">${process.env.FRONTEND_URL}/register/</a>`,
+          `Felicidades ${name}, \n\ntu solicitud para la posición ${title} en ${location} esta en camino😁. No te detengas y sigue explorando otras oportunidades en\n\n <a href="${process.env.FRONTEND_URL}">${process.env.FRONTEND_URL}/register/</a>`,
       },
       hasNewApplication: {
         subject: (title?: string) =>
