@@ -19,21 +19,6 @@ input ApplicationFilter {
   some: ApplicationWhereInput
 }
 
-type ApplicationGridItem {
-  applied: DateTime
-  branch: String
-  createdAt: DateTime
-  eEmpact: String
-  email: String
-  id: String
-  jobId: String
-  jobTitle: String
-  location: String
-  owner: String
-  phone: String
-  status: String
-}
-
 type ApplicationNote {
   application: Application!
   content: String!
@@ -648,7 +633,6 @@ type Query {
   applicationNotes(id: String): [ApplicationNote!]
   applications(orderBy: ApplicationOrderByInput, skip: Int, take: Int, where: ApplicationWhereInput): [Application!]
   applicationsConnection(where: ApplicationWhereInput): Int
-  applicationsGrid(orderBy: String, query: String, skip: Int, status: [String!], take: Int): [Application!]
   branches(where: BranchWhereInput): [Branch!]
   candidates(skip: Int, take: Int, where: UserWhereInput): [User!]
   candidatesConnection(where: UserWhereInput): Int
