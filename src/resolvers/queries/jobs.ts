@@ -237,7 +237,8 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       brn.name as branch,
       "Job"."updatedAt",
        "Job"."cronTask",
-       "Job"."createdAt"
+       "Job"."createdAt",
+       "Job"."views"
       FROM "${process.env.DATABASE_SCHEMA}"."Job"
       JOIN "${process.env.DATABASE_SCHEMA}"."User" ON "Job".author = "User".id
       JOIN "${process.env.DATABASE_SCHEMA}"."Location" loc ON "Job".location = loc.id

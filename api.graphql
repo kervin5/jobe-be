@@ -343,6 +343,7 @@ type JobGridItem {
   status: String
   title: String
   updatedAt: DateTime
+  views: Int
 }
 
 input JobOrderByInput {
