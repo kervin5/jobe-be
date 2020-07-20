@@ -104,12 +104,20 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         //Auto archive other applications if employee is hired
         if (args.status === 'HIRED') {
           const otherApplications = await ctx.db.application.findMany({
-            where: { id: applicant.id },
+            where: {
+              AND: [
+                { userId: applicant.id },
+                { status: { notIn: ['HIRED', 'ARCHIVED'] } },
+              ],
+            },
           })
 
           await ctx.db.application.updateMany({
             where: {
-              AND: [{ userId: applicant.id }, { status: { not: 'HIRED' } }],
+              AND: [
+                { userId: applicant.id },
+                { status: { notIn: ['HIRED', 'ARCHIVED'] } },
+              ],
             },
             data: { status: 'ARCHIVED' },
           })
