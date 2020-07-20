@@ -96,7 +96,20 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         const application = await ctx.db.application.update({
           where: { id: args.id },
           data: { status: args.status },
+          include: { user: true },
         })
+
+        const applicant = application.user
+
+        //Auto archive
+        if (args.status === 'HIRED') {
+          await ctx.db.application.updateMany({
+            where: {
+              AND: [{ userId: applicant.id }, { status: { not: 'HIRED' } }],
+            },
+            data: { status: 'ARCHIVED' },
+          })
+        }
 
         try {
           const applicationNote = await ctx.db.applicationNote.create({
