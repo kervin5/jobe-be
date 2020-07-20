@@ -55,5 +55,9 @@ export default {
       passwordsDontMatch: `Passwords don't match`,
       invalidToken: 'This token is either invalid or expired!',
     },
+
+    applicantion: {
+      autoArchive: `This candidate was hired for a different position and this application was automatically archived`,
+    },
   },
 }

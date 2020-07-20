@@ -56,5 +56,8 @@ export default {
       passwordsDontMatch: 'Contraseñas no coinciden',
       invalidToken: 'Este enlace es invalido o ya expiró',
     },
+    applicantion: {
+      autoArchive: `Este candidato fue contratado para otro puesto y su solicitud fue archivada automaticamente`,
+    },
   },
 }

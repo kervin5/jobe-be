@@ -101,14 +101,32 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
 
         const applicant = application.user
 
-        //Auto archive
+        //Auto archive other applications if employee is hired
         if (args.status === 'HIRED') {
+          const otherApplications = await ctx.db.application.findMany({
+            where: { id: applicant.id },
+          })
+
           await ctx.db.application.updateMany({
             where: {
               AND: [{ userId: applicant.id }, { status: { not: 'HIRED' } }],
             },
             data: { status: 'ARCHIVED' },
           })
+
+          for (let i = 0; i < otherApplications.length; i++) {
+            const otherApp = otherApplications[i]
+
+            await ctx.db.applicationNote.create({
+              data: {
+                content: appText.messages.applicantion.autoArchive,
+                //@ts-ignore
+                user: { connect: { id: ctx.request.user.id } },
+                application: { connect: { id: otherApp.id } },
+                type: 'NOTE',
+              },
+            })
+          }
         }
 
         try {
