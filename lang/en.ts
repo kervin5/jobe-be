@@ -5,6 +5,14 @@ export default {
   emails: {
     salutation: 'Hello',
     signature: `${process.env.COMPANY_NAME} Team`,
+    jobs: {
+      posted: {
+        subject: (title: string, location: string) =>
+          `Your opening for ${title} at ${location} is live!`,
+        body: (title: string, location: string, jobId: string) =>
+          `Congratulations, your listing for the position of ${title} at ${location} was approved. You can view the most recent activity of this job by clicking on the following link <a href="${process.env.FRONTEND_URL}/admin/jobs/${jobId}">${title}</a>`,
+      },
+    },
     applications: {
       onTheWay: {
         subject: (jobTitle?: String) =>
@@ -22,7 +30,7 @@ export default {
           location?: string,
           applicationId?: string,
         ) =>
-          `Hola ${author}, \n\nEl candidato ${applicant} envio una solicitud para el puesto de trabajo titulado "${title}" en ${location} 😁. Haz click aqui para ver la hoja de vida del candidato\n\n<a href="${process.env.FRONTEND_URL}/admin/applications/${applicationId}">${process.env.FRONTEND_URL}/admin/applications/${applicationId}</a>`,
+          `Hi ${author}, \n\nThe candidate ${applicant} has submitted a new application for the position "${title}" at ${location} 😁. Please use the following link to view the application\n\n<a href="${process.env.FRONTEND_URL}/admin/applications/${applicationId}">${process.env.FRONTEND_URL}/admin/applications/${applicationId}</a>`,
       },
     },
     users: {

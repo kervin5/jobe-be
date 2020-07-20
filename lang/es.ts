@@ -5,6 +5,14 @@ export default {
   emails: {
     salutation: 'Hola',
     signature: `El equipo de ${process.env.COMPANY_NAME}`,
+    jobs: {
+      posted: {
+        subject: (title: string, location: string) =>
+          `Tu publicacion para ${title} en ${location} fue aprovada!`,
+        body: (title: string, location: string, jobId: string) =>
+          `Felicidades, tu publicacion para el puesto de ${title} en ${location} fue aprovada.  Puedes ver la actividad mas reciente utilizando el siguiente link <a href="${process.env.FRONTEND_URL}/admin/jobs/${jobId}">${title}</a>`,
+      },
+    },
     applications: {
       onTheWay: {
         subject: (jobTitle?: String) =>
