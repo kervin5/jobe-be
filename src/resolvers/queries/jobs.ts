@@ -201,7 +201,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       const skip = args.skip ? `OFFSET ${args.skip}` : ''
       const orderBy = args.orderBy ? `ORDER BY ${args.orderBy}` : ''
       const queryFilter = args.query
-        ? `AND ("Job".title ILIKE '%${args.query}%' OR loc.name ILIKE '%${args.query}%' OR brn.name ILIKE '%${args.query}%' OR "User".name ILIKE '%${args.query}%')`
+        ? `AND ("Job".title ILIKE '%${args.query}%' OR loc.name ILIKE '%${args.query}%' OR brn.name ILIKE '%${args.query}%' OR "User".name ILIKE '%${args.query}%' OR "User".email ILIKE '%${args.query}%')`
         : ''
       const statusFilter = args.status
         ? `AND "Job".status in ('${args.status.join(
