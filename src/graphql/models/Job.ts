@@ -90,5 +90,6 @@ schema.objectType({
     t.date('updatedAt')
     t.date('createdAt')
     t.string('cronTask')
+    t.int('views')
   },
 })

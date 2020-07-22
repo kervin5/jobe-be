@@ -201,7 +201,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       const skip = args.skip ? `OFFSET ${args.skip}` : ''
       const orderBy = args.orderBy ? `ORDER BY ${args.orderBy}` : ''
       const queryFilter = args.query
-        ? `AND ("Job".title ILIKE '%${args.query}%' OR loc.name ILIKE '%${args.query}%' OR brn.name ILIKE '%${args.query}%' OR "User".name ILIKE '%${args.query}%')`
+        ? `AND ("Job".title ILIKE '%${args.query}%' OR loc.name ILIKE '%${args.query}%' OR brn.name ILIKE '%${args.query}%' OR "User".name ILIKE '%${args.query}%' OR "User".email ILIKE '%${args.query}%')`
         : ''
       const statusFilter = args.status
         ? `AND "Job".status in ('${args.status.join(
@@ -237,7 +237,8 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       brn.name as branch,
       "Job"."updatedAt",
        "Job"."cronTask",
-       "Job"."createdAt"
+       "Job"."createdAt",
+       "Job"."views"
       FROM "${process.env.DATABASE_SCHEMA}"."Job"
       JOIN "${process.env.DATABASE_SCHEMA}"."User" ON "Job".author = "User".id
       JOIN "${process.env.DATABASE_SCHEMA}"."Location" loc ON "Job".location = loc.id
