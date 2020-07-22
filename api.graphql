@@ -137,6 +137,7 @@ input BranchWhereInput {
   NOT: [BranchWhereInput!]
   OR: [BranchWhereInput!]
   users: UserFilter
+  usersWithAccess: UserFilter
 }
 
 input BranchWhereUniqueInput {
@@ -194,6 +195,10 @@ input CompanyWhereInput {
   name: StringFilter
   NOT: [CompanyWhereInput!]
   OR: [CompanyWhereInput!]
+}
+
+input CompanyWhereUniqueInput {
+  id: String
 }
 
 """
@@ -639,6 +644,9 @@ type Query {
   candidatesConnection(where: UserWhereInput): Int
   categories(take: Int, where: CategoryWhereInput): [Category!]
   category(where: CategoryWhereUniqueInput!): Category
+  companies(skip: Int, take: Int, where: CompanyWhereInput): [Company!]
+  companiesCount(where: CompanyWhereInput): Int
+  company(where: CompanyWhereUniqueInput!): Company
   getSignedFileUrl(AWSUrl: String!): String
   job(where: JobWhereUniqueInput!): Job
   jobs(take: Int = 10, where: JobWhereInput): [Job!]
@@ -884,6 +892,7 @@ input UserWhereInput {
   name: StringFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
+  otherBranches: BranchFilter
   password: StringFilter
   phone: NullableStringFilter
   resetToken: NullableStringFilter
