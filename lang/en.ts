@@ -18,7 +18,7 @@ export default {
         subject: (jobTitle?: String) =>
           `You application for ${jobTitle} is on its way`,
         body: (name?: string, title?: string, location?: string) =>
-          `Congratulations ${name}, \n\nyour application for the position ${title} at ${location}. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="${process.env.REGISTER_URL}?utm_source=myexactjobs&utm_medium=email&utm_campaign=myexactjobs_application&utm_term=My%20Exact%20Jobs&utm_content=My%20Exact%20Jobs%20Application">${process.env.REGISTER_URL}</a>`,
+          `Congratulations ${name}, \n\nyour application for the position ${title} at ${location} is on its way. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="${process.env.REGISTER_URL}?utm_source=myexactjobs&utm_medium=email&utm_campaign=myexactjobs_application&utm_term=My%20Exact%20Jobs&utm_content=My%20Exact%20Jobs%20Application">${process.env.REGISTER_URL}</a>`,
       },
       hasNewApplication: {
         subject: (title?: string) =>
