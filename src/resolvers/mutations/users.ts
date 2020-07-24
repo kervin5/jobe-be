@@ -412,18 +412,29 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           }
         : {}
       const role = args.role ? { role: { connect: { id: args.role } } } : {}
-      const otherBranchesToDisconnect: { disconnect: any[] } = {
-        disconnect: [],
-      }
-      const otherBranchesToConnect: { connect: any[] } = { connect: [] }
+      const otherBranchesToDisconnect: any[] = []
+      const otherBranchesToConnect: any[] = []
 
       args.otherBranches?.forEach((otherBranch) => {
         if (otherBranch.active) {
-          otherBranchesToConnect.connect.push({ id: otherBranch.id })
+          otherBranchesToConnect.push({ id: otherBranch.id })
         } else {
-          otherBranchesToDisconnect.disconnect.push({ id: otherBranch.id })
+          otherBranchesToDisconnect.push({ id: otherBranch.id })
         }
       })
+
+      let otherBranches: any = {}
+
+      if (otherBranchesToConnect.length) {
+        otherBranches = { otherBranches: { connect: otherBranchesToConnect } }
+      }
+
+      if (otherBranchesToDisconnect.length) {
+        if (!otherBranchesToConnect.length) {
+          otherBranches['otherBranches'] = {}
+        }
+        otherBranches['otherBranches']['disconnect'] = otherBranchesToDisconnect
+      }
 
       return ctx.db.user.update({
         where: { id: args.id },
@@ -431,10 +442,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           ...name,
           ...branch,
           ...role,
-          otherBranches: {
-            ...otherBranchesToDisconnect,
-            ...otherBranchesToConnect,
-          },
+          ...otherBranches,
         },
       })
     },
