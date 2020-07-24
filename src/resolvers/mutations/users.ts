@@ -401,6 +401,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       id: schema.idArg({ required: true }),
       name: schema.stringArg(),
       branch: schema.idArg(),
+      otherBranches: schema.arg({ type: 'BranchChangeInput', list: true }),
       role: schema.idArg(),
     },
     resolve: async (parent, args, ctx) => {
@@ -411,12 +412,29 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           }
         : {}
       const role = args.role ? { role: { connect: { id: args.role } } } : {}
+      const otherBranchesToDisconnect: { disconnect: any[] } = {
+        disconnect: [],
+      }
+      const otherBranchesToConnect: { connect: any[] } = { connect: [] }
+
+      args.otherBranches?.forEach((otherBranch) => {
+        if (otherBranch.active) {
+          otherBranchesToConnect.connect.push({ id: otherBranch.id })
+        } else {
+          otherBranchesToDisconnect.disconnect.push({ id: otherBranch.id })
+        }
+      })
+
       return ctx.db.user.update({
         where: { id: args.id },
         data: {
           ...name,
           ...branch,
           ...role,
+          otherBranches: {
+            ...otherBranchesToDisconnect,
+            ...otherBranchesToConnect,
+          },
         },
       })
     },

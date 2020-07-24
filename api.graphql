@@ -118,6 +118,11 @@ type Branch {
   users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
+input BranchChangeInput {
+  active: Boolean
+  id: String
+}
+
 input BranchFilter {
   every: BranchWhereInput
   none: BranchWhereInput
@@ -519,7 +524,7 @@ type Mutation {
   updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
   updateJob(data: UpdateJobCustomInput!, where: JobWhereUniqueInput!): Job
   updateRole(id: ID!, name: String, permissions: [RolePermissionsInputType!]): Role
-  updateUser(branch: ID, id: ID!, name: String, role: ID): User
+  updateUser(branch: ID, id: ID!, name: String, otherBranches: [BranchChangeInput!], role: ID): User
 }
 
 input NullableFloatFilter {
@@ -850,6 +855,7 @@ type User {
   jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, orderBy: JobOrderByInput, where: JobWhereInput): [Job!]!
   location: Location
   name: String!
+  otherBranches(after: BranchWhereUniqueInput, before: BranchWhereUniqueInput, first: Int, last: Int): [Branch!]!
   phone: String
   resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, orderBy: ResumeOrderByInput, where: ResumeWhereInput): [Resume!]!
   role: Role!

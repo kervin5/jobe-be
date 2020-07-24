@@ -16,6 +16,7 @@ schema.objectType({
     t.model.location()
     t.model.status()
     t.model.applications({ filtering: true })
+    t.model.otherBranches()
     t.model.createdAt()
     t.model.createdPerks()
     t.model.phone()
@@ -44,5 +45,13 @@ export const UserEEmpactData = schema.objectType({
   definition(t) {
     t.string('id', { nullable: true })
     t.int('assignments', { nullable: true })
+  },
+})
+
+schema.inputObjectType({
+  name: 'BranchChangeInput',
+  definition: (t) => {
+    t.string('id')
+    t.boolean('active')
   },
 })
