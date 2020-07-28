@@ -156,19 +156,31 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
 
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
-        include: { branch: { include: { company: true } } },
+        include: {
+          branch: { include: { company: true } },
+          otherBranches: true,
+        },
       })
 
-      let ownerFilter = `brn.id = '${user?.branch?.id}'`
+      const accesibleBranches = [
+        user?.branch?.id,
+        user?.otherBranches.map((brn) => brn.id),
+      ]
+        .flat(1)
+        .join(`','`)
+
+      let ownerFilter = `brn.id in ('${accesibleBranches}')`
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
         //Gets all the jobs from the company
         // ownerFilter = { branch: { company: { id: user?.branch?.company.id } } }
         ownerFilter = `cmp.id = '${user?.branch?.company?.id}'`
-      } else if (await can('READ', 'BRANCH', ctx)) {
-        //Gets all the jobs from the branch
-        ownerFilter = `brn.id = '${user?.branch?.id}'`
       }
+
+      // else if (await can('READ', 'BRANCH', ctx)) {
+      //   //Gets all the jobs from the branch
+      //   ownerFilter = `brn.id = '${user?.branch?.id}'`
+      // }
 
       const result = await ctx.db.queryRaw(`
       SELECT
@@ -211,19 +223,32 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
 
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
-        include: { branch: { include: { company: true } } },
+        include: {
+          branch: { include: { company: true } },
+          otherBranches: true,
+        },
       })
 
-      let ownerFilter = `brn.id = '${user?.branch?.id}'`
+      //Get all the branches that the user has access to
+      const accesibleBranches = [
+        user?.branch?.id,
+        user?.otherBranches.map((brn) => brn.id),
+      ]
+        .flat(1)
+        .join(`','`)
+
+      let ownerFilter = `brn.id in ('${accesibleBranches}')`
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
         //Gets all the jobs from the company
         // ownerFilter = { branch: { company: { id: user?.branch?.company.id } } }
         ownerFilter = `cmp.id = '${user?.branch?.company?.id}'`
-      } else if (await can('READ', 'BRANCH', ctx)) {
-        //Gets all the jobs from the branch
-        ownerFilter = `brn.id = '${user?.branch?.id}'`
       }
+
+      // else if (await can('READ', 'BRANCH', ctx)) {
+      //   //Gets all the jobs from the branch
+      //   ownerFilter = `brn.id = '${user?.branch?.id}'`
+      // }
 
       const result = await ctx.db.queryRaw(`
       SELECT

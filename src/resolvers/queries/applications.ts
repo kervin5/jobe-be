@@ -49,11 +49,22 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
-        include: { branch: { include: { company: true } } },
+        include: {
+          branch: { include: { company: true } },
+          otherBranches: true,
+        },
       })
 
       //Gets jobs created by this user by default;
-      let ownerFilter: UserAccessFilter = { branch: { id: user?.branch?.id } }
+      let ownerFilter: UserAccessFilter = {
+        branch: {
+          id: {
+            in: [user?.branch?.id, user?.otherBranches.map((br) => br.id)].flat(
+              2,
+            ),
+          },
+        },
+      }
 
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
@@ -83,12 +94,23 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
-        include: { branch: { include: { company: true } } },
+        include: {
+          branch: { include: { company: true } },
+          otherBranches: true,
+        },
       })
 
       //Gets jobs created by this user by default;
       // let ownerFilter = { author: { id: ctx.request.user.id } };
-      let ownerFilter: UserAccessFilter = { branch: { id: user?.branch?.id } }
+      let ownerFilter: UserAccessFilter = {
+        branch: {
+          id: {
+            in: [user?.branch?.id, user?.otherBranches.map((br) => br.id)].flat(
+              2,
+            ),
+          },
+        },
+      }
 
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
