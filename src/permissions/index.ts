@@ -87,6 +87,7 @@ export const permissions = shield({
       ),
 
       branches: rules.isAuthenticatedUser,
+      branchesByUser: rules.isAuthenticatedUser,
       getSignedFileUrl: rules.isAuthenticatedUser,
     },
     Mutation: {

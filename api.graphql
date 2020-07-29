@@ -507,7 +507,7 @@ type Mutation {
   createResume(path: String!, title: String!, type: String!): Resume
   createRole(name: String!, permissions: [RolePermissionsInputType!]!): Role
   createSkill(name: String!): Skill
-  createUser(branch: ID, email: String!, name: String!, role: ID): User
+  createUser(branch: ID, email: String!, name: String!, otherBranches: [BranchChangeInput!], role: ID): User
   deleteFavorite(job: ID!): ID
   deleteJob(id: ID!): Job
   deleteUser(id: ID): User
@@ -645,6 +645,7 @@ type Query {
   applications(orderBy: ApplicationOrderByInput, skip: Int, take: Int, where: ApplicationWhereInput): [Application!]
   applicationsConnection(where: ApplicationWhereInput): Int
   branches(where: BranchWhereInput): [Branch!]
+  branchesByUser(where: BranchWhereInput): [Branch!]
   candidates(skip: Int, take: Int, where: UserWhereInput): [User!]
   candidatesConnection(where: UserWhereInput): Int
   categories(take: Int, where: CategoryWhereInput): [Category!]

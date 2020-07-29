@@ -66,6 +66,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       email: schema.stringArg({ required: true }),
       role: schema.idArg(),
       branch: schema.idArg(),
+      otherBranches: schema.arg({ type: 'BranchChangeInput', list: true }),
     },
     resolve: async (parent, args, ctx) => {
       const salt = await genSalt(10)
@@ -80,6 +81,13 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           branch: {
             //@ts-ignore
             connect: { id: args.branch },
+          },
+
+          otherBranches: {
+            //@ts-ignore
+            connect: args.otherBranches
+              ? args.otherBranches.map((br) => ({ id: br.id }))
+              : [],
           },
           status: 'ACTIVE', //@ts-ignore
           role: { connect: { id: args.role } },
