@@ -233,8 +233,9 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           process.env.APP_SECRET as string,
         )
         // 4. Set the cookie with the token
-
+        //@ts-ignore
         ctx.response.header('token', token)
+        //@ts-ignore
         ctx.response.cookie('token', token, {
           httpOnly: true,
           maxAge: 1000 * 60 * 60 * 24 * 365,
@@ -282,9 +283,9 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       }
       // 3. generate the JWT Token
       const token = jwt.sign({ id: user.id }, process.env.APP_SECRET as string)
-
+      //@ts-ignore
       ctx.response.header('token', `Bearer ${token}`)
-
+      //@ts-ignore
       ctx.response.cookie('token', `Bearer ${token}`, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365,
@@ -298,6 +299,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.string('logout', {
     nullable: true,
     resolve: async (parent, args, ctx) => {
+      //@ts-ignore
       ctx.response.clearCookie('token')
       return 'log out'
     },
@@ -530,6 +532,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         process.env.APP_SECRET as string,
       )
       // 7. Set the JWT cookie
+      //@ts-ignore
       ctx.response.cookie('token', token, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365,

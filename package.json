@@ -16,7 +16,7 @@
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
-    "nexus": "next",
+    "nexus": "latest",
     "nexus-plugin-prisma": "next",
     "nexus-plugin-shield": "^0.1.4",
     "node-fetch": "^2.6.0",
