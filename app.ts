@@ -12,6 +12,15 @@ settings.change({
   server: {
     port: PORT,
     playground: true,
+    cors: {
+      origin: [process.env.FRONTEND_URL as string, 'http://localhost:3000'],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      methods: ['POST', 'GET'],
+    },
+    graphql: {
+      introspection: true,
+    },
   },
 })
 
