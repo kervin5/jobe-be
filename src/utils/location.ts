@@ -29,8 +29,8 @@ export async function searchBoundary(
       location = await ctx.db.location.update({
         data: {
           name: locationName,
-          longitude: foundLocation.center[1],
-          latitude: foundLocation.center[0],
+          longitude: foundLocation.center[0],
+          latitude: foundLocation.center[1],
           boundary: { set: foundLocation.bbox },
         },
         where: {
@@ -58,8 +58,8 @@ export async function searchBoundary(
     location = await ctx.db.location.create({
       data: {
         name: locationName,
-        longitude: foundLocation.center[1],
-        latitude: foundLocation.center[0],
+        longitude: foundLocation.center[0],
+        latitude: foundLocation.center[1],
         boundary: { set: foundLocation.bbox },
       },
     })
