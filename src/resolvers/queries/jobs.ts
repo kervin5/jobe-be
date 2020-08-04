@@ -143,6 +143,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     args: {
       query: schema.stringArg({ nullable: true }),
       status: schema.stringArg({ nullable: true, list: true }),
+      branch: schema.stringArg({ nullable: true, list: true }),
     },
     resolve: async (parent, args, ctx) => {
       const queryFilter = args.query
@@ -153,6 +154,8 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
             `','`,
           )}') AND "Job".status != 'DELETED'`
         : ''
+
+      const branchFilter = args.branch ? `AND brn.id = '${args.branch}'` : ''
 
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
@@ -192,7 +195,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       JOIN "${process.env.DATABASE_SCHEMA}"."Branch" brn ON "Job".branch = brn.id
       JOIN "${process.env.DATABASE_SCHEMA}"."Company" cmp ON brn.company = cmp.id
 
-      WHERE ${ownerFilter} ${queryFilter} ${statusFilter};
+      WHERE ${ownerFilter} ${queryFilter} ${statusFilter} ${branchFilter} AND "Job".status != 'DELETED';
       `)
 
       return result?.[0].count
@@ -207,6 +210,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       orderBy: schema.stringArg({ nullable: true }),
       query: schema.stringArg({ nullable: true }),
       status: schema.stringArg({ nullable: true, list: true }),
+      branch: schema.stringArg({ nullable: true, list: true }),
     },
     resolve: async (parent, args, ctx) => {
       const limit = args.take ? `LIMIT ${args.take}` : ''
@@ -216,10 +220,10 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ? `AND ("Job".title ILIKE '%${args.query}%' OR loc.name ILIKE '%${args.query}%' OR brn.name ILIKE '%${args.query}%' OR "User".name ILIKE '%${args.query}%' OR "User".email ILIKE '%${args.query}%')`
         : ''
       const statusFilter = args.status
-        ? `AND "Job".status in ('${args.status.join(
-            `','`,
-          )}') AND "Job".status != 'DELETED'`
+        ? `AND "Job".status in ('${args.status.join(`','`)}')`
         : ''
+
+      const branchFilter = args.branch ? `AND brn.id = '${args.branch}'` : ''
 
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
@@ -269,7 +273,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       JOIN "${process.env.DATABASE_SCHEMA}"."Location" loc ON "Job".location = loc.id
       JOIN "${process.env.DATABASE_SCHEMA}"."Branch" brn ON "Job".branch = brn.id
       JOIN "${process.env.DATABASE_SCHEMA}"."Company" cmp ON brn.company = cmp.id
-      WHERE ${ownerFilter} ${queryFilter} ${statusFilter}
+      WHERE ${ownerFilter} ${queryFilter} ${statusFilter} ${branchFilter} AND "Job".status != 'DELETED'
       ${orderBy}
       ${limit}
       ${skip};
