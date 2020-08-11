@@ -78,6 +78,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       const user = await ctx.db.user.create({
         data: {
           ...args,
+          email: args.email.trim(),
           branch: {
             //@ts-ignore
             connect: { id: args.branch },
@@ -218,6 +219,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         const user = await ctx.db.user.create({
           data: {
             ...args,
+            email: args.email.trim(),
             phone: sanitizePhoneNumber(args.phone),
             password: await hash(args.password, salt),
             status: 'ACTIVE',
