@@ -59,13 +59,13 @@ input ApplicationNoteWhereUniqueInput {
 }
 
 input ApplicationOrderByInput {
-  createdAt: OrderByArg
-  id: OrderByArg
-  jobId: OrderByArg
-  resumeId: OrderByArg
-  status: OrderByArg
-  updatedAt: OrderByArg
-  userId: OrderByArg
+  createdAt: SortOrder
+  id: SortOrder
+  jobId: SortOrder
+  resumeId: SortOrder
+  status: SortOrder
+  updatedAt: SortOrder
+  userId: SortOrder
 }
 
 enum ApplicationStatus {
@@ -296,7 +296,7 @@ input IntFilter {
 }
 
 type Job {
-  applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, orderBy: ApplicationOrderByInput): [Application!]!
+  applications(after: ApplicationWhereUniqueInput, before: ApplicationWhereUniqueInput, first: Int, last: Int, orderBy: [ApplicationOrderByInput!]): [Application!]!
   author: User!
   branch: Branch!
   categories(after: CategoryWhereUniqueInput, before: CategoryWhereUniqueInput, first: Int, last: Int): [Category!]!
@@ -310,7 +310,7 @@ type Job {
   location: Location!
   maxCompensation: Float!
   minCompensation: Float!
-  perks(after: PerkWhereUniqueInput, before: PerkWhereUniqueInput, first: Int, last: Int, orderBy: PerkOrderByInput, where: PerkWhereInput): [Perk!]!
+  perks(after: PerkWhereUniqueInput, before: PerkWhereUniqueInput, first: Int, last: Int, orderBy: [PerkOrderByInput!], where: PerkWhereInput): [Perk!]!
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int): [Skill!]!
   status: JobStatus!
   title: String!
@@ -357,22 +357,22 @@ type JobGridItem {
 }
 
 input JobOrderByInput {
-  authorId: OrderByArg
-  branchId: OrderByArg
-  compensationType: OrderByArg
-  createdAt: OrderByArg
-  cronTaskId: OrderByArg
-  description: OrderByArg
-  disclaimer: OrderByArg
-  id: OrderByArg
-  locationId: OrderByArg
-  maxCompensation: OrderByArg
-  minCompensation: OrderByArg
-  status: OrderByArg
-  title: OrderByArg
-  type: OrderByArg
-  updatedAt: OrderByArg
-  views: OrderByArg
+  authorId: SortOrder
+  branchId: SortOrder
+  compensationType: SortOrder
+  createdAt: SortOrder
+  cronTaskId: SortOrder
+  description: SortOrder
+  disclaimer: SortOrder
+  id: SortOrder
+  locationId: SortOrder
+  maxCompensation: SortOrder
+  minCompensation: SortOrder
+  status: SortOrder
+  title: SortOrder
+  type: SortOrder
+  updatedAt: SortOrder
+  views: SortOrder
 }
 
 enum JobStatus {
@@ -552,11 +552,6 @@ input NullableStringFilter {
   startsWith: String
 }
 
-enum OrderByArg {
-  asc
-  desc
-}
-
 input OrderByInput {
   createdAt: String
   updatedAt: String
@@ -579,12 +574,12 @@ input PerkFilter {
 }
 
 input PerkOrderByInput {
-  authorId: OrderByArg
-  createdAt: OrderByArg
-  id: OrderByArg
-  name: OrderByArg
-  status: OrderByArg
-  updatedAt: OrderByArg
+  authorId: SortOrder
+  createdAt: SortOrder
+  id: SortOrder
+  name: SortOrder
+  status: SortOrder
+  updatedAt: SortOrder
 }
 
 enum PerkStatus {
@@ -668,7 +663,7 @@ type Query {
   popularTerms: [Term!]
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, where: RoleWhereInput): [Role!]!
   searchJobs(location: String, orderBy: JobOrderByInput, query: String, radius: Int = 5, skip: Int, take: Int, where: JobWhereInput): [Job!]
-  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, orderBy: SkillOrderByInput, where: SkillWhereInput): [Skill!]!
+  skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, orderBy: [SkillOrderByInput!], where: SkillWhereInput): [Skill!]!
   statsApplicationsByBranch: [StatisticCountByBranch!]
   statsJobsByBranch: [StatisticCountByBranch!]
   statsPowerUsers: [StatisticCountWithLabel!]
@@ -695,12 +690,12 @@ input ResumeFilter {
 }
 
 input ResumeOrderByInput {
-  createdAt: OrderByArg
-  fileId: OrderByArg
-  id: OrderByArg
-  title: OrderByArg
-  updatedAt: OrderByArg
-  userId: OrderByArg
+  createdAt: SortOrder
+  fileId: SortOrder
+  id: SortOrder
+  title: SortOrder
+  updatedAt: SortOrder
+  userId: SortOrder
 }
 
 input ResumeWhereInput {
@@ -770,8 +765,8 @@ input SkillFilter {
 }
 
 input SkillOrderByInput {
-  id: OrderByArg
-  name: OrderByArg
+  id: SortOrder
+  name: SortOrder
 }
 
 input SkillWhereInput {
@@ -789,6 +784,11 @@ input SkillWhereInput {
 input SkillWhereUniqueInput {
   id: String
   name: String
+}
+
+enum SortOrder {
+  asc
+  desc
 }
 
 type StatisticCountByBranch {
@@ -853,12 +853,12 @@ type User {
   email: String!
   favorites(after: FavoriteWhereUniqueInput, before: FavoriteWhereUniqueInput, first: Int, last: Int, where: FavoriteWhereInput): [Favorite!]!
   id: String!
-  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, orderBy: JobOrderByInput, where: JobWhereInput): [Job!]!
+  jobs(after: JobWhereUniqueInput, before: JobWhereUniqueInput, first: Int, last: Int, orderBy: [JobOrderByInput!], where: JobWhereInput): [Job!]!
   location: Location
   name: String!
   otherBranches(after: BranchWhereUniqueInput, before: BranchWhereUniqueInput, first: Int, last: Int): [Branch!]!
   phone: String
-  resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, orderBy: ResumeOrderByInput, where: ResumeWhereInput): [Resume!]!
+  resumes(after: ResumeWhereUniqueInput, before: ResumeWhereUniqueInput, first: Int, last: Int, orderBy: [ResumeOrderByInput!], where: ResumeWhereInput): [Resume!]!
   role: Role!
   status: UserStatus!
 }
