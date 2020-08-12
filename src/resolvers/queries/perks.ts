@@ -11,6 +11,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       orderBy: schema.arg({ type: 'PerkOrderByInput' }),
     },
     resolve: async (parent, args, ctx) => {
+      //@ts-ignore
       return ctx.db.perk.findMany({
         ...(args.take ? { take: args.take, skip: args.skip } : {}),
         ...(args.orderBy ? { orderBy: args.orderBy } : {}),

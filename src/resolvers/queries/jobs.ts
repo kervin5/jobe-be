@@ -69,6 +69,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
             status: 'POSTED',
           },
           ...(args.take ? { take: args.take, skip: args.skip } : {}),
+          //@ts-ignore
           orderBy: args.orderBy ? args.orderBy : { updatedAt: 'desc' },
         })
       }
