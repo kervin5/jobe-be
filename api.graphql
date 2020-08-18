@@ -284,6 +284,18 @@ input FloatFilter {
   notIn: [Float!]
 }
 
+type GraphqlError {
+  code: Int
+  message: String
+  type: String
+}
+
+type GraphqMessage {
+  code: Int
+  message: String
+  type: String
+}
+
 input IntFilter {
   equals: Int
   gt: Int
@@ -513,13 +525,13 @@ type Mutation {
   deleteUser(id: ID): User
   inactivatePerk(id: ID!): Perk
   incrementJobViewCount(id: String!): Job
-  login(email: String!, password: String!): User
+  login(email: String!, password: String!): UserResult
   logout: String
-  requestReset(email: String!): String
-  resetPassword(confirmPassword: String!, password: String!, token: String!): User
+  requestReset(email: String!): UserResult
+  resetPassword(confirmPassword: String!, password: String!, token: String!): UserResult
   schedule(id: String!): String
   signFileUpload(fileName: String!, fileType: String!): SignedFileUploadRequest
-  signup(email: String!, name: String!, password: String!, phone: String!): User
+  signup(email: String!, name: String!, password: String!, phone: String!): UserResult
   unschedule(id: String!): String
   updateApplicationStatus(id: ID!, status: ApplicationStatus!): Application
   updateJob(data: UpdateJobCustomInput!, where: JobWhereUniqueInput!): Job
@@ -873,6 +885,9 @@ input UserFilter {
   none: UserWhereInput
   some: UserWhereInput
 }
+
+"""Any container type that can be rendered into the feed"""
+union UserResult = GraphqlError | User
 
 enum UserStatus {
   ACTIVE

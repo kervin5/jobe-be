@@ -5,60 +5,10 @@ import { promisify } from 'util'
 import { randomBytes } from 'crypto'
 import { schema } from 'nexus'
 import { transport, makeANiceEmail } from '../../utils/mail'
+import generateError from '../../utils/error'
 import appText from '../../../lang/appText'
 
-//TODO: DELETE
-import { sign_s3_read } from '../../utils/aws'
-import request from '../../utils/request'
-import { findKeywords } from '../../utils/functions'
-
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
-  // t.int('updateLocation', {
-  //   resolve: async (parent, args, ctx) => {
-  //     const users = (
-  //       await ctx.db.user.findMany({
-  //         where: { location: null },
-  //         select: {
-  //           id: true,
-  //           applications: { include: { job: { include: { location: true } } } },
-  //           favorites: { include: { job: { include: { location: true } } } },
-  //         },
-  //       })
-  //     ).filter((user) => user.applications.length || user.favorites.length)
-
-  //     const updateData = users.map((user) => {
-  //       const lastApplication = user.applications.pop()
-  //       const lastFavorite = user.favorites.pop()
-  //       const userData = {
-  //         location: lastApplication
-  //           ? lastApplication.job.location.id
-  //           : lastFavorite?.job.location.id,
-  //         id: user.id,
-  //       }
-  //       return userData
-  //     })
-
-  //     async function* generateSequence(usersToUpdate: any) {
-  //       for (let i = 0; i < usersToUpdate.length; i++) {
-  //         const userData = usersToUpdate[i]
-  //         // yay, can use await!
-  //         // await new Promise(resolve => setTimeout(resolve, 1000));
-  //         const updateResult = await ctx.db.user.update({
-  //           where: { id: userData.id },
-  //           data: { location: { connect: { id: userData.location } } },
-  //         })
-  //         yield { i: `${i} of ${usersToUpdate.length}`, updateResult }
-  //       }
-  //     }
-
-  //     const generator = generateSequence(updateData)
-
-  //     for await (let result of generator) {
-  //       console.log(result)
-  //     }
-  //     return updateData.length
-  //   },
-  // })
   t.field('createUser', {
     type: 'User',
     args: {
@@ -110,7 +60,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
     },
   })
   t.field('signup', {
-    type: 'User',
+    type: 'UserResult',
     args: {
       name: schema.stringArg({ required: true }),
       password: schema.stringArg({ required: true }),
@@ -245,14 +195,17 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         // console.log(user);
         return user
       } catch (error) {
-        console.log({ error })
-        throw new Error(appText.messages.user.alreadyExists)
+        return generateError(
+          appText.messages.user.alreadyExists,
+          'authenticationError',
+          400,
+        )
       }
     },
   })
 
   t.field('login', {
-    type: 'User',
+    type: 'UserResult',
     args: {
       email: schema.stringArg({ nullable: false }),
       password: schema.stringArg({ nullable: false }),
@@ -265,7 +218,11 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       })
 
       if (!user) {
-        throw new Error(appText.messages.user.doesnExist(email))
+        return generateError(
+          appText.messages.user.doesnExist(email),
+          'authenticationError',
+          400,
+        )
       }
 
       const userIsActive = await ctx.db.user.count({
@@ -276,12 +233,20 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       })
 
       if (!userIsActive) {
-        throw new Error(appText.messages.user.notActive)
+        return generateError(
+          appText.messages.user.notActive,
+          'authenticationError',
+          400,
+        )
       }
 
       const passwordValid = await compare(password, user.password)
       if (!passwordValid) {
-        throw new Error(appText.messages.user.invalidPassword)
+        return generateError(
+          appText.messages.user.invalidPassword,
+          'authenticationError',
+          400,
+        )
       }
       // 3. generate the JWT Token
       const token = jwt.sign({ id: user.id }, process.env.APP_SECRET as string)
@@ -460,20 +425,27 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
     },
   })
 
-  t.string('requestReset', {
+  t.field('requestReset', {
+    type: 'UserResult',
     args: { email: schema.stringArg({ required: true }) },
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
         where: { email: args.email },
       })
 
-      if (!user) throw new Error('Invalid user')
+      if (!user)
+        return generateError('Invalid user', 'authenticationError', 400)
 
       const userIsActive = await ctx.db.user.count({
         where: { email: args.email, status: 'ACTIVE' },
       })
 
-      if (!userIsActive) throw new Error(appText.messages.user.notActive)
+      if (!userIsActive)
+        return generateError(
+          appText.messages.user.notActive,
+          'authenticationError',
+          400,
+        )
 
       const randomBytesPromisified = promisify(randomBytes)
       const resetToken = (await randomBytesPromisified(20)).toString('hex')
@@ -491,12 +463,12 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         html: makeANiceEmail(appText.emails.users.reset.body(resetToken)),
       })
 
-      return args.email
+      return user
     },
   })
 
   t.field('resetPassword', {
-    type: 'User',
+    type: 'UserResult',
     args: {
       token: schema.stringArg({ required: true }),
       password: schema.stringArg({ required: true }),
@@ -505,7 +477,11 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
     resolve: async (parent, args, ctx) => {
       // 1. Check if the passwords match
       if (args.password !== args.confirmPassword) {
-        throw new Error(`${appText.messages.user.passwordsDontMatch}!`)
+        return generateError(
+          `${appText.messages.user.passwordsDontMatch}!`,
+          'authenticationError',
+          400,
+        )
       }
       // 2. Check if its a legit reset token
       // 3. Check if its expired
@@ -516,7 +492,12 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         },
       })
 
-      if (!user) throw new Error(`${appText.messages.user.invalidToken}!`)
+      if (!user)
+        return generateError(
+          `${appText.messages.user.invalidToken}!`,
+          'authenticationError',
+          400,
+        )
       // 4. Hash their new password
       const password = await hash(args.password, 10)
       // 5. Save the new password to the user and remove old reset token fields
@@ -544,14 +525,6 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       // 9. Amazing
     },
   })
-}
-
-function titleCase(str: string = '') {
-  let string = str.toLowerCase().split(' ')
-  for (var i = 0; i < string.length; i++) {
-    string[i] = string[i].charAt(0).toUpperCase() + string[i].slice(1)
-  }
-  return string.join(' ')
 }
 
 export function sanitizePhoneNumber(phone: string) {

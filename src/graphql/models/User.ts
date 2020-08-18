@@ -55,3 +55,19 @@ schema.inputObjectType({
     t.boolean('active')
   },
 })
+
+schema.unionType({
+  name: 'UserResult',
+  description: 'Any container type that can be rendered into the feed',
+  definition(t) {
+    t.members('User', 'GraphqlError')
+    t.resolveType((item) => {
+      //@ts-ignore
+      if (item?.email) {
+        return 'User'
+      } else {
+        return 'GraphqlError'
+      }
+    })
+  },
+})

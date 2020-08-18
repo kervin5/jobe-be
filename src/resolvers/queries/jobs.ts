@@ -186,7 +186,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       //   ownerFilter = `brn.id = '${user?.branch?.id}'`
       // }
 
-      const result = await ctx.db.queryRaw(`
+      const result = await ctx.db.$queryRaw(`
       SELECT
       count(*)
       
@@ -255,7 +255,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       //   ownerFilter = `brn.id = '${user?.branch?.id}'`
       // }
 
-      const result = await ctx.db.queryRaw(`
+      const result = await ctx.db.$queryRaw(`
       SELECT
       "Job".id,
       "Job".title,
