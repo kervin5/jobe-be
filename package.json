@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "nexus dev",
-    "build": "nexus build --deployment heroku",
-    "start": "node .nexus/build",
+    "build": "nexus build --deployment vercel",
+    "start": "node dist",
     "postinstall": "npm -s run prisma:generate",
     "prisma:generate": "prisma generate --schema=./prisma/schema.prisma"
   },
@@ -41,8 +41,5 @@
     "singleQuote": true,
     "semi": false,
     "trailingComma": "all"
-  },
-  "engines": {
-    "node": "14.x"
   }
 }
