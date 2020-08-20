@@ -515,7 +515,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         { id: updatedUser.id },
         process.env.APP_SECRET as string,
       )
-      // 7. Set the JWT cookie
+      // 7. Set the JWT cookie'
       //@ts-ignore
       ctx.response.cookie('token', token, {
         httpOnly: true,
