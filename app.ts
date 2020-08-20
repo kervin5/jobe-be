@@ -15,6 +15,12 @@ settings.change({
     graphql: {
       introspection: true,
     },
+    cors: {
+      origin: [process.env.FRONTEND_URL as string, 'http://localhost:3000'],
+      credentials: true,
+      optionsSuccessStatus: 200,
+      methods: ['POST', 'GET'],
+    },
   },
 })
 
@@ -23,7 +29,7 @@ schema.addToContext((req) => {
   //@ts-ignore
   const contextRequest: ContextRequest = { ...req }
   //@ts-ignore
-  return { request: contextRequest, response: req.res }
+  return { request: contextRequest.req, response: req.res }
 })
 
 use(prisma({ features: { crud: true } }))

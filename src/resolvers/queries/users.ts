@@ -18,6 +18,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       if (!ctx.request.user) {
         return null
       }
+
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
       })
