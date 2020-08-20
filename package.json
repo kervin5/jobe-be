@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "nexus dev",
-    "build": "nexus build --deployment vercel",
-    "start": "node --experimental-modules dist",
+    "build": "nexus build -d vercel",
+    "start": "node .nexus/build",
     "postinstall": "npm -s run prisma:generate",
     "prisma:generate": "prisma generate --schema=./prisma/schema.prisma"
   },
