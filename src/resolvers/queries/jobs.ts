@@ -181,11 +181,14 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ownerFilter = `cmp.id = '${user?.branch?.company?.id}'`
       }
 
+<<<<<<< HEAD
       // else if (await can('READ', 'BRANCH', ctx)) {
       //   //Gets all the jobs from the branch
       //   ownerFilter = `brn.id = '${user?.branch?.id}'`
       // }
 
+=======
+>>>>>>> master
       const result = await ctx.db.$queryRaw(`
       SELECT
       count(*)
@@ -250,11 +253,14 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ownerFilter = `cmp.id = '${user?.branch?.company?.id}'`
       }
 
+<<<<<<< HEAD
       // else if (await can('READ', 'BRANCH', ctx)) {
       //   //Gets all the jobs from the branch
       //   ownerFilter = `brn.id = '${user?.branch?.id}'`
       // }
 
+=======
+>>>>>>> master
       const result = await ctx.db.$queryRaw(`
       SELECT
       "Job".id,

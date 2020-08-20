@@ -428,6 +428,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('requestReset', {
     type: 'UserResult',
     args: { email: schema.stringArg({ required: true }) },
+    //@ts-ignore
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
         where: { email: args.email },
@@ -514,7 +515,11 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         { id: updatedUser.id },
         process.env.APP_SECRET as string,
       )
+<<<<<<< HEAD
       // 7. Set the JWT cookie
+=======
+      // 7. Set the JWT cookie'
+>>>>>>> master
       //@ts-ignore
       ctx.response.cookie('token', token, {
         httpOnly: true,
