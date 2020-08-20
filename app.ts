@@ -12,6 +12,7 @@ settings.change({
   server: {
     port: PORT,
     playground: true,
+    introspection: true,
   },
 })
 
