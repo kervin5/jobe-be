@@ -69,6 +69,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
             status: 'POSTED',
           },
           ...(args.take ? { take: args.take, skip: args.skip } : {}),
+          //@ts-ignore
           orderBy: args.orderBy ? args.orderBy : { updatedAt: 'desc' },
         })
       }
@@ -170,7 +171,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ownerFilter = `brn.id = '${user?.branch?.id}'`
       }
 
-      const result = await ctx.db.queryRaw(`
+      const result = await ctx.db.$queryRaw(`
       SELECT
       count(*)
       
@@ -225,7 +226,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ownerFilter = `brn.id = '${user?.branch?.id}'`
       }
 
-      const result = await ctx.db.queryRaw(`
+      const result = await ctx.db.$queryRaw(`
       SELECT
       "Job".id,
       "Job".title,
