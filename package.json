@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "nexus dev",
     "build": "nexus build --deployment vercel",
-    "start": "node dist",
+    "start": "node --experimental-modules dist",
     "postinstall": "npm -s run prisma:generate",
     "prisma:generate": "prisma generate --schema=./prisma/schema.prisma"
   },
