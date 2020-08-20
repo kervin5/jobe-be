@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "nexus dev",
-    "build": "nexus build -d vercel",
+    "build": "nexus build --deployment heroku",
     "start": "node .nexus/build",
     "postinstall": "npm -s run prisma:generate",
     "prisma:generate": "prisma generate --schema=./prisma/schema.prisma"
@@ -15,8 +15,9 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
+    "global-dirs": "^2.0.1",
     "jsonwebtoken": "^8.5.1",
-    "nexus": "0.25.0",
+    "nexus": "next",
     "nexus-plugin-prisma": "next",
     "nexus-plugin-shield": "^0.1.4",
     "node-fetch": "^2.6.0",
@@ -40,5 +41,8 @@
     "singleQuote": true,
     "semi": false,
     "trailingComma": "all"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }

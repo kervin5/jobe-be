@@ -13,7 +13,7 @@ type Application {
   user: User!
 }
 
-input ApplicationFilter {
+input ApplicationListRelationFilter {
   every: ApplicationWhereInput
   none: ApplicationWhereInput
   some: ApplicationWhereInput
@@ -28,7 +28,7 @@ type ApplicationNote {
   user: User!
 }
 
-input ApplicationNoteFilter {
+input ApplicationNoteListRelationFilter {
   every: ApplicationNoteWhereInput
   none: ApplicationNoteWhereInput
   some: ApplicationNoteWhereInput
@@ -90,7 +90,7 @@ input ApplicationWhereInput {
   job: JobWhereInput
   jobId: StringFilter
   NOT: [ApplicationWhereInput!]
-  notes: ApplicationNoteFilter
+  notes: ApplicationNoteListRelationFilter
   OR: [ApplicationWhereInput!]
   resume: ResumeWhereInput
   resumeId: StringFilter
@@ -123,7 +123,7 @@ input BranchChangeInput {
   id: String
 }
 
-input BranchFilter {
+input BranchListRelationFilter {
   every: BranchWhereInput
   none: BranchWhereInput
   some: BranchWhereInput
@@ -133,16 +133,16 @@ input BranchWhereInput {
   AND: [BranchWhereInput!]
   company: CompanyWhereInput
   companyId: StringFilter
-  description: NullableStringFilter
+  description: StringNullableFilter
   id: StringFilter
-  jobs: JobFilter
+  jobs: JobListRelationFilter
   location: LocationWhereInput
-  locationId: NullableStringFilter
+  locationId: StringNullableFilter
   name: StringFilter
   NOT: [BranchWhereInput!]
   OR: [BranchWhereInput!]
-  users: UserFilter
-  usersWithAccess: UserFilter
+  users: UserListRelationFilter
+  usersWithAccess: UserListRelationFilter
 }
 
 input BranchWhereUniqueInput {
@@ -155,7 +155,7 @@ type Category {
   name: String!
 }
 
-input CategoryFilter {
+input CategoryListRelationFilter {
   every: CategoryWhereInput
   none: CategoryWhereInput
   some: CategoryWhereInput
@@ -164,8 +164,8 @@ input CategoryFilter {
 input CategoryWhereInput {
   AND: [CategoryWhereInput!]
   id: StringFilter
-  jobs: JobFilter
-  JobTemplates: JobTemplateFilter
+  jobs: JobListRelationFilter
+  JobTemplates: JobTemplateListRelationFilter
   name: StringFilter
   NOT: [CategoryWhereInput!]
   OR: [CategoryWhereInput!]
@@ -184,7 +184,7 @@ type Company {
   name: String!
 }
 
-input CompanyFilter {
+input CompanyListRelationFilter {
   every: CompanyWhereInput
   none: CompanyWhereInput
   some: CompanyWhereInput
@@ -192,11 +192,11 @@ input CompanyFilter {
 
 input CompanyWhereInput {
   AND: [CompanyWhereInput!]
-  branches: BranchFilter
+  branches: BranchListRelationFilter
   description: StringFilter
   id: StringFilter
   location: LocationWhereInput
-  locationId: NullableStringFilter
+  locationId: StringNullableFilter
   name: StringFilter
   NOT: [CompanyWhereInput!]
   OR: [CompanyWhereInput!]
@@ -220,7 +220,7 @@ input DateTimeFilter {
   in: [DateTime!]
   lt: DateTime
   lte: DateTime
-  not: DateTime
+  not: NestedDateTimeFilter
   notIn: [DateTime!]
 }
 
@@ -231,7 +231,7 @@ type Favorite {
   user: User!
 }
 
-input FavoriteFilter {
+input FavoriteListRelationFilter {
   every: FavoriteWhereInput
   none: FavoriteWhereInput
   some: FavoriteWhereInput
@@ -269,7 +269,7 @@ input FileWhereInput {
   NOT: [FileWhereInput!]
   OR: [FileWhereInput!]
   path: StringFilter
-  Resume: ResumeFilter
+  Resume: ResumeListRelationFilter
   updatedAt: DateTimeFilter
 }
 
@@ -280,8 +280,23 @@ input FloatFilter {
   in: [Float!]
   lt: Float
   lte: Float
-  not: Float
+  not: NestedFloatFilter
   notIn: [Float!]
+}
+
+input FloatNullableFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: NestedFloatNullableFilter
+  notIn: [Float!]
+}
+
+input FloatNullableListFilter {
+  equals: [Float!]
 }
 
 type GraphqlError {
@@ -303,7 +318,7 @@ input IntFilter {
   in: [Int!]
   lt: Int
   lte: Int
-  not: Int
+  not: NestedIntFilter
   notIn: [Int!]
 }
 
@@ -347,12 +362,6 @@ input JobCronTaskWhereInput {
   result: StringFilter
 }
 
-input JobFilter {
-  every: JobWhereInput
-  none: JobWhereInput
-  some: JobWhereInput
-}
-
 type JobGridItem {
   applications: Int
   author: String
@@ -366,6 +375,12 @@ type JobGridItem {
   title: String
   updatedAt: DateTime
   views: Int
+}
+
+input JobListRelationFilter {
+  every: JobWhereInput
+  none: JobWhereInput
+  some: JobWhereInput
 }
 
 input JobOrderByInput {
@@ -402,7 +417,7 @@ input JobStatusFilter {
   not_in: [JobStatus!]
 }
 
-input JobTemplateFilter {
+input JobTemplateListRelationFilter {
   every: JobTemplateWhereInput
   none: JobTemplateWhereInput
   some: JobTemplateWhereInput
@@ -412,11 +427,11 @@ input JobTemplateWhereInput {
   AND: [JobTemplateWhereInput!]
   author: UserWhereInput
   authorId: StringFilter
-  categories: CategoryFilter
+  categories: CategoryListRelationFilter
   compensationType: StringFilter
   createdAt: DateTimeFilter
   description: StringFilter
-  disclaimer: NullableStringFilter
+  disclaimer: StringNullableFilter
   id: StringFilter
   lastModifiedUserId: StringFilter
   lastUserModified: UserWhereInput
@@ -425,8 +440,8 @@ input JobTemplateWhereInput {
   name: StringFilter
   NOT: [JobTemplateWhereInput!]
   OR: [JobTemplateWhereInput!]
-  perks: PerkFilter
-  skills: SkillFilter
+  perks: PerkListRelationFilter
+  skills: SkillListRelationFilter
   title: StringFilter
   type: StringFilter
   updatedAt: DateTimeFilter
@@ -434,19 +449,19 @@ input JobTemplateWhereInput {
 
 input JobWhereInput {
   AND: [JobWhereInput!]
-  applications: ApplicationFilter
+  applications: ApplicationListRelationFilter
   author: UserWhereInput
   authorId: StringFilter
   branch: BranchWhereInput
   branchId: StringFilter
-  categories: CategoryFilter
+  categories: CategoryListRelationFilter
   compensationType: StringFilter
   createdAt: DateTimeFilter
   cronTask: JobCronTaskWhereInput
-  cronTaskId: NullableStringFilter
+  cronTaskId: StringNullableFilter
   description: StringFilter
-  disclaimer: NullableStringFilter
-  favorites: FavoriteFilter
+  disclaimer: StringNullableFilter
+  favorites: FavoriteListRelationFilter
   id: StringFilter
   location: LocationWhereInput
   locationId: StringFilter
@@ -454,8 +469,8 @@ input JobWhereInput {
   minCompensation: FloatFilter
   NOT: [JobWhereInput!]
   OR: [JobWhereInput!]
-  perks: PerkFilter
-  skills: SkillFilter
+  perks: PerkListRelationFilter
+  skills: SkillListRelationFilter
   status: JobStatusFilter
   title: StringFilter
   type: StringFilter
@@ -483,16 +498,17 @@ type Location {
 
 input LocationWhereInput {
   AND: [LocationWhereInput!]
-  Branch: BranchFilter
-  Company: CompanyFilter
+  boundary: FloatNullableListFilter
+  Branch: BranchListRelationFilter
+  Company: CompanyListRelationFilter
   id: StringFilter
-  jobs: JobFilter
+  jobs: JobListRelationFilter
   latitude: FloatFilter
   longitude: FloatFilter
   name: StringFilter
   NOT: [LocationWhereInput!]
   OR: [LocationWhereInput!]
-  users: UserFilter
+  users: UserListRelationFilter
 }
 
 input LocationWhereUniqueInput {
@@ -539,18 +555,51 @@ type Mutation {
   updateUser(branch: ID, id: ID!, name: String, otherBranches: [BranchChangeInput!], role: ID): User
 }
 
-input NullableFloatFilter {
+input NestedDateTimeFilter {
+  equals: DateTime
+  gt: DateTime
+  gte: DateTime
+  in: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  not: NestedDateTimeFilter
+  notIn: [DateTime!]
+}
+
+input NestedFloatFilter {
   equals: Float
   gt: Float
   gte: Float
   in: [Float!]
   lt: Float
   lte: Float
-  not: Float
+  not: NestedFloatFilter
   notIn: [Float!]
 }
 
-input NullableStringFilter {
+input NestedFloatNullableFilter {
+  equals: Float
+  gt: Float
+  gte: Float
+  in: [Float!]
+  lt: Float
+  lte: Float
+  not: NestedFloatNullableFilter
+  notIn: [Float!]
+}
+
+input NestedIntFilter {
+  equals: Int
+  gt: Int
+  gte: Int
+  in: [Int!]
+  lt: Int
+  lte: Int
+  not: NestedIntFilter
+  notIn: [Int!]
+}
+
+input NestedStringFilter {
   contains: String
   endsWith: String
   equals: String
@@ -559,7 +608,21 @@ input NullableStringFilter {
   in: [String!]
   lt: String
   lte: String
-  not: String
+  not: NestedStringFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input NestedStringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
   notIn: [String!]
   startsWith: String
 }
@@ -579,7 +642,7 @@ type Perk {
   updatedAt: DateTime!
 }
 
-input PerkFilter {
+input PerkListRelationFilter {
   every: PerkWhereInput
   none: PerkWhereInput
   some: PerkWhereInput
@@ -606,8 +669,8 @@ input PerkWhereInput {
   authorId: StringFilter
   createdAt: DateTimeFilter
   id: StringFilter
-  jobs: JobFilter
-  JobTemplates: JobTemplateFilter
+  jobs: JobListRelationFilter
+  JobTemplates: JobTemplateListRelationFilter
   name: StringFilter
   NOT: [PerkWhereInput!]
   OR: [PerkWhereInput!]
@@ -626,13 +689,14 @@ type Permission {
   object: String!
 }
 
-input PermissionFilter {
+input PermissionListRelationFilter {
   every: PermissionWhereInput
   none: PermissionWhereInput
   some: PermissionWhereInput
 }
 
 input PermissionWhereInput {
+  actions: StringNullableListFilter
   AND: [PermissionWhereInput!]
   id: StringFilter
   NOT: [PermissionWhereInput!]
@@ -695,7 +759,7 @@ type Resume {
   user: User!
 }
 
-input ResumeFilter {
+input ResumeListRelationFilter {
   every: ResumeWhereInput
   none: ResumeWhereInput
   some: ResumeWhereInput
@@ -712,14 +776,14 @@ input ResumeOrderByInput {
 
 input ResumeWhereInput {
   AND: [ResumeWhereInput!]
-  applications: ApplicationFilter
+  applications: ApplicationListRelationFilter
   createdAt: DateTimeFilter
   file: FileWhereInput
   fileId: StringFilter
   id: StringFilter
   NOT: [ResumeWhereInput!]
   OR: [ResumeWhereInput!]
-  skills: SkillFilter
+  skills: SkillListRelationFilter
   title: StringFilter
   updatedAt: DateTimeFilter
   user: UserWhereInput
@@ -748,8 +812,8 @@ input RoleWhereInput {
   name: StringFilter
   NOT: [RoleWhereInput!]
   OR: [RoleWhereInput!]
-  permissions: PermissionFilter
-  users: UserFilter
+  permissions: PermissionListRelationFilter
+  users: UserListRelationFilter
 }
 
 input RoleWhereUniqueInput {
@@ -770,7 +834,7 @@ type Skill {
   users(after: UserWhereUniqueInput, before: UserWhereUniqueInput, first: Int, last: Int): [User!]!
 }
 
-input SkillFilter {
+input SkillListRelationFilter {
   every: SkillWhereInput
   none: SkillWhereInput
   some: SkillWhereInput
@@ -784,13 +848,13 @@ input SkillOrderByInput {
 input SkillWhereInput {
   AND: [SkillWhereInput!]
   id: StringFilter
-  jobs: JobFilter
-  jobTemplates: JobTemplateFilter
+  jobs: JobListRelationFilter
+  jobTemplates: JobTemplateListRelationFilter
   name: StringFilter
   NOT: [SkillWhereInput!]
   OR: [SkillWhereInput!]
-  resumes: ResumeFilter
-  users: UserFilter
+  resumes: ResumeListRelationFilter
+  users: UserListRelationFilter
 }
 
 input SkillWhereUniqueInput {
@@ -825,9 +889,27 @@ input StringFilter {
   in: [String!]
   lt: String
   lte: String
-  not: String
+  not: NestedStringFilter
   notIn: [String!]
   startsWith: String
+}
+
+input StringNullableFilter {
+  contains: String
+  endsWith: String
+  equals: String
+  gt: String
+  gte: String
+  in: [String!]
+  lt: String
+  lte: String
+  not: NestedStringNullableFilter
+  notIn: [String!]
+  startsWith: String
+}
+
+input StringNullableListFilter {
+  equals: [String!]
 }
 
 type Term {
@@ -880,7 +962,7 @@ type UserEEmpactData {
   id: String
 }
 
-input UserFilter {
+input UserListRelationFilter {
   every: UserWhereInput
   none: UserWhereInput
   some: UserWhereInput
@@ -897,32 +979,32 @@ enum UserStatus {
 
 input UserWhereInput {
   AND: [UserWhereInput!]
-  applicationNotes: ApplicationNoteFilter
-  applications: ApplicationFilter
+  applicationNotes: ApplicationNoteListRelationFilter
+  applications: ApplicationListRelationFilter
   branch: BranchWhereInput
-  branchId: NullableStringFilter
+  branchId: StringNullableFilter
   createdAt: DateTimeFilter
-  createdJobTemplates: JobTemplateFilter
-  createdPerks: PerkFilter
+  createdJobTemplates: JobTemplateListRelationFilter
+  createdPerks: PerkListRelationFilter
   email: StringFilter
-  favorites: FavoriteFilter
+  favorites: FavoriteListRelationFilter
   id: StringFilter
-  jobs: JobFilter
+  jobs: JobListRelationFilter
   location: LocationWhereInput
-  locationId: NullableStringFilter
-  modifiedJobTemplates: JobTemplateFilter
+  locationId: StringNullableFilter
+  modifiedJobTemplates: JobTemplateListRelationFilter
   name: StringFilter
   NOT: [UserWhereInput!]
   OR: [UserWhereInput!]
-  otherBranches: BranchFilter
+  otherBranches: BranchListRelationFilter
   password: StringFilter
-  phone: NullableStringFilter
-  resetToken: NullableStringFilter
-  resetTokenExpiry: NullableFloatFilter
-  resumes: ResumeFilter
+  phone: StringNullableFilter
+  resetToken: StringNullableFilter
+  resetTokenExpiry: FloatNullableFilter
+  resumes: ResumeListRelationFilter
   role: RoleWhereInput
   roleId: StringFilter
-  skills: SkillFilter
+  skills: SkillListRelationFilter
   status: UserStatus
   updatedAt: DateTimeFilter
 }
