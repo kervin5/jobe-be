@@ -16,7 +16,13 @@ settings.change({
       introspection: true,
     },
     cors: {
-      origin: [process.env.FRONTEND_URL as string, 'http://localhost:3000'],
+      origin: [
+        process.env.FRONTEND_URL as string,
+        'http://localhost:3000',
+        ...(process.env?.ALLOWED_DOMAINS
+          ? process.env?.ALLOWED_DOMAINS.split(',')
+          : []),
+      ],
       credentials: true,
       optionsSuccessStatus: 200,
       methods: ['POST', 'GET'],
