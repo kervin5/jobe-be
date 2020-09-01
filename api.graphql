@@ -338,6 +338,7 @@ type Job {
   maxCompensation: Float!
   minCompensation: Float!
   perks(after: PerkWhereUniqueInput, before: PerkWhereUniqueInput, first: Int, last: Int, orderBy: [PerkOrderByInput!], where: PerkWhereInput): [Perk!]!
+  permalink: String
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int): [Skill!]!
   status: JobStatus!
   title: String!
