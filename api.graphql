@@ -727,7 +727,7 @@ type Query {
   company(where: CompanyWhereUniqueInput!): Company
   getSignedFileUrl(AWSUrl: String!): String
   job(where: JobWhereUniqueInput!): Job
-  jobs(take: Int = 10, where: JobWhereInput): [Job!]
+  jobs(orderBy: JobOrderByInput, take: Int = 10, where: JobWhereInput): [Job!]
   jobsConnection(where: JobWhereInput): Int
   jobsGrid(branch: [String!], orderBy: String, query: String, skip: Int, status: [String!], take: Int): [JobGridItem!]
   jobsGridCount(branch: [String!], query: String, status: [String!]): Int
