@@ -738,6 +738,7 @@ type Query {
   perks(orderBy: PerkOrderByInput, skip: Int, take: Int, where: PerkWhereInput): [Perk!]
   perksConnection(where: PerkWhereInput): Int
   popularTerms: [Term!]
+  randomJobs(take: Int = 10): [Job!]
   roles(after: RoleWhereUniqueInput, before: RoleWhereUniqueInput, first: Int, last: Int, where: RoleWhereInput): [Role!]!
   searchJobs(location: String, orderBy: JobOrderByInput, query: String, radius: Int = 5, skip: Int, take: Int, where: JobWhereInput): [Job!]
   skills(after: SkillWhereUniqueInput, before: SkillWhereUniqueInput, first: Int, last: Int, orderBy: [SkillOrderByInput!], where: SkillWhereInput): [Skill!]!

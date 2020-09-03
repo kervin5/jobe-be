@@ -275,6 +275,25 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       return result
     },
   })
+
+  t.list.field('randomJobs', {
+    type: 'Job',
+    args: {
+      take: schema.intArg({ nullable: true, default: 10 }),
+    },
+    resolve: async (parent, args, ctx) => {
+      const branches = await ctx.db.branch.findMany({
+        where: { jobs: { some: { title: { contains: '' } } } },
+        include: { jobs: { take: 10, orderBy: { updatedAt: 'desc' } } },
+      })
+
+      const jobs = branches.reduce((result: any, branch: any) => {
+        return [...result, branch.jobs[getRandomInt(branch.jobs.length - 1)]]
+      }, [])
+
+      return shuffle(jobs.slice())
+    },
+  })
 }
 
 function titleCase(str: string = '') {
@@ -283,4 +302,27 @@ function titleCase(str: string = '') {
     string[i] = string[i].charAt(0).toUpperCase() + string[i].slice(1)
   }
   return string.join(' ')
+}
+
+function shuffle(arrayToShuffle: any) {
+  var currentIndex = arrayToShuffle.length
+  var temporaryValue, randomIndex
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex -= 1
+
+    // And swap it with the current element.
+    temporaryValue = arrayToShuffle[currentIndex]
+    arrayToShuffle[currentIndex] = arrayToShuffle[randomIndex]
+    arrayToShuffle[randomIndex] = temporaryValue
+  }
+
+  return arrayToShuffle
+}
+
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * Math.floor(max))
 }
