@@ -50,13 +50,3 @@ schema.inputObjectType({
     })
   },
 })
-/*
-export const ApplicationCreateInpuType = inputObjectType({
-  name: 'ApplicationCreateInpuType',
-  definition(t) {
-    t.field('job', {
-      type: 'string',
-    })
-  },
-})
-*/

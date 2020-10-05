@@ -2,6 +2,8 @@ import { schema } from 'nexus'
 import { core } from 'nexus/components/schema'
 import { fetchLocation } from '../../utils/location'
 import { can } from '../../permissions/auth'
+import { makeANiceEmail, transport } from '../../utils/mail'
+import appText from '../../../lang/appText'
 
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('incrementJobViewCount', {
@@ -305,6 +307,33 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           where: args.where,
           data: JobDataToUpdate,
         })
+
+        //Notify author when job goes live
+        if (
+          Object.keys(args).length === 1 &&
+          args?.data?.status === 'POSTED' &&
+          jobs.length === 1
+        ) {
+          const [updatedJob] = jobs
+          const location = await ctx.db.location.findOne({
+            where: { id: updatedJob.locationId },
+          })
+          const mailRes = await transport.sendMail({
+            from: process.env.EMAIL_FROM,
+            to: user?.email,
+            subject: appText.emails.jobs.posted.subject(
+              updatedJob.title,
+              location?.name ?? '',
+            ),
+            html: makeANiceEmail(
+              appText.emails.jobs.posted.body(
+                updatedJob.title,
+                location?.name ?? '',
+                updatedJob.id,
+              ),
+            ),
+          })
+        }
 
         return job
       } else {

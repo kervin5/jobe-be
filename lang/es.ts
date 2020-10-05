@@ -5,12 +5,20 @@ export default {
   emails: {
     salutation: 'Hola',
     signature: `El equipo de ${process.env.COMPANY_NAME}`,
+    jobs: {
+      posted: {
+        subject: (title: string, location: string) =>
+          `Tu publicacion para ${title} en ${location} fue aprovada!`,
+        body: (title: string, location: string, jobId: string) =>
+          `Felicidades, tu publicacion para el puesto de ${title} en ${location} fue aprovada.  Puedes ver la actividad mas reciente utilizando el siguiente link <a href="${process.env.FRONTEND_URL}/admin/jobs/${jobId}">${title}</a>`,
+      },
+    },
     applications: {
       onTheWay: {
         subject: (jobTitle?: String) =>
           `Tú solicitud para ${jobTitle} esta en camino`,
         body: (name?: string, title?: string, location?: string) =>
-          `Felicidades${name}, \n\ntu solicitud para la posición ${title} en ${location} esta en camino😁. No te detengas y sigue explorando otras oportunidades en\n\n <a href="${process.env.FRONTEND_URL}">${process.env.FRONTEND_URL}/register/</a>`,
+          `Felicidades ${name}, \n\ntu solicitud para la posición ${title} en ${location} esta en camino😁. No te detengas y sigue explorando otras oportunidades en\n\n <a href="${process.env.FRONTEND_URL}">${process.env.FRONTEND_URL}/register/</a>`,
       },
       hasNewApplication: {
         subject: (title?: string) =>
@@ -47,6 +55,9 @@ export default {
       invalidPassword: 'Contraseña invalida',
       passwordsDontMatch: 'Contraseñas no coinciden',
       invalidToken: 'Este enlace es invalido o ya expiró',
+    },
+    applicantion: {
+      autoArchive: `Este candidato fue contratado para otro puesto y su solicitud fue archivada automaticamente`,
     },
   },
 }

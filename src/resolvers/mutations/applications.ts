@@ -96,7 +96,46 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         const application = await ctx.db.application.update({
           where: { id: args.id },
           data: { status: args.status },
+          include: { user: true },
         })
+
+        const applicant = application.user
+
+        //Auto archive other applications if employee is hired
+        if (args.status === 'HIRED') {
+          const otherApplications = await ctx.db.application.findMany({
+            where: {
+              AND: [
+                { userId: applicant.id },
+                { status: { notIn: ['HIRED', 'ARCHIVED'] } },
+              ],
+            },
+          })
+
+          await ctx.db.application.updateMany({
+            where: {
+              AND: [
+                { userId: applicant.id },
+                { status: { notIn: ['HIRED', 'ARCHIVED'] } },
+              ],
+            },
+            data: { status: 'ARCHIVED' },
+          })
+
+          for (let i = 0; i < otherApplications.length; i++) {
+            const otherApp = otherApplications[i]
+
+            await ctx.db.applicationNote.create({
+              data: {
+                content: appText.messages.applicantion.autoArchive,
+                //@ts-ignore
+                user: { connect: { id: ctx.request.user.id } },
+                application: { connect: { id: otherApp.id } },
+                type: 'NOTE',
+              },
+            })
+          }
+        }
 
         try {
           const applicationNote = await ctx.db.applicationNote.create({

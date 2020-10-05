@@ -5,7 +5,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     type: 'StatisticCountByBranch',
     resolve: async (parent, args, ctx) => {
       const result = await ctx.db
-        .queryRaw(`SELECT count(*) as count, "Branch".name, "Application".status FROM "${process.env.DATABASE_SCHEMA}"."Application"
+        .$queryRaw(`SELECT count(*) as count, "Branch".name, "Application".status FROM "${process.env.DATABASE_SCHEMA}"."Application"
       JOIN "${process.env.DATABASE_SCHEMA}"."Job" ON "Application".job = "Job".id
       JOIN "${process.env.DATABASE_SCHEMA}"."Branch" ON "Job".branch = "Branch".id
       GROUP BY "Branch".name, "Application".status ORDER BY count DESC`)
@@ -17,7 +17,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     type: 'StatisticCountByBranch',
     resolve: async (parent, args, ctx) => {
       const result = await ctx.db
-        .queryRaw(`SELECT count(*) as count,"Branch".name, "Job".status FROM "${process.env.DATABASE_SCHEMA}"."Job"
+        .$queryRaw(`SELECT count(*) as count,"Branch".name, "Job".status FROM "${process.env.DATABASE_SCHEMA}"."Job"
         JOIN "${process.env.DATABASE_SCHEMA}"."Branch" on "Job".branch = "Branch".id
         GROUP BY "Branch".name, "Job".status ORDER BY count DESC`)
       return result
@@ -28,7 +28,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     type: 'StatisticCountWithLabel',
     resolve: async (parent, args, ctx) => {
       const result = await ctx.db
-        .queryRaw(`SELECT count(*) as count, source2.count as count2, TO_CHAR("createdAt",'Month') as label,
+        .$queryRaw(`SELECT count(*) as count, source2.count as count2, TO_CHAR("createdAt",'Month') as label,
         EXTRACT(MONTH FROM "createdAt") as orderKey
         FROM "${process.env.DATABASE_SCHEMA}"."Application"
         JOIN (SELECT count(*) as count, TO_CHAR(j."createdAt",'Month') as l, EXTRACT(MONTH FROM j."createdAt") as ok
@@ -48,7 +48,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     type: 'StatisticCountWithLabel',
     resolve: async (parent, args, ctx) => {
       const result = await ctx.db
-        .queryRaw(`SELECT ( count(DISTINCT "ApplicationNote".application) + jobsPosted.count) as count , "User".name as label, "Branch".name as label2 FROM "${process.env.DATABASE_SCHEMA}"."ApplicationNote"
+        .$queryRaw(`SELECT ( count(DISTINCT "ApplicationNote".application) + jobsPosted.count) as count , "User".name as label, "Branch".name as label2 FROM "${process.env.DATABASE_SCHEMA}"."ApplicationNote"
         JOIN "${process.env.DATABASE_SCHEMA}"."User" ON "ApplicationNote"."user" = "User".id
         JOIN (SELECT count(*) as count, u.id
         FROM "${process.env.DATABASE_SCHEMA}"."Job" as j

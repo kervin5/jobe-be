@@ -5,6 +5,12 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
   t.list.field('popularTerms', {
     type: 'Term',
     resolve: async (parent, args, ctx) => {
+      // console.log(
+      //   await ctx.db.category.findMany({
+      //     where: { jobs: { some: { status: { equals: 'POSTED' } } } },
+      //   }),
+      // )
+      // return []
       let categories = await ctx.db.category.findMany({
         where: { jobs: { some: { status: 'POSTED' } } },
         include: { jobs: true },
