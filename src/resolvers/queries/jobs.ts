@@ -12,6 +12,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     args: {
       where: schema.arg({ type: 'JobWhereInput' }),
       take: schema.intArg({ nullable: true, default: 10 }),
+      orderBy: schema.arg({ type: 'JobOrderByInput', nullable: true }),
     },
     resolve: (parent, args, ctx) => {
       return ctx.db.job.findMany({
@@ -21,7 +22,8 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
           status: 'POSTED',
         },
         take: args.take ?? 10,
-        orderBy: { createdAt: 'desc' },
+        //@ts-ignore
+        orderBy: { ...(args.orderBy ? args.orderBy : { createdAt: 'desc' }) },
       })
     },
   })
@@ -69,6 +71,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
             status: 'POSTED',
           },
           ...(args.take ? { take: args.take, skip: args.skip } : {}),
+          //@ts-ignore
           orderBy: args.orderBy ? args.orderBy : { updatedAt: 'desc' },
         })
       }
@@ -143,6 +146,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     args: {
       query: schema.stringArg({ nullable: true }),
       status: schema.stringArg({ nullable: true, list: true }),
+      branch: schema.stringArg({ nullable: true, list: true }),
     },
     resolve: async (parent, args, ctx) => {
       const queryFilter = args.query
@@ -154,23 +158,32 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
           )}') AND "Job".status != 'DELETED'`
         : ''
 
+      const branchFilter = args.branch ? `AND brn.id = '${args.branch}'` : ''
+
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
-        include: { branch: { include: { company: true } } },
+        include: {
+          branch: { include: { company: true } },
+          otherBranches: true,
+        },
       })
 
-      let ownerFilter = `brn.id = '${user?.branch?.id}'`
+      const accesibleBranches = [
+        user?.branch?.id,
+        user?.otherBranches.map((brn) => brn.id),
+      ]
+        .flat(1)
+        .join(`','`)
+
+      let ownerFilter = `brn.id in ('${accesibleBranches}')`
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
         //Gets all the jobs from the company
         // ownerFilter = { branch: { company: { id: user?.branch?.company.id } } }
         ownerFilter = `cmp.id = '${user?.branch?.company?.id}'`
-      } else if (await can('READ', 'BRANCH', ctx)) {
-        //Gets all the jobs from the branch
-        ownerFilter = `brn.id = '${user?.branch?.id}'`
       }
 
-      const result = await ctx.db.queryRaw(`
+      const result = await ctx.db.$queryRaw(`
       SELECT
       count(*)
       
@@ -180,7 +193,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       JOIN "${process.env.DATABASE_SCHEMA}"."Branch" brn ON "Job".branch = brn.id
       JOIN "${process.env.DATABASE_SCHEMA}"."Company" cmp ON brn.company = cmp.id
 
-      WHERE ${ownerFilter} ${queryFilter} ${statusFilter};
+      WHERE ${ownerFilter} ${queryFilter} ${statusFilter} ${branchFilter} AND "Job".status != 'DELETED';
       `)
 
       return result?.[0].count
@@ -195,6 +208,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       orderBy: schema.stringArg({ nullable: true }),
       query: schema.stringArg({ nullable: true }),
       status: schema.stringArg({ nullable: true, list: true }),
+      branch: schema.stringArg({ nullable: true, list: true }),
     },
     resolve: async (parent, args, ctx) => {
       const limit = args.take ? `LIMIT ${args.take}` : ''
@@ -204,28 +218,36 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
         ? `AND ("Job".title ILIKE '%${args.query}%' OR loc.name ILIKE '%${args.query}%' OR brn.name ILIKE '%${args.query}%' OR "User".name ILIKE '%${args.query}%' OR "User".email ILIKE '%${args.query}%')`
         : ''
       const statusFilter = args.status
-        ? `AND "Job".status in ('${args.status.join(
-            `','`,
-          )}') AND "Job".status != 'DELETED'`
+        ? `AND "Job".status in ('${args.status.join(`','`)}')`
         : ''
+
+      const branchFilter = args.branch ? `AND brn.id = '${args.branch}'` : ''
 
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
-        include: { branch: { include: { company: true } } },
+        include: {
+          branch: { include: { company: true } },
+          otherBranches: true,
+        },
       })
 
-      let ownerFilter = `brn.id = '${user?.branch?.id}'`
+      //Get all the branches that the user has access to
+      const accesibleBranches = [
+        user?.branch?.id,
+        user?.otherBranches.map((brn) => brn.id),
+      ]
+        .flat(1)
+        .join(`','`)
+
+      let ownerFilter = `brn.id in ('${accesibleBranches}')`
       //Define jobs filter based on access level
       if (await can('READ', 'COMPANY', ctx)) {
         //Gets all the jobs from the company
         // ownerFilter = { branch: { company: { id: user?.branch?.company.id } } }
         ownerFilter = `cmp.id = '${user?.branch?.company?.id}'`
-      } else if (await can('READ', 'BRANCH', ctx)) {
-        //Gets all the jobs from the branch
-        ownerFilter = `brn.id = '${user?.branch?.id}'`
       }
 
-      const result = await ctx.db.queryRaw(`
+      const result = await ctx.db.$queryRaw(`
       SELECT
       "Job".id,
       "Job".title,
@@ -244,13 +266,32 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       JOIN "${process.env.DATABASE_SCHEMA}"."Location" loc ON "Job".location = loc.id
       JOIN "${process.env.DATABASE_SCHEMA}"."Branch" brn ON "Job".branch = brn.id
       JOIN "${process.env.DATABASE_SCHEMA}"."Company" cmp ON brn.company = cmp.id
-      WHERE ${ownerFilter} ${queryFilter} ${statusFilter}
+      WHERE ${ownerFilter} ${queryFilter} ${statusFilter} ${branchFilter} AND "Job".status != 'DELETED'
       ${orderBy}
       ${limit}
       ${skip};
       `)
 
       return result
+    },
+  })
+
+  t.list.field('randomJobs', {
+    type: 'Job',
+    args: {
+      take: schema.intArg({ nullable: true, default: 10 }),
+    },
+    resolve: async (parent, args, ctx) => {
+      const branches = await ctx.db.branch.findMany({
+        where: { jobs: { some: { title: { contains: '' } } } },
+        include: { jobs: { take: 10, orderBy: { updatedAt: 'desc' } } },
+      })
+
+      const jobs = branches.reduce((result: any, branch: any) => {
+        return [...result, branch.jobs[getRandomInt(branch.jobs.length - 1)]]
+      }, [])
+
+      return shuffle(jobs.slice())
     },
   })
 }
@@ -261,4 +302,27 @@ function titleCase(str: string = '') {
     string[i] = string[i].charAt(0).toUpperCase() + string[i].slice(1)
   }
   return string.join(' ')
+}
+
+function shuffle(arrayToShuffle: any) {
+  var currentIndex = arrayToShuffle.length
+  var temporaryValue, randomIndex
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex -= 1
+
+    // And swap it with the current element.
+    temporaryValue = arrayToShuffle[currentIndex]
+    arrayToShuffle[currentIndex] = arrayToShuffle[randomIndex]
+    arrayToShuffle[randomIndex] = temporaryValue
+  }
+
+  return arrayToShuffle
+}
+
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * Math.floor(max))
 }
