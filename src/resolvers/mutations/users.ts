@@ -5,54 +5,10 @@ import { promisify } from 'util'
 import { randomBytes } from 'crypto'
 import { schema } from 'nexus'
 import { transport, makeANiceEmail } from '../../utils/mail'
+import generateError from '../../utils/error'
+import appText from '../../../lang/appText'
 
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
-  // t.int('updateLocation', {
-  //   resolve: async (parent, args, ctx) => {
-  //     const users = (
-  //       await ctx.db.user.findMany({
-  //         where: { location: null },
-  //         select: {
-  //           id: true,
-  //           applications: { include: { job: { include: { location: true } } } },
-  //           favorites: { include: { job: { include: { location: true } } } },
-  //         },
-  //       })
-  //     ).filter((user) => user.applications.length || user.favorites.length)
-
-  //     const updateData = users.map((user) => {
-  //       const lastApplication = user.applications.pop()
-  //       const lastFavorite = user.favorites.pop()
-  //       const userData = {
-  //         location: lastApplication
-  //           ? lastApplication.job.location.id
-  //           : lastFavorite?.job.location.id,
-  //         id: user.id,
-  //       }
-  //       return userData
-  //     })
-
-  //     async function* generateSequence(usersToUpdate: any) {
-  //       for (let i = 0; i < usersToUpdate.length; i++) {
-  //         const userData = usersToUpdate[i]
-  //         // yay, can use await!
-  //         // await new Promise(resolve => setTimeout(resolve, 1000));
-  //         const updateResult = await ctx.db.user.update({
-  //           where: { id: userData.id },
-  //           data: { location: { connect: { id: userData.location } } },
-  //         })
-  //         yield { i: `${i} of ${usersToUpdate.length}`, updateResult }
-  //       }
-  //     }
-
-  //     const generator = generateSequence(updateData)
-
-  //     for await (let result of generator) {
-  //       console.log(result)
-  //     }
-  //     return updateData.length
-  //   },
-  // })
   t.field('createUser', {
     type: 'User',
     args: {
@@ -60,6 +16,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       email: schema.stringArg({ required: true }),
       role: schema.idArg(),
       branch: schema.idArg(),
+      otherBranches: schema.arg({ type: 'BranchChangeInput', list: true }),
     },
     resolve: async (parent, args, ctx) => {
       const salt = await genSalt(10)
@@ -71,9 +28,17 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       const user = await ctx.db.user.create({
         data: {
           ...args,
+          email: args.email.trim(),
           branch: {
             //@ts-ignore
             connect: { id: args.branch },
+          },
+
+          otherBranches: {
+            //@ts-ignore
+            connect: args.otherBranches
+              ? args.otherBranches.map((br) => ({ id: br.id }))
+              : [],
           },
           status: 'ACTIVE', //@ts-ignore
           role: { connect: { id: args.role } },
@@ -84,22 +49,23 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       })
 
       const mailRes = await transport.sendMail({
-        from: 'noreply@myexactjobs.com',
+        from: process.env.EMAIL_FROM,
         to: user.email,
-        subject: 'My Exact Jobs Invite',
+        subject: appText.emails.users.invite.subject,
         html: makeANiceEmail(
-          `${args.name}, an account at MyExactJobs has been created for you, please click on the following link to setup your password! \n\n <a href="${process.env.FRONTEND_URL}/user/password/reset?resetToken=${resetToken}">Click Here to Create Password</a>`,
+          appText.emails.users.invite.body(resetToken, args.name),
         ),
       })
       return user
     },
   })
   t.field('signup', {
-    type: 'User',
+    type: 'UserResult',
     args: {
       name: schema.stringArg({ required: true }),
       password: schema.stringArg({ required: true }),
       email: schema.stringArg({ required: true }),
+      phone: schema.stringArg({ required: true }),
     },
     resolve: async (parent, args, ctx) => {
       const salt = await genSalt(10)
@@ -203,6 +169,8 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         const user = await ctx.db.user.create({
           data: {
             ...args,
+            email: args.email.trim(),
+            phone: sanitizePhoneNumber(args.phone),
             password: await hash(args.password, salt),
             status: 'ACTIVE',
             role: {
@@ -217,8 +185,9 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           process.env.APP_SECRET as string,
         )
         // 4. Set the cookie with the token
-
+        //@ts-ignore
         ctx.response.header('token', token)
+        //@ts-ignore
         ctx.response.cookie('token', token, {
           httpOnly: true,
           maxAge: 1000 * 60 * 60 * 24 * 365,
@@ -226,14 +195,17 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         // console.log(user);
         return user
       } catch (error) {
-        console.log({ error })
-        throw new Error(`An user with this email already exists`)
+        return generateError(
+          appText.messages.user.alreadyExists,
+          'authenticationError',
+          400,
+        )
       }
     },
   })
 
   t.field('login', {
-    type: 'User',
+    type: 'UserResult',
     args: {
       email: schema.stringArg({ nullable: false }),
       password: schema.stringArg({ nullable: false }),
@@ -246,7 +218,11 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       })
 
       if (!user) {
-        throw new Error(`No user found for email: ${email}`)
+        return generateError(
+          appText.messages.user.doesnExist(email),
+          'authenticationError',
+          400,
+        )
       }
 
       const userIsActive = await ctx.db.user.count({
@@ -257,18 +233,26 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       })
 
       if (!userIsActive) {
-        throw new Error('Your account is not active, please contact support')
+        return generateError(
+          appText.messages.user.notActive,
+          'authenticationError',
+          400,
+        )
       }
 
       const passwordValid = await compare(password, user.password)
       if (!passwordValid) {
-        throw new Error('Invalid password')
+        return generateError(
+          appText.messages.user.invalidPassword,
+          'authenticationError',
+          400,
+        )
       }
       // 3. generate the JWT Token
       const token = jwt.sign({ id: user.id }, process.env.APP_SECRET as string)
-
+      //@ts-ignore
       ctx.response.header('token', `Bearer ${token}`)
-
+      //@ts-ignore
       ctx.response.cookie('token', `Bearer ${token}`, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365,
@@ -282,6 +266,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.string('logout', {
     nullable: true,
     resolve: async (parent, args, ctx) => {
+      //@ts-ignore
       ctx.response.clearCookie('token')
       return 'log out'
     },
@@ -393,6 +378,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       id: schema.idArg({ required: true }),
       name: schema.stringArg(),
       branch: schema.idArg(),
+      otherBranches: schema.arg({ type: 'BranchChangeInput', list: true }),
       role: schema.idArg(),
     },
     resolve: async (parent, args, ctx) => {
@@ -403,32 +389,64 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
           }
         : {}
       const role = args.role ? { role: { connect: { id: args.role } } } : {}
+      const otherBranchesToDisconnect: any[] = []
+      const otherBranchesToConnect: any[] = []
+
+      args.otherBranches?.forEach((otherBranch) => {
+        if (otherBranch.active) {
+          otherBranchesToConnect.push({ id: otherBranch.id })
+        } else {
+          otherBranchesToDisconnect.push({ id: otherBranch.id })
+        }
+      })
+
+      let otherBranches: any = {}
+
+      if (otherBranchesToConnect.length) {
+        otherBranches = { otherBranches: { connect: otherBranchesToConnect } }
+      }
+
+      if (otherBranchesToDisconnect.length) {
+        if (!otherBranchesToConnect.length) {
+          otherBranches['otherBranches'] = {}
+        }
+        otherBranches['otherBranches']['disconnect'] = otherBranchesToDisconnect
+      }
+
       return ctx.db.user.update({
         where: { id: args.id },
         data: {
           ...name,
           ...branch,
           ...role,
+          ...otherBranches,
         },
       })
     },
   })
 
-  t.string('requestReset', {
+  t.field('requestReset', {
+    type: 'UserResult',
     args: { email: schema.stringArg({ required: true }) },
+    //@ts-ignore
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
         where: { email: args.email },
       })
 
-      if (!user) throw new Error('Invalid user')
+      if (!user)
+        return generateError('Invalid user', 'authenticationError', 400)
 
       const userIsActive = await ctx.db.user.count({
         where: { email: args.email, status: 'ACTIVE' },
       })
 
       if (!userIsActive)
-        throw new Error('Your account is not active, please contact support.')
+        return generateError(
+          appText.messages.user.notActive,
+          'authenticationError',
+          400,
+        )
 
       const randomBytesPromisified = promisify(randomBytes)
       const resetToken = (await randomBytesPromisified(20)).toString('hex')
@@ -440,20 +458,18 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
       })
 
       const mailRes = await transport.sendMail({
-        from: 'noreply@myexactjobs.com',
+        from: process.env.EMAIL_FROM,
         to: user.email,
-        subject: 'Your Password Reset Token',
-        html: makeANiceEmail(
-          `Your password Reset Token is here! \n\n <a href="${process.env.FRONTEND_URL}/user/password/reset?resetToken=${resetToken}">Click Here to Reset</a>`,
-        ),
+        subject: appText.emails.users.reset.subject,
+        html: makeANiceEmail(appText.emails.users.reset.body(resetToken)),
       })
 
-      return args.email
+      return user
     },
   })
 
   t.field('resetPassword', {
-    type: 'User',
+    type: 'UserResult',
     args: {
       token: schema.stringArg({ required: true }),
       password: schema.stringArg({ required: true }),
@@ -462,7 +478,11 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
     resolve: async (parent, args, ctx) => {
       // 1. Check if the passwords match
       if (args.password !== args.confirmPassword) {
-        throw new Error("Passwords don't match!")
+        return generateError(
+          `${appText.messages.user.passwordsDontMatch}!`,
+          'authenticationError',
+          400,
+        )
       }
       // 2. Check if its a legit reset token
       // 3. Check if its expired
@@ -473,7 +493,12 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         },
       })
 
-      if (!user) throw new Error('This token is either invalid or expired!')
+      if (!user)
+        return generateError(
+          `${appText.messages.user.invalidToken}!`,
+          'authenticationError',
+          400,
+        )
       // 4. Hash their new password
       const password = await hash(args.password, 10)
       // 5. Save the new password to the user and remove old reset token fields
@@ -490,7 +515,8 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         { id: updatedUser.id },
         process.env.APP_SECRET as string,
       )
-      // 7. Set the JWT cookie
+      // 7. Set the JWT cookie'
+      //@ts-ignore
       ctx.response.cookie('token', token, {
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 365,
@@ -502,10 +528,16 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   })
 }
 
-function titleCase(str: string = '') {
-  let string = str.toLowerCase().split(' ')
-  for (var i = 0; i < string.length; i++) {
-    string[i] = string[i].charAt(0).toUpperCase() + string[i].slice(1)
-  }
-  return string.join(' ')
+export function sanitizePhoneNumber(phone: string) {
+  const result = phone
+    ? (phone.includes('\n') ? phone.split('\n')[1] : phone).replace(/\D/g, '')
+    : undefined
+
+  return result
+    ? result.length > 10
+      ? result.substring(result.length - 10, result.length)
+      : result.length === 7 || result.length > 9
+      ? result
+      : undefined
+    : undefined
 }

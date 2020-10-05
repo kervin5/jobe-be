@@ -17,6 +17,11 @@ const rules = {
 export const permissions = shield({
   rules: {
     Query: {
+      companies: and(
+        rules.isAuthenticatedUser,
+        rules.can({ action: 'CREATE', object: 'JOB' }),
+        rules.can({ action: 'READ', object: 'APPLICATION' }),
+      ),
       application: and(
         rules.isAuthenticatedUser,
         rules.can({ action: 'CREATE', object: 'JOB' }),
@@ -82,6 +87,7 @@ export const permissions = shield({
       ),
 
       branches: rules.isAuthenticatedUser,
+      branchesByUser: rules.isAuthenticatedUser,
       getSignedFileUrl: rules.isAuthenticatedUser,
     },
     Mutation: {

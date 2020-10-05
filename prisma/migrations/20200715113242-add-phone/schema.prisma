@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = "***"
 }
 
 enum UserStatus {
@@ -92,8 +92,6 @@ model Branch {
 
   jobs  Job[]
   users User[]
-
-  usersWithAccess User[] @relation("UserAccessToBranch")
 }
 
 model Category {
@@ -165,7 +163,6 @@ model Job {
 
   perks Perk[] @relation(references: [id])
   views Int    @default(0)
-
 }
 
 model JobCronTask {
@@ -230,7 +227,7 @@ model User {
   id           String        @id @default(cuid())
   name         String
   email        String        @unique
-  phone        String?       @unique
+  phone        String?
   password     String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -243,9 +240,8 @@ model User {
   roleId       String        @map("role")
   role         Role          @relation(fields: [roleId], references: [id])
 
-  branchId      String?  @map("branch")
-  branch        Branch?  @relation(fields: [branchId], references: [id])
-  otherBranches Branch[] @relation("UserAccessToBranch")
+  branchId String? @map("branch")
+  branch   Branch? @relation(fields: [branchId], references: [id])
 
   resumes              Resume[]
   resetToken           String?

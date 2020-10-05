@@ -23,7 +23,18 @@ schema.objectType({
     t.model.categories()
     t.model.cronTask()
     t.model.perks({ filtering: true, ordering: true })
-    t.model.views()
+    t.model.views(),
+      t.string('permalink', {
+        async resolve(parent, args, ctx) {
+          const location = await ctx.db.location.findOne({
+            where: { id: parent.locationId },
+          })
+
+          return formatJobUrl(parent.title, location?.name as string, parent.id)
+        },
+
+        nullable: true,
+      })
   },
 })
 
@@ -85,9 +96,18 @@ schema.objectType({
     t.string('author')
     t.string('location')
     t.int('applications')
+    t.int('perks')
     t.string('branch')
     t.date('updatedAt')
     t.date('createdAt')
     t.string('cronTask')
+    t.int('views')
   },
 })
+
+export function formatJobUrl(title: string, location: string, id: string) {
+  return `${process.env.FRONTEND_URL}/jobs/${title.replace(
+    /[\W_]+/g,
+    '-',
+  )}-${location.replace(/[\W_]+/g, '-')}-${id}`
+}

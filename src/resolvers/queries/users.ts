@@ -18,6 +18,7 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
       if (!ctx.request.user) {
         return null
       }
+
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
       })
@@ -102,12 +103,26 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     resolve: async (parent, args, ctx) => {
       const requesterData = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
-        include: { branch: { include: { company: true } } },
+        include: {
+          branch: { include: { company: true } },
+          otherBranches: true,
+        },
       })
 
       let usersFilter: UserAccessFilter = {
         applications: {
-          some: { job: { branch: { id: requesterData?.branch?.id } } },
+          some: {
+            job: {
+              branch: {
+                id: {
+                  in: [
+                    requesterData?.branch?.id,
+                    requesterData?.otherBranches.map((br) => br.id),
+                  ].flat(2),
+                },
+              },
+            },
+          },
         },
       }
 
@@ -145,12 +160,26 @@ export default (t: core.ObjectDefinitionBlock<'Query'>) => {
     resolve: async (parent, args, ctx) => {
       const user = await ctx.db.user.findOne({
         where: { id: ctx.request.user.id },
-        include: { branch: { include: { company: true } } },
+        include: {
+          branch: { include: { company: true } },
+          otherBranches: true,
+        },
       })
 
       let usersFilter: UserAccessFilter = {
         applications: {
-          some: { job: { branch: { id: user?.branch?.id } } },
+          some: {
+            job: {
+              branch: {
+                id: {
+                  in: [
+                    user?.branch?.id,
+                    user?.otherBranches.map((br) => br.id),
+                  ].flat(2),
+                },
+              },
+            },
+          },
         },
       }
 
