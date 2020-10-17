@@ -1,15 +1,23 @@
-const nodemailer = require('nodemailer')
-let aws = require('aws-sdk')
+import appText from '../../lang/appText'
+import nodemailer from 'nodemailer'
+import aws from 'aws-sdk'
+
+const currentRegion = process.env.AWS_CUSTOM_REGION
 
 // configure AWS SDK
+aws.config.update({
+  region: currentRegion, // Put your aws region here
+  accessKeyId: process.env.AWS_SES_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SES_SECRET_KEY,
+})
 
 // create Nodemailer SES transport
 export const transport = nodemailer.createTransport({
   SES: new aws.SES({
     apiVersion: '2010-12-01',
-    accessKeyId: process.env.AWS_SES_AccessKey,
-    secretAccessKey: process.env.AWS_SES_SecretKey,
-    region: 'us-east-1',
+    accessKeyId: process.env.AWS_SES_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SES_SECRET_KEY,
+    region: currentRegion,
   }),
   sendingRate: 14,
 })
@@ -45,9 +53,9 @@ export const makeANiceEmail = (text: string) => `
         line-height: 2;
         font-size: 20px;
     ">
-        <h2>Hello There!</h2>
+        <h2>${appText.emails.salutation}!</h2>
         <p>${text}</p>
-        <p>MyExactJobs Team 😎,</p>
+        <p>${appText.emails.signature} 😎,</p>
     </div>
 `
 

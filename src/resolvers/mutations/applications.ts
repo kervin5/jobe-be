@@ -1,6 +1,7 @@
 import { schema } from 'nexus'
 import { core } from 'nexus/components/schema'
 import { transport, makeANiceEmail } from '../../utils/mail'
+import appText from '../../../lang/appText'
 
 export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
   t.field('createApplication', {
@@ -45,20 +46,34 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
 
       try {
         const mailRes = await transport.sendMail({
-          from: 'noreply@myexactjobs.com',
+          from: process.env.EMAIL_FROM,
           to: user?.email,
-          subject: `Your application for ${job?.title} is on its way!`,
+          subject: `${appText.emails.applications.onTheWay.subject(
+            job?.title,
+          )}!`,
           html: makeANiceEmail(
-            `Congrats ${user?.name}, \n\nyour application for the position ${job?.title} at ${job?.location.name} is on it's way 😁. If you you would like to speed up the proccess please fill out our registration form at \n\n <a href="${process.env.REGISTER_URL}/register?utm_source=myexactjobs&utm_medium=email&utm_campaign=myexactjobs_application&utm_term=My%20Exact%20Jobs&utm_content=My%20Exact%20Jobs%20Application">${process.env.REGISTER_URL}/register/</a>`,
+            appText.emails.applications.onTheWay.body(
+              user?.name,
+              job?.title,
+              job?.location.name,
+            ),
           ),
         })
 
         const mailRecruiterRes = await transport.sendMail({
-          from: 'noreply@myexactjobs.com',
+          from: process.env.EMAIL_FROM,
           to: job?.author.email,
-          subject: `Your listing for ${job?.title} has a new application!`,
+          subject: `${appText.emails.applications.hasNewApplication.subject(
+            job?.title,
+          )}!`,
           html: makeANiceEmail(
-            `Hi ${job?.author.name}, \n\nThe candidate ${user?.name} applied for the position ${job?.title} at ${job?.location.name} 😁. Click here to view the resume of the applicant \n\n<a href="${process.env.FRONTEND_URL}/dashboard/applications/${application.id}">${process.env.FRONTEND_URL}/dashboard/applications/${application.id}</a>`,
+            appText.emails.applications.hasNewApplication.body(
+              job?.author.name,
+              user?.name,
+              job?.title,
+              job?.location.name,
+              application.id,
+            ),
           ),
         })
       } catch (ex) {
@@ -81,7 +96,46 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         const application = await ctx.db.application.update({
           where: { id: args.id },
           data: { status: args.status },
+          include: { user: true },
         })
+
+        const applicant = application.user
+
+        //Auto archive other applications if employee is hired
+        if (args.status === 'HIRED') {
+          const otherApplications = await ctx.db.application.findMany({
+            where: {
+              AND: [
+                { userId: applicant.id },
+                { status: { notIn: ['HIRED', 'ARCHIVED'] } },
+              ],
+            },
+          })
+
+          await ctx.db.application.updateMany({
+            where: {
+              AND: [
+                { userId: applicant.id },
+                { status: { notIn: ['HIRED', 'ARCHIVED'] } },
+              ],
+            },
+            data: { status: 'ARCHIVED' },
+          })
+
+          for (let i = 0; i < otherApplications.length; i++) {
+            const otherApp = otherApplications[i]
+
+            await ctx.db.applicationNote.create({
+              data: {
+                content: appText.messages.applicantion.autoArchive,
+                //@ts-ignore
+                user: { connect: { id: ctx.request.user.id } },
+                application: { connect: { id: otherApp.id } },
+                type: 'NOTE',
+              },
+            })
+          }
+        }
 
         try {
           const applicationNote = await ctx.db.applicationNote.create({

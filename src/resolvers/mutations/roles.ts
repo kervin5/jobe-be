@@ -25,6 +25,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         data: {
           name: args.name,
           permissions: {
+            //@ts-ignore
             create: rolePermissions,
           },
         },
@@ -53,6 +54,7 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
             delete: role?.permissions.map((permission) => ({
               id: permission.id,
             })),
+            //@ts-ignore
             create: args.permissions?.map((permission: IRolePermission) => ({
               object: permission.object,
               actions: { set: permission.actions },

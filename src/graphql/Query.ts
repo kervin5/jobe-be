@@ -11,6 +11,7 @@ import files from '../resolvers/queries/files'
 import terms from '../resolvers/queries/terms'
 import perks from '../resolvers/queries/perks'
 import statistics from '../resolvers/queries/statistics'
+import companies from '../resolvers/queries/companies'
 
 export const Query = schema.queryType({
   definition(t) {
@@ -26,5 +27,6 @@ export const Query = schema.queryType({
     terms(t)
     perks(t)
     statistics(t)
+    companies(t)
   },
 })
