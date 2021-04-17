@@ -1,5 +1,5 @@
 {
-  "name": "typescript-graphql",
+  "name": "jobe-be",
   "version": "1.0.0",
   "scripts": {
     "dev": "nexus dev",
