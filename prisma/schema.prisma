@@ -170,7 +170,7 @@ model Job {
 
 model JobCronTask {
   id       String   @id @default(cuid())
-  job      Job
+  job      Job?
   lastRun  DateTime
   nextRun  DateTime
   objectId String   @unique
