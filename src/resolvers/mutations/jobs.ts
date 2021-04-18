@@ -65,8 +65,8 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
         location = {
           create: {
             name: args.location,
-            longitude: fetchedLocation.center[1],
-            latitude: fetchedLocation.center[0],
+            longitude: fetchedLocation.center[0],
+            latitude: fetchedLocation.center[1],
             boundary: { set: fetchedLocation.bbox },
           },
         }
@@ -242,8 +242,8 @@ export default (t: core.ObjectDefinitionBlock<'Mutation'>) => {
             JobDataToUpdate.location = {
               create: {
                 name: JobDataToUpdate.location,
-                longitude: fetchedLocation.center[1],
-                latitude: fetchedLocation.center[0],
+                longitude: fetchedLocation.center[0],
+                latitude: fetchedLocation.center[1],
                 boundary: { set: fetchedLocation.bbox },
               },
             }

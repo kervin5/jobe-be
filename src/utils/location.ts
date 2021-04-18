@@ -84,4 +84,15 @@ export async function fetchLocation(locationName: string) {
   ).features[0]
 }
 
-module.exports = { searchBoundary, fetchLocation }
+export async function reverseFetchLocation( latitude: string, longitude: string) {
+  return (
+    (await request(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/
+      ${longitude},${latitude}.json?access_token=${process.env.MAPBOX_TOKEN}&types=country,region,postcode,place`,
+      {},
+      'GET',
+    )).features[0]
+  )
+}
+
+module.exports = { searchBoundary, fetchLocation, reverseFetchLocation }
